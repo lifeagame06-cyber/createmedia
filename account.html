@@ -242,6 +242,42 @@ function formatOrderPrice(value) {
 }
 
 async function renderAccountOrders(client, orders) {
+function getCachedOrderCover(coverPath) {
+    if (!coverPath) return "";
+
+    try {
+        const raw = sessionStorage.getItem(
+            "createMediaOrderCover:" + coverPath
+        );
+
+        if (!raw) return "";
+
+        const cached = JSON.parse(raw);
+
+        if (!cached.url || Date.now() >= cached.expiresAt) {
+            sessionStorage.removeItem(
+                "createMediaOrderCover:" + coverPath
+            );
+            return "";
+        }
+
+        return cached.url;
+    } catch {
+        return "";
+    }
+}
+
+function cacheOrderCover(coverPath, url) {
+    if (!coverPath || !url) return;
+
+    sessionStorage.setItem(
+        "createMediaOrderCover:" + coverPath,
+        JSON.stringify({
+            url: url,
+            expiresAt: Date.now() + (55 * 60 * 1000)
+        })
+    );
+}
     const ordersList = document.getElementById("ordersList");
 
     document.getElementById("orderCount").textContent =
@@ -266,32 +302,34 @@ async function renderAccountOrders(client, orders) {
             order.ebook_title ||
             order.ebooks?.title ||
             "Ebook";
+const orderCard = document.createElement("div");
+orderCard.className = "order-card";
+orderCard.dataset.orderId = order.id;
 
-        const orderCard = document.createElement("div");
-        orderCard.className = "order-card";
-        orderCard.dataset.orderId = order.id;
+orderCard.innerHTML = `
+    <div class="order-product">
 
-        orderCard.innerHTML = `
-            <div class="order-product">
-                <div class="order-ebook-cover">
-                    <img
-                        src="images/ebook.jpg"
-                        alt="${escapeAccountHtml(ebookTitle)}"
-                        loading="lazy"
-                        decoding="async"
-                    >
-                </div>
+        <div class="order-ebook-cover">
+            <img
+    src="${escapeAccountHtml(getCachedOrderCover(order.ebooks?.cover_path))}"
+    alt="${escapeAccountHtml(ebookTitle)}"
+    loading="eager"
+    decoding="async"
+    style="${getCachedOrderCover(order.ebooks?.cover_path) ? "" : "visibility:hidden;"}"
+>
+        </div>
 
-                <div class="order-product-info">
-                    <div class="order-status">
-                        <span>PURCHASED</span>
-                    </div>
-                    <strong class="order-ebook-name">
-                        ${escapeAccountHtml(ebookTitle)}
-                    </strong>
-                </div>
+        <div class="order-product-info">
+            <div class="order-status">
+                <span>PURCHASED</span>
             </div>
 
+            <strong class="order-ebook-name">
+                ${escapeAccountHtml(ebookTitle)}
+            </strong>
+        </div>
+
+    </div>
             <div class="order-info">
                 <span>ORDER ID</span>
                 <strong>${escapeAccountHtml(order.id || "—")}</strong>
@@ -380,7 +418,19 @@ async function renderAccountOrders(client, orders) {
         );
 
         const img = card?.querySelector(".order-ebook-cover img");
-        if (img) img.src = signedUrl;
+   if (img) {
+    cacheOrderCover(coverPath, signedUrl);
+
+    if (img.src !== signedUrl) {
+        img.onload = function () {
+            img.style.visibility = "visible";
+        };
+
+        img.src = signedUrl;
+    } else {
+        img.style.visibility = "visible";
+    }
+}
     });
 }
 
