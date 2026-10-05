@@ -191,9 +191,6 @@ function showEbookAlert(title, message) {
     document.getElementById("ebookAlertModal").style.display = "flex";
 }
 
-document.getElementById("ebookAlertClose").onclick = function() {
-    document.getElementById("ebookAlertModal").style.display = "none";
-};
 
 async function createCoverUrl(path) {
     if (!path) return "";
@@ -505,6 +502,11 @@ initializePurchasedEbook();
         <button type="button" id="ebookAlertClose">Okay</button>
     </div>
 </div>
+<script>
+document.getElementById("ebookAlertClose").onclick = function() {
+    document.getElementById("ebookAlertModal").style.display = "none";
+};
+</script>
 
 <script src="./app-notifications.js" defer></script>
 </body>
