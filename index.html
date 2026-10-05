@@ -1062,7 +1062,7 @@ window.addEventListener("beforeinstallprompt", function (event) {
     deferredInstallPrompt = event;
 });
 window.addEventListener("appinstalled", function () {
-    localStorage.setItem("createMediaAppInstalled", "true");
+    deferredInstallPrompt = null;
 });
 document.addEventListener("click", async function (event) {
 
@@ -1073,12 +1073,10 @@ document.addEventListener("click", async function (event) {
     }
 
     event.preventDefault();
-
-   const isInstalled =
-        window.matchMedia("(display-mode: standalone)").matches ||
-        window.navigator.standalone === true ||
-        localStorage.getItem("createMediaAppInstalled") === "true";
-    if (isInstalled) {
+const isInstalled =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+      if (isInstalled) {
         document.getElementById("installedAppPopup").style.display = "flex";
         return;
     }
