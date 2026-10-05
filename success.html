@@ -296,12 +296,12 @@
 
     <p>
         Ebook:
-        <strong id="successEbookName">Ebook 1</strong>
+        <strong id="successEbookName"></strong>
     </p>
 
     <p>
         Amount:
-        <strong id="successPrice">₹199</strong>
+        <strong id="successPrice"></strong>
     </p>
 
 </div>
@@ -443,8 +443,63 @@ async function initializeSuccessPage() {
         document.getElementById("successPrice").textContent =
             "₹" + Number(verifiedOrder.amount || 0).toLocaleString("en-IN");
 
+        // Prepare the purchased ebook before the user clicks View My Ebook.
+        // Access is still verified again inside ebook.html using the order id.
+        if (verifiedOrder.ebook_id) {
+            const checkoutKey = "createMediaCheckout_" + verifiedOrder.ebook_id;
+            let prepared = null;
+
+            try {
+                prepared = JSON.parse(sessionStorage.getItem(checkoutKey) || "null");
+            } catch (_) {}
+
+            let title = verifiedOrder.ebook_title || prepared?.name || "Your Ebook";
+            let description = "";
+            let coverUrl = prepared?.image || "";
+
+            const { data: ebookData, error: ebookError } = await supabaseClient
+                .from("ebooks")
+                .select("id, title, description, cover_path")
+                .eq("id", verifiedOrder.ebook_id)
+                .maybeSingle();
+
+            if (!ebookError && ebookData) {
+                title = ebookData.title || title;
+                description = ebookData.description || "";
+
+                if (!coverUrl && ebookData.cover_path) {
+                    const { data: coverData, error: coverError } =
+                        await supabaseClient.storage
+                            .from("ebook-covers")
+                            .createSignedUrl(ebookData.cover_path, 60 * 60);
+
+                    if (!coverError && coverData?.signedUrl) {
+                        coverUrl = coverData.signedUrl;
+                    }
+                }
+            }
+
+            try {
+                sessionStorage.setItem(
+                    "createMediaPurchasedEbook_" + verifiedOrder.id,
+                    JSON.stringify({
+                        title: title,
+                        description: description,
+                        coverUrl: coverUrl
+                    })
+                );
+            } catch (_) {}
+
+            document.getElementById("successEbookName").textContent = title;
+        }
+
         showPreparing(false);
-        showViewButton("ebook.html?order=" + encodeURIComponent(verifiedOrder.id));
+        showViewButton(
+            "ebook.html?order=" + encodeURIComponent(verifiedOrder.id) +
+            (verifiedOrder.ebook_id
+                ? "&ebook=" + encodeURIComponent(verifiedOrder.ebook_id)
+                : "")
+        );
         return;
     }
 
