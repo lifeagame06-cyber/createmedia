@@ -408,9 +408,11 @@ orderCard.innerHTML = `
     });
 
     orders.forEach(function(order) {
-        const coverPath = order.ebooks?.cover_path;
-        const signedUrl = signedByPath[coverPath];
+       const coverPath = order.ebooks?.cover_path;
 
+if (getCachedOrderCover(coverPath)) return;
+
+const signedUrl = signedByPath[coverPath];
         if (!signedUrl) return;
 
         const card = ordersList.querySelector(
