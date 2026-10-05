@@ -54,8 +54,8 @@
                 <img
                     id="ebookImage"
                     style="visibility:hidden;"
-                    src=""
-                    alt="Ebook"
+                    alt=""
+                    onerror="this.style.visibility='hidden';"
                     decoding="async"
                     fetchpriority="high"
                 >
@@ -202,12 +202,64 @@ async function createCoverUrl(path) {
         .from("ebook-covers")
         .createSignedUrl(path, 60 * 60);
 
-    if (error || !data?.signedUrl) {
-        console.error("Cover URL error:", error);
-        return "";
+    if (!error && data?.signedUrl) {
+        return data.signedUrl;
     }
 
-    return data.signedUrl;
+    console.error("Cover URL error:", error);
+    return "";
+}
+
+function getCachedCoverForEbook(ebookId, coverPath) {
+    try {
+        const checkout = JSON.parse(
+            sessionStorage.getItem("createMediaCheckout_" + ebookId) || "null"
+        );
+        if (checkout?.image) return checkout.image;
+    } catch (_) {}
+
+    try {
+        const marketplace = JSON.parse(
+            sessionStorage.getItem("createMediaMarketplaceAssetCacheV3") || "{}"
+        );
+        if (coverPath && marketplace?.covers?.[coverPath]) {
+            return marketplace.covers[coverPath];
+        }
+    } catch (_) {}
+
+    try {
+        const oldMarketplace = JSON.parse(
+            sessionStorage.getItem("createMediaMarketplaceAssetCacheV2") || "{}"
+        );
+        if (coverPath && oldMarketplace?.covers?.[coverPath]) {
+            return oldMarketplace.covers[coverPath];
+        }
+    } catch (_) {}
+
+    return "";
+}
+
+function showVerifiedCover(url, title) {
+    const image = document.getElementById("ebookImage");
+    if (!image || !url) return false;
+
+    image.style.visibility = "hidden";
+    image.alt = title || "Ebook";
+
+    image.onload = function() {
+        image.style.visibility = "visible";
+    };
+    image.onerror = function() {
+        image.style.visibility = "hidden";
+        image.removeAttribute("src");
+    };
+
+    image.src = url;
+
+    if (image.complete && image.naturalWidth > 0) {
+        image.style.visibility = "visible";
+    }
+    return true;
 }
 
 function disableDownload() {
@@ -276,6 +328,14 @@ async function initializePurchasedEbook() {
     }
 
     purchasedOrder = order;
+
+    // The order itself already contains the purchased ebook title.
+    // Paint it immediately after purchase verification; never leave the heading blank.
+    if (order.ebook_title) {
+        const orderTitleEl = document.getElementById("ebookTitle");
+        orderTitleEl.textContent = order.ebook_title;
+        orderTitleEl.style.visibility = "visible";
+    }
 
     // The checkout/details flow may already have this exact ebook cached.
     // Use it immediately on the very first purchase while the verified ebook row loads.
@@ -366,25 +426,20 @@ async function initializePurchasedEbook() {
         );
     } catch (_) {}
 
-    // Resolve only the real cover. Never show another/default ebook cover.
-    createCoverUrl(ebook.cover_path).then(function(url) {
-        const image = document.getElementById("ebookImage");
+    // Show the already-known real cover immediately when available.
+    const cachedRealCover =
+        getCachedCoverForEbook(ebook.id, ebook.cover_path);
 
-        if (image && url) {
-            image.style.visibility = "hidden";
-            image.alt = verifiedTitle;
-            image.onload = function() {
-                image.style.visibility = "visible";
-            };
-            image.onerror = function() {
-                image.style.visibility = "hidden";
-            };
-            if (image.src !== url) {
-                image.src = url;
-            }
-            if (image.complete && image.naturalWidth > 0) {
-                image.style.visibility = "visible";
-            }
+    if (cachedRealCover) {
+        showVerifiedCover(cachedRealCover, verifiedTitle);
+    }
+
+    // Refresh with a fresh signed URL in the background.
+    createCoverUrl(ebook.cover_path).then(function(url) {
+        const finalCoverUrl = url || cachedRealCover || "";
+
+        if (finalCoverUrl) {
+            showVerifiedCover(finalCoverUrl, verifiedTitle);
 
             try {
                 sessionStorage.setItem(
@@ -392,12 +447,10 @@ async function initializePurchasedEbook() {
                     JSON.stringify({
                         title: verifiedTitle,
                         description: verifiedDescription,
-                        coverUrl: url
+                        coverUrl: finalCoverUrl
                     })
                 );
             } catch (_) {}
-        } else if (image && !image.getAttribute("src")) {
-            image.style.visibility = "hidden";
         }
     });
 

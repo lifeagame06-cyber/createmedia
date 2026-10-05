@@ -163,8 +163,8 @@ const marketplaceEmpty =
     document.getElementById("marketplaceEmpty");
 
 
-const MARKETPLACE_CACHE_KEY = "createMediaMarketplaceAssetCacheV2";
-const MARKETPLACE_CACHE_TTL = 50 * 60 * 1000;
+const MARKETPLACE_CACHE_KEY = "createMediaMarketplaceAssetCacheV3";
+const MARKETPLACE_CACHE_TTL = 45 * 60 * 1000;
 
 function getMarketplaceCache() {
     try {
@@ -200,6 +200,15 @@ function preloadMarketplaceImage(url) {
     });
 }
 
+function invalidateMarketplaceCover(path) {
+    if (!path) return;
+    const freshCache = getMarketplaceCache();
+    if (freshCache.covers[path]) {
+        delete freshCache.covers[path];
+        saveMarketplaceCache(freshCache);
+    }
+}
+
 function buildMarketplaceCards(listedEbooks, cache) {
     const fragment = document.createDocumentFragment();
 
@@ -220,8 +229,11 @@ function buildMarketplaceCards(listedEbooks, cache) {
         const coverHtml = coverUrl
             ? `<img src="${escapeMarketplaceAttribute(coverUrl)}"
                     alt="${safeTitle}"
+                    data-cover-path="${escapeMarketplaceAttribute(ebook.cover_path || "")}"
                     ${index < 4 ? 'fetchpriority="high"' : 'loading="lazy"'}
-                    decoding="async">`
+                    decoding="async"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; invalidateMarketplaceCover(this.dataset.coverPath);">
+               <div class="marketplace-cover-placeholder" style="display:none;">Ebook</div>`
             : `<div class="marketplace-cover-placeholder">Ebook</div>`;
 
         card.innerHTML = `
@@ -327,7 +339,13 @@ async function renderMarketplaceEbooks() {
         )];
 
         const missingSellerIds = sellerIds.filter(id => !cache.sellers[id]);
-        const missingCoverPaths = coverPaths.filter(path => !cache.covers[path]);
+        const missingCoverPaths = coverPaths;
+
+        // Always refresh signed cover URLs for the current marketplace load.
+        // This prevents expired/broken signed URLs from surviving in session cache.
+        missingCoverPaths.forEach(path => {
+            delete cache.covers[path];
+        });
 
         const profilePromise = missingSellerIds.length
             ? supabaseClient
@@ -354,7 +372,11 @@ async function renderMarketplaceEbooks() {
 
         if (!coverResult.error && coverResult.data) {
             coverResult.data.forEach((item, index) => {
-                const path = item.path || missingCoverPaths[index];
+                const path =
+                    item.path ||
+                    item.name ||
+                    missingCoverPaths[index];
+
                 if (path && item.signedUrl) {
                     cache.covers[path] = item.signedUrl;
                 }
