@@ -38,7 +38,7 @@
                 YOUR EBOOK
             </p>
 
-            <h2 id="ebookTitle"></h2>
+            <h2 id="ebookTitle" style="visibility:hidden;"></h2>
 
             <p id="ebookDescription">
                 Your purchased ebook is ready to read.
@@ -53,6 +53,7 @@
 
                 <img
                     id="ebookImage"
+                    style="visibility:hidden;"
                     src=""
                     alt="Ebook"
                     decoding="async"
@@ -160,6 +161,7 @@ if (orderId) {
     if (cachedPurchasedEbook) {
         if (cachedPurchasedEbook.title) {
             document.getElementById("ebookTitle").textContent = cachedPurchasedEbook.title;
+            document.getElementById("ebookTitle").style.visibility = "visible";
         }
         if (cachedPurchasedEbook.description) {
             document.getElementById("ebookDescription").textContent =
@@ -169,6 +171,12 @@ if (orderId) {
             const cachedImage = document.getElementById("ebookImage");
             cachedImage.src = cachedPurchasedEbook.coverUrl;
             cachedImage.alt = cachedPurchasedEbook.title || "Ebook";
+            cachedImage.onload = function() {
+                cachedImage.style.visibility = "visible";
+            };
+            if (cachedImage.complete && cachedImage.naturalWidth > 0) {
+                cachedImage.style.visibility = "visible";
+            }
         }
     }
 }
@@ -269,6 +277,38 @@ async function initializePurchasedEbook() {
 
     purchasedOrder = order;
 
+    // The checkout/details flow may already have this exact ebook cached.
+    // Use it immediately on the very first purchase while the verified ebook row loads.
+    if (order.ebook_id) {
+        try {
+            const checkoutCache = JSON.parse(
+                sessionStorage.getItem("createMediaCheckout_" + order.ebook_id) || "null"
+            );
+
+            if (checkoutCache && checkoutCache.name) {
+                const titleEl = document.getElementById("ebookTitle");
+                titleEl.textContent = checkoutCache.name;
+                titleEl.style.visibility = "visible";
+
+                const imageEl = document.getElementById("ebookImage");
+                if (checkoutCache.image) {
+                    imageEl.alt = checkoutCache.name;
+                    imageEl.onload = function() {
+                        imageEl.style.visibility = "visible";
+                    };
+                    imageEl.onerror = function() {
+                        imageEl.style.visibility = "hidden";
+                    };
+                    imageEl.src = checkoutCache.image;
+
+                    if (imageEl.complete && imageEl.naturalWidth > 0) {
+                        imageEl.style.visibility = "visible";
+                    }
+                }
+            }
+        } catch (_) {}
+    }
+
     if (!order.ebook_id) {
         disableDownload();
         showEbookAlert(
@@ -305,6 +345,7 @@ async function initializePurchasedEbook() {
         ebook.description || "Your purchased ebook is ready to read.";
 
     document.getElementById("ebookTitle").textContent = verifiedTitle;
+    document.getElementById("ebookTitle").style.visibility = "visible";
 
     document.getElementById("ebookDescription").textContent =
         verifiedDescription;
@@ -330,10 +371,20 @@ async function initializePurchasedEbook() {
         const image = document.getElementById("ebookImage");
 
         if (image && url) {
+            image.style.visibility = "hidden";
+            image.alt = verifiedTitle;
+            image.onload = function() {
+                image.style.visibility = "visible";
+            };
+            image.onerror = function() {
+                image.style.visibility = "hidden";
+            };
             if (image.src !== url) {
                 image.src = url;
             }
-            image.alt = verifiedTitle;
+            if (image.complete && image.naturalWidth > 0) {
+                image.style.visibility = "visible";
+            }
 
             try {
                 sessionStorage.setItem(

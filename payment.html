@@ -395,13 +395,9 @@
             </h1>
 
 
-            <p class="ebook-name" id="paymentEbookName">
-    Ebook 1
-</p>
+            <p class="ebook-name" id="paymentEbookName"></p>
 
-            <div class="price" id="paymentPrice">
-    ₹199
-</div>
+            <div class="price" id="paymentPrice"></div>
 
 
             <button class="payment-option">
@@ -474,6 +470,39 @@ const params = new URLSearchParams(window.location.search);
 const sellerEbookId = params.get("sellerEbook");
 const ebookParam = params.get("ebook");
 const affiliateRef = params.get("ref");
+
+const paymentDatabaseId =
+    sellerEbookId ||
+    (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(ebookParam || "")
+        ? ebookParam
+        : null);
+
+// First paint: reuse the verified checkout/details cache immediately.
+// The database request below still verifies the current ebook before payment.
+if (paymentDatabaseId) {
+    try {
+        const cachedPaymentEbook = JSON.parse(
+            sessionStorage.getItem("createMediaCheckout_" + paymentDatabaseId) || "null"
+        );
+
+        if (cachedPaymentEbook &&
+            cachedPaymentEbook.name &&
+            cachedPaymentEbook.price != null) {
+
+            const instantPrice =
+                "₹" + Number(cachedPaymentEbook.price).toLocaleString("en-IN");
+
+            document.getElementById("paymentEbookName").textContent =
+                cachedPaymentEbook.name;
+
+            document.getElementById("paymentPrice").textContent =
+                instantPrice;
+
+            document.getElementById("payButton").textContent =
+                "Pay " + instantPrice;
+        }
+    } catch (_) {}
+}
 
 const legacyPlatformEbooks = [
     { name: "Ebook 1", price: 199 },
