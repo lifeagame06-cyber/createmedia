@@ -200,12 +200,88 @@ function preloadMarketplaceImage(url) {
     });
 }
 
+function buildMarketplaceCards(listedEbooks, cache) {
+    const fragment = document.createDocumentFragment();
+
+    listedEbooks.forEach(function(ebook, index) {
+        const sellerName =
+            cache.sellers[ebook.seller_id] || "createMedia Creator";
+        const coverUrl =
+            ebook.cover_path ? (cache.covers[ebook.cover_path] || "") : "";
+
+        const card = document.createElement("div");
+        card.className = "marketplace-ebook-card";
+        card.dataset.ebookId = ebook.id;
+        card.dataset.sellerId = ebook.seller_id || "";
+
+        const safeTitle =
+            escapeMarketplaceHtml(ebook.title || "Untitled Ebook");
+
+        const coverHtml = coverUrl
+            ? `<img src="${escapeMarketplaceAttribute(coverUrl)}"
+                    alt="${safeTitle}"
+                    ${index < 4 ? 'fetchpriority="high"' : 'loading="lazy"'}
+                    decoding="async">`
+            : `<div class="marketplace-cover-placeholder">Ebook</div>`;
+
+        card.innerHTML = `
+            <div class="marketplace-card-cover">
+                ${coverHtml}
+            </div>
+
+            <div class="marketplace-card-info">
+                <a href="seller-profile.html?seller=${encodeURIComponent(ebook.seller_id || "")}"
+                   class="marketplace-creator">
+                    <span class="marketplace-creator-avatar">
+                        ${escapeMarketplaceHtml(sellerName.charAt(0).toUpperCase())}
+                    </span>
+                    <span class="marketplace-creator-name">
+                        ${escapeMarketplaceHtml(sellerName)}
+                        <small>View Creator →</small>
+                    </span>
+                </a>
+
+                <h3>${safeTitle}</h3>
+                <strong>₹${Number(ebook.price || 0)}</strong>
+
+                <div class="marketplace-card-actions">
+                    <a href="details.html?sellerEbook=${encodeURIComponent(ebook.id)}"
+                       class="marketplace-view-button">View</a>
+                    <a href="checkout.html?sellerEbook=${encodeURIComponent(ebook.id)}"
+                       class="marketplace-buy-button">Buy</a>
+                </div>
+            </div>
+        `;
+
+        fragment.appendChild(card);
+    });
+
+    marketplaceEbookGrid.replaceChildren(fragment);
+}
+
 async function renderMarketplaceEbooks() {
-    marketplaceEbookGrid.innerHTML = "";
     marketplaceEmpty.style.display = "none";
 
     const resultCount = document.getElementById("marketplaceResultCount");
-    resultCount.textContent = "Loading ebooks...";
+    const cache = getMarketplaceCache();
+
+    // Show the last marketplace snapshot instantly while fresh data refreshes.
+    let instantEbooks = [];
+    try {
+        instantEbooks = JSON.parse(
+            sessionStorage.getItem("createMediaMarketplaceEbooksV1") || "[]"
+        );
+    } catch {}
+
+    if (instantEbooks.length) {
+        buildMarketplaceCards(instantEbooks, cache);
+        resultCount.textContent =
+            instantEbooks.length +
+            (instantEbooks.length === 1 ? " ebook available" : " ebooks available");
+    } else {
+        marketplaceEbookGrid.innerHTML = "";
+        resultCount.textContent = "Loading ebooks...";
+    }
 
     try {
         const { data: ebooks, error } = await supabaseClient
@@ -220,7 +296,15 @@ async function renderMarketplaceEbooks() {
 
         const listedEbooks = ebooks || [];
 
+        try {
+            sessionStorage.setItem(
+                "createMediaMarketplaceEbooksV1",
+                JSON.stringify(listedEbooks)
+            );
+        } catch {}
+
         if (!listedEbooks.length) {
+            marketplaceEbookGrid.innerHTML = "";
             marketplaceEmpty.style.display = "block";
             resultCount.textContent = "0 ebooks available";
             return;
@@ -230,7 +314,9 @@ async function renderMarketplaceEbooks() {
             listedEbooks.length +
             (listedEbooks.length === 1 ? " ebook available" : " ebooks available");
 
-        const cache = getMarketplaceCache();
+        // IMPORTANT: render cards immediately after the main ebook query.
+        // Seller names and signed covers must never block the whole grid.
+        buildMarketplaceCards(listedEbooks, cache);
 
         const sellerIds = [...new Set(
             listedEbooks.map(e => e.seller_id).filter(Boolean)
@@ -277,78 +363,22 @@ async function renderMarketplaceEbooks() {
 
         saveMarketplaceCache(cache);
 
-        // Load visible cover bytes before cards are revealed, preventing placeholder -> image pop-in.
-        await Promise.all(
-            listedEbooks.slice(0, 8).map(ebook =>
-                preloadMarketplaceImage(cache.covers[ebook.cover_path] || "")
-            )
-        );
-
-        const fragment = document.createDocumentFragment();
-
-        listedEbooks.forEach(function(ebook, index) {
-            const sellerName =
-                cache.sellers[ebook.seller_id] || "createMedia Creator";
-            const coverUrl =
-                ebook.cover_path ? (cache.covers[ebook.cover_path] || "") : "";
-
-            const card = document.createElement("div");
-            card.className = "marketplace-ebook-card";
-            card.dataset.ebookId = ebook.id;
-            card.dataset.sellerId = ebook.seller_id || "";
-
-            const safeTitle =
-                escapeMarketplaceHtml(ebook.title || "Untitled Ebook");
-
-            const coverHtml = coverUrl
-                ? `<img src="${escapeMarketplaceAttribute(coverUrl)}"
-                        alt="${safeTitle}"
-                        ${index < 4 ? 'fetchpriority="high"' : 'loading="lazy"'}
-                        decoding="async">`
-                : `<div class="marketplace-cover-placeholder">Ebook</div>`;
-
-            card.innerHTML = `
-                <div class="marketplace-card-cover">
-                    ${coverHtml}
-                </div>
-
-                <div class="marketplace-card-info">
-                    <a href="seller-profile.html?seller=${encodeURIComponent(ebook.seller_id || "")}"
-                       class="marketplace-creator">
-                        <span class="marketplace-creator-avatar">
-                            ${escapeMarketplaceHtml(sellerName.charAt(0).toUpperCase())}
-                        </span>
-                        <span class="marketplace-creator-name">
-                            ${escapeMarketplaceHtml(sellerName)}
-                            <small>View Creator →</small>
-                        </span>
-                    </a>
-
-                    <h3>${safeTitle}</h3>
-                    <strong>₹${Number(ebook.price || 0)}</strong>
-
-                    <div class="marketplace-card-actions">
-                        <a href="details.html?sellerEbook=${encodeURIComponent(ebook.id)}"
-                           class="marketplace-view-button">View</a>
-                        <a href="checkout.html?sellerEbook=${encodeURIComponent(ebook.id)}"
-                           class="marketplace-buy-button">Buy</a>
-                    </div>
-                </div>
-            `;
-
-            fragment.appendChild(card);
-        });
-
-        marketplaceEbookGrid.appendChild(fragment);
+        // Refresh the existing cards once metadata URLs are ready.
+        // No waiting for image bytes: the browser loads them progressively.
+        buildMarketplaceCards(listedEbooks, cache);
 
     } catch (error) {
         console.error("Marketplace load error:", error);
-        marketplaceEmpty.style.display = "block";
-        marketplaceEmpty.querySelector("h3").textContent =
-            "Marketplace could not be loaded";
-        marketplaceEmpty.querySelector("p").textContent =
-            "Please refresh the page and try again.";
-        resultCount.textContent = "0 ebooks available";
+
+        // Keep a cached marketplace visible if the refresh request is slow/fails.
+        if (!instantEbooks.length) {
+            marketplaceEmpty.style.display = "block";
+            marketplaceEmpty.querySelector("h3").textContent =
+                "Marketplace could not be loaded";
+            marketplaceEmpty.querySelector("p").textContent =
+                "Please refresh the page and try again.";
+            resultCount.textContent = "0 ebooks available";
+        }
     }
 }
 

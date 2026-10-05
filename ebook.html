@@ -38,9 +38,7 @@
                 YOUR EBOOK
             </p>
 
-            <h2 id="ebookTitle">
-                Ebook 1
-            </h2>
+            <h2 id="ebookTitle"></h2>
 
             <p id="ebookDescription">
                 Your purchased ebook is ready to read.
@@ -55,7 +53,7 @@
 
                 <img
                     id="ebookImage"
-                    src="images/ebook.jpg"
+                    src=""
                     alt="Ebook"
                     decoding="async"
                     fetchpriority="high"
@@ -150,6 +148,31 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const params = new URLSearchParams(window.location.search);
 const orderId = params.get("order");
 
+// Restore the last verified purchased ebook immediately on refresh/back.
+let cachedPurchasedEbook = null;
+if (orderId) {
+    try {
+        cachedPurchasedEbook = JSON.parse(
+            sessionStorage.getItem("createMediaPurchasedEbook_" + orderId) || "null"
+        );
+    } catch (_) {}
+
+    if (cachedPurchasedEbook) {
+        if (cachedPurchasedEbook.title) {
+            document.getElementById("ebookTitle").textContent = cachedPurchasedEbook.title;
+        }
+        if (cachedPurchasedEbook.description) {
+            document.getElementById("ebookDescription").textContent =
+                cachedPurchasedEbook.description;
+        }
+        if (cachedPurchasedEbook.coverUrl) {
+            const cachedImage = document.getElementById("ebookImage");
+            cachedImage.src = cachedPurchasedEbook.coverUrl;
+            cachedImage.alt = cachedPurchasedEbook.title || "Ebook";
+        }
+    }
+}
+
 let currentUser = null;
 let purchasedOrder = null;
 let purchasedEbook = null;
@@ -165,7 +188,7 @@ document.getElementById("ebookAlertClose").onclick = function() {
 };
 
 async function createCoverUrl(path) {
-    if (!path) return "images/ebook.jpg";
+    if (!path) return "";
 
     const { data, error } = await supabaseClient.storage
         .from("ebook-covers")
@@ -173,7 +196,7 @@ async function createCoverUrl(path) {
 
     if (error || !data?.signedUrl) {
         console.error("Cover URL error:", error);
-        return "images/ebook.jpg";
+        return "";
     }
 
     return data.signedUrl;
@@ -276,19 +299,55 @@ async function initializePurchasedEbook() {
 
     purchasedEbook = ebook;
 
-    document.getElementById("ebookTitle").textContent =
+    const verifiedTitle =
         ebook.title || order.ebook_title || "Your Ebook";
+    const verifiedDescription =
+        ebook.description || "Your purchased ebook is ready to read.";
+
+    document.getElementById("ebookTitle").textContent = verifiedTitle;
 
     document.getElementById("ebookDescription").textContent =
-        ebook.description || "Your purchased ebook is ready to read.";
+        verifiedDescription;
 
     document.getElementById("ebookImage").alt =
         ebook.title || "Ebook";
 
-    // Cover signing is visual-only; hydrate it after access is already verified/rendered.
+    // Cache verified text immediately. Keep any already-cached correct cover stable.
+    try {
+        const previousCache = cachedPurchasedEbook || {};
+        sessionStorage.setItem(
+            "createMediaPurchasedEbook_" + orderId,
+            JSON.stringify({
+                title: verifiedTitle,
+                description: verifiedDescription,
+                coverUrl: previousCache.coverUrl || ""
+            })
+        );
+    } catch (_) {}
+
+    // Resolve only the real cover. Never show another/default ebook cover.
     createCoverUrl(ebook.cover_path).then(function(url) {
         const image = document.getElementById("ebookImage");
-        if (image && url) image.src = url;
+
+        if (image && url) {
+            if (image.src !== url) {
+                image.src = url;
+            }
+            image.alt = verifiedTitle;
+
+            try {
+                sessionStorage.setItem(
+                    "createMediaPurchasedEbook_" + orderId,
+                    JSON.stringify({
+                        title: verifiedTitle,
+                        description: verifiedDescription,
+                        coverUrl: url
+                    })
+                );
+            } catch (_) {}
+        } else if (image && !image.getAttribute("src")) {
+            image.style.visibility = "hidden";
+        }
     });
 
     if (!ebook.file_path) {

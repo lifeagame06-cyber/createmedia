@@ -427,6 +427,37 @@ const sellerEbookId = params.get("sellerEbook");
 const ebookParam = params.get("ebook");
 const affiliateRef = params.get("ref");
 
+const firstPaintDatabaseId =
+    sellerEbookId ||
+    (isUuid(ebookParam) ? ebookParam : null);
+
+if (firstPaintDatabaseId) {
+    let firstPaint = null;
+
+    try {
+        firstPaint = JSON.parse(
+            sessionStorage.getItem("createMediaCheckout_" + firstPaintDatabaseId) || "null"
+        );
+    } catch (_) {}
+
+    if (!firstPaint) {
+        firstPaint = getMarketplaceCheckoutSeed(firstPaintDatabaseId);
+    }
+
+    if (firstPaint && firstPaint.name && firstPaint.price != null) {
+        document.getElementById("checkoutName").textContent = firstPaint.name;
+        document.getElementById("checkoutPrice").textContent =
+            "₹" + Number(firstPaint.price).toLocaleString("en-IN");
+
+        const firstPaintImage = document.getElementById("checkoutImage");
+        if (firstPaint.image) {
+            firstPaintImage.src = firstPaint.image;
+            firstPaintImage.alt = firstPaint.name;
+            firstPaintImage.style.visibility = "visible";
+        }
+    }
+}
+
 const legacyPlatformEbooks = [
     { name: "Ebook 1", image: "images/ebook.jpg",  price: 199 },
     { name: "Ebook 2", image: "images/image1.jpg", price: 249 },
@@ -487,6 +518,33 @@ async function loadDatabaseEbook(id) {
     return data || null;
 }
 
+
+function getMarketplaceCheckoutSeed(databaseId) {
+    if (!databaseId) return null;
+
+    try {
+        const ebooks = JSON.parse(
+            sessionStorage.getItem("createMediaMarketplaceEbooksV1") || "[]"
+        );
+        const ebook = ebooks.find(item => item.id === databaseId);
+        if (!ebook) return null;
+
+        const assetCache = JSON.parse(
+            sessionStorage.getItem("createMediaMarketplaceAssetCacheV2") || "{}"
+        );
+
+        return {
+            name: ebook.title || "",
+            price: Number(ebook.price || 0),
+            image: ebook.cover_path
+                ? ((assetCache.covers || {})[ebook.cover_path] || "")
+                : ""
+        };
+    } catch (_) {
+        return null;
+    }
+}
+
 async function initializeCheckout() {
     const {
         data: { session },
@@ -516,6 +574,33 @@ async function initializeCheckout() {
         sellerEbookId ||
         (isUuid(ebookParam) ? ebookParam : null);
 
+    // Paint cached marketplace data immediately, before any additional ebook request.
+    if (databaseId) {
+        let instant = null;
+        try {
+            instant = JSON.parse(
+                sessionStorage.getItem("createMediaCheckout_" + databaseId) || "null"
+            );
+        } catch (_) {}
+
+        if (!instant) {
+            instant = getMarketplaceCheckoutSeed(databaseId);
+        }
+
+        if (instant && instant.name && instant.price != null) {
+            document.getElementById("checkoutName").textContent = instant.name;
+            document.getElementById("checkoutPrice").textContent =
+                "₹" + Number(instant.price).toLocaleString("en-IN");
+
+            const instantImage = document.getElementById("checkoutImage");
+            if (instant.image) {
+                instantImage.src = instant.image;
+                instantImage.alt = instant.name;
+                instantImage.style.visibility = "visible";
+            }
+        }
+    }
+
     if (databaseId) {
         const cacheKey = "createMediaCheckout_" + databaseId;
         let cached = null;
@@ -523,6 +608,29 @@ async function initializeCheckout() {
         try {
             cached = JSON.parse(sessionStorage.getItem(cacheKey) || "null");
         } catch (_) {}
+
+        // First visit from Creator Marketplace: reuse data and the already-signed
+        // cover URL that the marketplace has already loaded.
+        if (!cached || !cached.name || cached.price == null) {
+            const marketplaceSeed = getMarketplaceCheckoutSeed(databaseId);
+
+            if (marketplaceSeed && marketplaceSeed.name) {
+                const seedDetailsUrl = sellerEbookId
+                    ? "details.html?sellerEbook=" + encodeURIComponent(databaseId)
+                    : "details.html?ebook=" + encodeURIComponent(databaseId);
+
+                cached = {
+                    name: marketplaceSeed.name,
+                    price: marketplaceSeed.price,
+                    image: marketplaceSeed.image || "",
+                    detailsUrl: seedDetailsUrl
+                };
+
+                try {
+                    sessionStorage.setItem(cacheKey, JSON.stringify(cached));
+                } catch (_) {}
+            }
+        }
 
         if (cached && cached.name && cached.price != null) {
             selected = {
