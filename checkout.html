@@ -383,8 +383,8 @@ h1 {
 
                 <img
                     id="checkoutImage"
-                    src=""
-                    alt="Ebook Cover"
+                    style="visibility:hidden;"
+                    alt=""
                     decoding="async"
                     fetchpriority="high"
                 >
@@ -529,9 +529,21 @@ function getMarketplaceCheckoutSeed(databaseId) {
         const ebook = ebooks.find(item => item.id === databaseId);
         if (!ebook) return null;
 
-        const assetCache = JSON.parse(
-            sessionStorage.getItem("createMediaMarketplaceAssetCacheV2") || "{}"
-        );
+        let assetCache = {};
+        try {
+            assetCache = JSON.parse(
+                sessionStorage.getItem("createMediaMarketplaceAssetCacheV3") || "{}"
+            );
+        } catch (_) {}
+
+        // Compatibility only for an older open tab.
+        if (!assetCache.covers || !Object.keys(assetCache.covers).length) {
+            try {
+                assetCache = JSON.parse(
+                    sessionStorage.getItem("createMediaMarketplaceAssetCacheV2") || "{}"
+                );
+            } catch (_) {}
+        }
 
         return {
             name: ebook.title || "",
@@ -639,6 +651,36 @@ async function initializeCheckout() {
                 image: cached.image || ""
             };
             detailsUrl = cached.detailsUrl || "";
+
+            // A cache entry with title/price but no cover is NOT complete.
+            // Fetch the ebook row and create a fresh signed cover URL.
+            if (!selected.image) {
+                const ebook = await loadDatabaseEbook(databaseId);
+
+                if (!ebook) {
+                    setUnavailable();
+                    return;
+                }
+
+                const realCover = await signedCoverUrl(ebook.cover_path);
+
+                selected.name = ebook.title || selected.name;
+                selected.price = Number(ebook.price || selected.price || 0);
+                selected.image = realCover || "";
+
+                detailsUrl = (sellerEbookId || ebook.ebook_type === "seller")
+                    ? "details.html?sellerEbook=" + encodeURIComponent(ebook.id)
+                    : "details.html?ebook=" + encodeURIComponent(ebook.id);
+
+                try {
+                    sessionStorage.setItem(cacheKey, JSON.stringify({
+                        name: selected.name,
+                        price: selected.price,
+                        image: selected.image,
+                        detailsUrl: detailsUrl
+                    }));
+                } catch (_) {}
+            }
         } else {
             const ebook = await loadDatabaseEbook(databaseId);
 
@@ -700,6 +742,7 @@ async function initializeCheckout() {
         };
         checkoutImage.onerror = function() {
             checkoutImage.style.visibility = "hidden";
+            checkoutImage.removeAttribute("src");
         };
         checkoutImage.src = selected.image;
         if (checkoutImage.complete && checkoutImage.naturalWidth > 0) {
