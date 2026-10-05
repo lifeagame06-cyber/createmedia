@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Seller Plans — createMedia</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="plans-header">
+        <h1>createMedia</h1>
+
+        <nav>
+            <a href="index.html">← Back Home</a>
+        </nav>
+    </header>
+
+
+    <main class="plans-page">
+
+        <section class="plans-heading">
+
+            <p>💎 CREATEMEDIA MEMBERSHIP</p>
+
+            <h2>Choose the plan<br>that fits your growth.</h2>
+
+            <span>
+                Start free. Upgrade when you need more space to sell.
+            </span>
+
+        </section>
+
+
+        <section class="plans-grid">
+
+            <!-- FREE -->
+            <div class="membership-card">
+
+                <p class="membership-name">FREE</p>
+
+                <h3>Free</h3>
+
+                <div class="membership-price">
+                    ₹0
+                    <span>/ forever</span>
+                </div>
+
+                <p class="membership-description">
+                    Everything you need to start selling.
+                </p>
+
+                <div class="membership-features">
+                    <p>✓ Upload up to <strong>15 ebooks</strong></p>
+                    <p>✓ <strong>1 GB</strong> included storage</p>
+                    <p>✓ Sell your ebooks</p>
+                    <p>✓ Seller dashboard</p>
+                    <p>✓ Sales & withdrawals</p>
+                </div>
+
+                <button class="membership-button free-button" id="freePlanButton">
+    Free Plan
+</button>
+
+            </div>
+
+
+            <!-- PRO -->
+            <div class="membership-card featured-plan">
+
+                <div class="membership-badge">
+                    MOST POPULAR
+                </div>
+
+                <p class="membership-name">PRO</p>
+
+                <h3>Pro</h3>
+
+                <div class="membership-price">
+                    ₹99
+                    <span>/ month</span>
+                </div>
+
+                <p class="membership-description">
+                    For creators ready to grow.
+                </p>
+
+                <div class="membership-features">
+                    <p>✓ Upload up to <strong>50 ebooks</strong></p>
+                    <p>✓ <strong>3 GB</strong> included storage</p>
+                    <p>✓ Everything in Free</p>
+                    <p>✓ Higher selling capacity</p>
+                    <p>✓ Pro seller status</p>
+                </div>
+
+               <button
+    class="membership-button"
+    id="proPlanButton"
+    onclick="activatePlan('pro')"
+>
+    Upgrade to Pro
+</button>
+            </div>
+
+
+            <!-- PRO PLUS -->
+            <div class="membership-card">
+
+                <p class="membership-name">PRO PLUS</p>
+
+                <h3>Pro Plus</h3>
+
+                <div class="membership-price">
+                    ₹249
+                    <span>/ month</span>
+                </div>
+
+                <p class="membership-description">
+                    For creators who want no upload limits.
+                </p>
+
+                <div class="membership-features">
+                    <p>✓ <strong>Unlimited ebook uploads</strong></p>
+                    <p>✓ <strong>15 GB</strong> included storage</p>
+                    <p>✓ Everything in Pro</p>
+                    <p>✓ Unlimited selling capacity</p>
+                    <p>✓ Pro Plus seller status</p>
+                </div>
+
+               <button
+    class="membership-button"
+    id="proPlusPlanButton"
+    onclick="activatePlan('proplus')"
+>
+    Get Pro Plus
+</button>
+            </div>
+
+        </section>
+
+    </main>
+<script>
+function activatePlan(plan) {
+
+    const sellerEmail =
+        localStorage.getItem("createMediaEmail");
+
+    if (!sellerEmail) {
+        alert("Please login first to upgrade your plan.");
+        return;
+    }
+
+    const planKey =
+        "createMediaPlan_" + sellerEmail;
+
+    localStorage.setItem(planKey, plan);
+updatePlanButtons();
+
+    if (plan === "pro") {
+        alert("Pro Plan activated successfully!");
+    }
+
+    else if (plan === "proplus") {
+        alert("Pro Plus Plan activated successfully!");
+    }
+}
+function updatePlanButtons() {
+
+    const sellerEmail =
+        localStorage.getItem("createMediaEmail");
+
+    if (!sellerEmail) {
+        return;
+    }
+
+    const currentPlan =
+        localStorage.getItem(
+            "createMediaPlan_" + sellerEmail
+        ) || "free";
+
+    const freeButton =
+        document.getElementById("freePlanButton");
+
+    const proButton =
+        document.getElementById("proPlanButton");
+
+    const proPlusButton =
+        document.getElementById("proPlusPlanButton");
+
+
+    // Default buttons
+    freeButton.textContent = "Free Plan";
+    proButton.textContent = "Upgrade to Pro";
+    proPlusButton.textContent = "Get Pro Plus";
+
+
+    // Current Plan
+    if (currentPlan === "free") {
+        freeButton.textContent = "✓ Current Plan";
+    }
+
+    else if (currentPlan === "pro") {
+        proButton.textContent = "✓ Current Plan";
+    }
+
+    else if (currentPlan === "proplus") {
+        proPlusButton.textContent = "✓ Current Plan";
+    }
+}
+
+updatePlanButtons();
+</script>
+
+</body>
+</html>

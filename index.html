@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>createMedia</title>
+
+    <link rel="stylesheet" href="./style.css?v=999">
+<link rel="manifest" href="./manifest.json">
+</head>
+
+<body class="home-page">
+    <!-- HEADER -->
+
+    <header>
+
+    <h1>createMedia</h1>
+
+    <nav>
+
+        <a href="#home">Home</a>
+        <a href="#ebooks">Ebooks</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+
+    </nav>
+
+<div class="account-buttons auth-loading" id="accountButtons">
+
+    <a href="login.html" class="login-button" id="loginButton">
+        Login
+    </a>
+
+    <a href="signup.html" class="signup-button" id="signupButton">
+        Sign Up
+    </a>
+
+</div>
+<button
+    type="button"
+    class="mobile-menu-button"
+    id="mobileMenuButton"
+    aria-label="Open menu"
+>
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+
+<div class="notification-panel" id="notificationPanel">
+
+    <div class="notification-panel-header">
+        <strong>Notifications</strong>
+
+        <button
+            type="button"
+            class="notification-close-button"
+           id="notificationCloseButton"
+aria-label="Close notifications"
+onclick="document.getElementById('notificationPanel').classList.remove('show')"
+>
+            ✕
+        </button>
+    </div>
+
+    <div class="notification-content" id="notificationContent">
+        No new notifications.
+    </div>
+
+</div>
+    </header>
+    <main>
+
+
+        <!-- HERO SECTION -->
+
+        <section class="hero" id="home">
+
+            <div class="hero-content">
+
+                <p class="hero-tag">
+                    DIGITAL BOOKS & RESOURCES
+                </p>
+
+                <h2>
+                    Learn. Create. <span>Grow.</span>
+                </h2>
+
+                <p class="hero-text">
+                    Discover useful ebooks and digital resources
+                    made to help you learn, create and grow.
+                </p>
+
+                <a href="#ebooks" class="hero-button">
+                    Explore Ebooks
+                </a>
+
+            </div>
+
+        </section>
+<!-- MOVING INFO STRIP -->
+<div class="moving-strip">
+    <div class="moving-track">
+
+        <div class="moving-group">
+            <span>Digital Ebooks</span>
+            <b>✦</b>
+            <span>Useful Resources</span>
+            <b>✦</b>
+            <span>Learn • Create • Grow</span>
+            <b>✦</b>
+            <span>New Ebooks</span>
+            <b>✦</b>
+            <span>Instant Digital Access</span>
+            <b>✦</b>
+        </div>
+
+        <div class="moving-group">
+            <span>Digital Ebooks</span>
+            <b>✦</b>
+            <span>Useful Resources</span>
+            <b>✦</b>
+            <span>Learn • Create • Grow</span>
+            <b>✦</b>
+            <span>New Ebooks</span>
+            <b>✦</b>
+            <span>Instant Digital Access</span>
+            <b>✦</b>
+        </div>
+
+    </div>
+</div>
+<!-- EBOOK SECTION -->
+
+<section class="ebooks" id="ebooks">
+
+    <h2>Featured Ebooks</h2>
+
+    <div class="ebook-slider">
+
+        <button class="slider-arrow left-arrow" onclick="previousEbook()">
+            ←
+        </button>
+
+        <div class="ebook-slides" id="ebookSlides">
+        </div>
+
+        <button class="slider-arrow right-arrow" onclick="nextEbook()">
+            →
+        </button>
+
+    </div>
+
+
+    <div class="selected-ebook">
+
+        <p class="selected-label">
+            SELECTED EBOOK
+        </p>
+
+        <h3 id="selectedEbookName">
+            Ebook 1
+        </h3>
+
+        <p id="selectedEbookDescription">
+            A short description of Ebook 1 will appear here.
+        </p>
+
+        <h4 id="selectedEbookPrice">
+            ₹199
+        </h4>
+
+        <a href="checkout.html" class="buy-button" id="selectedBuyButton">
+            Buy Now
+        </a>
+</div>
+
+<div class="explore-ebooks">
+
+    <p class="explore-label">
+        THE COMPLETE COLLECTION
+    </p>
+
+    <h2>
+        Explore All Ebooks
+    </h2>
+
+    <p>
+        Discover the complete collection of createMedia
+        ebooks and find your next digital read.
+    </p>
+
+    <a href="all-ebooks.html">
+        Explore Collection →
+    </a>
+
+</div>
+
+    </section>
+<!-- SELLER MARKETPLACE ENTRY -->
+
+<section class="seller-marketplace-entry">
+
+    <p class="section-label">
+        CREATOR MARKETPLACE
+    </p>
+
+    <h2>
+        Discover ebooks from creators.
+    </h2>
+
+    <p>
+        Explore ebooks published by creators on createMedia
+        and find something worth reading.
+    </p>
+
+    <a href="seller-marketplace.html">
+        Explore Sellers →
+    </a>
+
+</section>
+<!-- WHY CREATEMEDIA -->
+<section class="why-section">
+
+    <div class="why-heading">
+        <p class="section-label">WHY CREATEMEDIA</p>
+
+        <h2>
+            Simple ideas.<br>
+            Useful knowledge.
+        </h2>
+
+        <p>
+            Discover digital ebooks created to give you
+            practical ideas, useful knowledge and creative inspiration.
+        </p>
+    </div>
+
+    <div class="why-cards">
+
+        <div class="why-card">
+            <span>01</span>
+            <h3>Practical</h3>
+            <p>
+                Useful information you can actually apply.
+            </p>
+        </div>
+
+        <div class="why-card">
+            <span>02</span>
+            <h3>Digital</h3>
+            <p>
+                Read and access your ebooks digitally.
+            </p>
+        </div>
+
+        <div class="why-card">
+            <span>03</span>
+            <h3>Creative</h3>
+            <p>
+                Ideas designed to help you learn and create.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+<!-- CREATEMEDIA STATS -->
+<section class="stats-section">
+
+    <div class="stat-item">
+        <strong>05+</strong>
+        <span>Digital Ebooks</span>
+    </div>
+
+    <div class="stat-item">
+        <strong>100%</strong>
+        <span>Digital Access</span>
+    </div>
+
+    <div class="stat-item">
+        <strong>24/7</strong>
+        <span>Available Online</span>
+    </div>
+
+    <div class="stat-item">
+        <strong>01</strong>
+        <span>Growing Collection</span>
+    </div>
+
+</section>
+<!-- PREMIUM TRUST & GROWTH SECTION -->
+
+<section class="growth-trust-section">
+
+    <div class="growth-trust-inner">
+
+        <div class="growth-trust-content">
+
+            <p class="section-label">
+                BUILT TO LEARN. CREATE. GROW.
+            </p>
+
+            <h2>
+                More than ebooks.<br>
+                A place built for growth.
+            </h2>
+
+            <p class="growth-trust-text">
+                Discover useful digital resources, explore independent
+                creators and get simple access to ebooks — all in one place.
+            </p>
+
+            <div class="growth-trust-points">
+
+                <div>
+                    <span>01</span>
+                    <strong>Discover Creators</strong>
+                    <small>Explore ebooks published by independent creators.</small>
+                </div>
+
+                <div>
+                    <span>02</span>
+                    <strong>Simple Purchase</strong>
+                    <small>A clean and easy ebook buying experience.</small>
+                </div>
+
+                <div>
+                    <span>03</span>
+                    <strong>Instant Access</strong>
+                    <small>Keep your purchased ebooks easy to access.</small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="growth-visual">
+
+            <div class="growth-visual-label">
+                CREATEMEDIA
+            </div>
+
+            <div class="growth-visual">
+
+    <div class="growth-dashboard-top">
+
+        <div>
+            <span class="growth-visual-label">
+                PLATFORM GROWTH
+            </span>
+
+            <h3>
+                Growing<br>
+                <span>together.</span>
+            </h3>
+        </div>
+
+        <div class="growth-live-badge">
+            <i></i>
+            LIVE
+        </div>
+
+    </div>
+
+
+    <div class="growth-dashboard-stats">
+
+        <div>
+            <small>THIS MONTH</small>
+            <strong id="growthMonthlyUsers">Growing</strong>
+            <span>Community activity</span>
+        </div>
+
+        <div>
+            <small>CREATORS</small>
+            <strong id="growthCreatorCount">—</strong>
+            <span>Building on createMedia</span>
+        </div>
+
+    </div>
+
+
+    <div class="growth-chart">
+
+        <div class="growth-chart-bars">
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+            <i></i>
+        </div>
+
+        <div class="growth-chart-bottom">
+            <span>Community growth</span>
+            <strong>↗ Growing</strong>
+        </div>
+
+    </div>
+
+
+    <p>
+        A growing space for digital creators and readers.
+    </p>
+
+</div>
+    </div>
+<div class="buyer-confidence">
+
+    <div class="buyer-confidence-main">
+        <span>FOR READERS</span>
+
+        <h3>
+            Buy with confidence.
+        </h3>
+
+        <p>
+            Discover creator ebooks, purchase simply
+            and keep your digital reads easy to access.
+        </p>
+    </div>
+
+    <div class="buyer-confidence-features">
+        <span>✓ Simple Checkout</span>
+        <span>✓ Instant Ebook Access</span>
+        <span>✓ Personal Ebook Library</span>
+    </div>
+
+</div>
+    <div class="growth-moving-strip">
+
+        <div class="growth-moving-track">
+            <span>DISCOVER</span><b>✦</b>
+            <span>LEARN</span><b>✦</b>
+            <span>CREATE</span><b>✦</b>
+            <span>PUBLISH</span><b>✦</b>
+            <span>GROW</span><b>✦</b>
+
+            <span>DISCOVER</span><b>✦</b>
+            <span>LEARN</span><b>✦</b>
+            <span>CREATE</span><b>✦</b>
+            <span>PUBLISH</span><b>✦</b>
+            <span>GROW</span><b>✦</b>
+        </div>
+
+    </div>
+
+</section>
+
+
+        <!-- ABOUT SECTION -->
+
+        <section id="about" class="about-section">
+
+            <div class="section-content">
+
+                <p class="section-label">
+                    ABOUT CREATEMEDIA
+                </p>
+
+
+                <h2>
+                    About createMedia
+                </h2>
+
+
+                <p>
+                    createMedia is a digital platform focused on useful ebooks
+                    and resources designed to help people learn, create and grow.
+                </p>
+
+            </div>
+
+        </section>
+
+      <!-- FINAL CTA -->
+<section class="final-cta">
+
+    <p class="section-label">START EXPLORING</p>
+
+    <h2>
+        Find your next<br>
+        digital read.
+    </h2>
+
+    <p>
+        Explore the createMedia collection and discover
+        ebooks made for learning, creating and growing.
+    </p>
+
+    <a href="pro-features.html">
+    Discover createMedia →
+</a>
+</section>
+
+        <!-- CONTACT SECTION -->
+
+        <section id="contact" class="contact-section">
+
+            <div class="section-content">
+
+                <p class="section-label">
+                    GET IN TOUCH
+                </p>
+
+
+                <h2>
+                    Contact
+                </h2>
+
+
+                <p>
+                    Have a question? Get in touch with us.
+                </p>
+
+
+                <p class="contact-email">
+                    Email: your@email.com
+                </p>
+<div class="contact-details">
+
+    <div class="contact-detail">
+        <span class="detail-icon">📚</span>
+        <div>
+            <strong>Digital Ebooks</strong>
+            <small>Useful resources</small>
+        </div>
+    </div>
+
+    <div class="contact-detail">
+        <span class="detail-icon">✦</span>
+        <div>
+            <strong>Creative Ideas</strong>
+            <small>Learn & create</small>
+        </div>
+    </div>
+
+    <div class="contact-detail">
+        <span class="detail-icon">⚡</span>
+        <div>
+            <strong>Keep Growing</strong>
+            <small>Ideas that matter</small>
+        </div>
+    </div>
+
+</div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 createMedia. All Rights Reserved.
+        </p>
+
+
+        <div class="footer-links">
+
+            <a href="privacy.html">
+                Privacy Policy
+            </a>
+
+
+            <a href="terms.html">
+                Terms & Conditions
+            </a>
+
+
+            <a href="refund.html">
+                Refund Policy
+            </a>
+
+            </div>
+
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.supabaseClient = window.supabaseClient || window.supabase.createClient(
+    "https://aafuqhcolkmvswgnzjod.supabase.co",
+    "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw"
+);
+</script>
+<script>
+
+    const ebooks = [
+        {
+            name: "Ebook 1",
+            image: "images/ebook.jpg",
+            description: "A short description of Ebook 1 will appear here.",
+            price: "₹199"
+        },
+        {
+            name: "Ebook 2",
+            image: "images/image1.jpg",
+            description: "A short description of Ebook 2 will appear here.",
+            price: "₹249"
+        },
+        {
+            name: "Ebook 3",
+            image: "images/image2.jpg",
+            description: "A short description of Ebook 3 will appear here.",
+            price: "₹299"
+        },
+        {
+            name: "Ebook 4",
+            image: "images/image3.jpg",
+            description: "A short description of Ebook 4 will appear here.",
+            price: "₹349"
+        },
+        {
+            name: "Ebook 5",
+            image: "images/image4.jpg",
+            description: "A short description of Ebook 5 will appear here.",
+            price: "₹399"
+        }
+    ];
+
+    let selectedIndex = 0;
+let autoSlideTimer;
+let resumeTimer;
+const AUTO_SLIDE_TIME = 2500;
+const RESUME_TIME = 4000;
+function startAutoSlide() {
+
+    clearInterval(autoSlideTimer);
+
+    autoSlideTimer = setInterval(function () {
+
+        if (selectedIndex >= ebooks.length - 1) {
+            selectedIndex = 0;
+        } else {
+            selectedIndex++;
+        }
+
+        showEbooks();
+
+    }, AUTO_SLIDE_TIME);
+
+}
+function pauseAutoSlide() {
+    clearInterval(autoSlideTimer);
+}
+
+    function showEbooks() {
+
+        const slider = document.getElementById("ebookSlides");
+
+        slider.innerHTML = "";
+
+
+        let indexes = [];
+
+        indexes.push(selectedIndex - 1);
+        indexes.push(selectedIndex);
+        indexes.push(selectedIndex + 1);
+
+
+        indexes = indexes.map(index => {
+
+            if (index < 0) {
+                return ebooks.length - 1;
+            }
+
+            if (index >= ebooks.length) {
+                return 0;
+            }
+
+            return index;
+
+        });
+
+
+        indexes.forEach(index => {
+
+            const ebook = ebooks[index];
+
+            const card = document.createElement("div");
+
+            card.className = "featured-ebook";
+
+            if (index === selectedIndex) {
+                card.classList.add("active");
+            }
+
+            card.setAttribute("data-index", index);
+
+            card.innerHTML = `
+                <div class="ebook-cover">
+
+                    <img
+                        src="${ebook.image}"
+                        alt="${ebook.name}"
+                    >
+
+                </div>
+
+                <h3>
+                    ${ebook.name}
+                </h3>
+            `;
+
+
+            card.onclick = function () {
+                selectEbook(index);
+            };
+
+
+            slider.appendChild(card);
+
+        });
+
+
+        document.getElementById("selectedEbookName").textContent =
+            ebooks[selectedIndex].name;
+
+        document.getElementById("selectedEbookDescription").textContent =
+            ebooks[selectedIndex].description;
+
+        document.getElementById("selectedEbookPrice").textContent =
+            ebooks[selectedIndex].price;
+
+        document.getElementById("selectedBuyButton").href =
+            "checkout.html?ebook=" + selectedIndex;
+
+
+        /* DISABLE ARROWS AT START AND END */
+
+        document.querySelector(".left-arrow").disabled =
+            selectedIndex === 0;
+
+        document.querySelector(".right-arrow").disabled =
+            selectedIndex === ebooks.length - 1;
+
+    }
+
+function selectEbook(index) {
+
+    selectedIndex = index;
+
+    pauseAutoSlide();
+
+    showEbooks();
+
+    setTimeout(function () {
+        startAutoSlide();
+    }, RESUME_TIME);
+
+    document.querySelector(".selected-ebook").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+   function nextEbook() {
+
+    if (selectedIndex >= ebooks.length - 1) {
+        return;
+    }
+
+    selectedIndex++;
+
+    pauseAutoSlide();
+    showEbooks();
+clearTimeout(resumeTimer);
+
+resumeTimer = setTimeout(function () {
+    startAutoSlide();
+}, RESUME_TIME);
+}
+
+   function previousEbook() {
+
+    if (selectedIndex <= 0) {
+        return;
+    }
+
+    selectedIndex--;
+
+    pauseAutoSlide();
+    showEbooks();
+
+    clearTimeout(resumeTimer);
+
+resumeTimer = setTimeout(function () {
+    startAutoSlide();
+}, RESUME_TIME);
+}
+
+showEbooks();
+startAutoSlide();
+
+async function loadHomeAccountState() {
+    const accountButtons = document.getElementById("accountButtons");
+    const client = window.supabaseClient;
+
+    if (!accountButtons || !client) return;
+
+    try {
+        // Fast local session read first. Avoids waiting for a network getUser()
+        // before the header can render.
+        const { data: sessionData } = await client.auth.getSession();
+        const user = sessionData?.session?.user || null;
+
+        if (!user) {
+            accountButtons.classList.remove("auth-loading");
+            return;
+        }
+
+        // Use the last verified Supabase profile name first on refresh.
+        // This prevents auth metadata/email from flashing before the real profile name arrives.
+        const profileNameCacheKey = "createMediaProfileName:" + user.id;
+        const cachedProfileName = sessionStorage.getItem(profileNameCacheKey) || "";
+
+        const instantName =
+            cachedProfileName ||
+            user.user_metadata?.full_name ||
+            user.user_metadata?.name ||
+            user.email?.split("@")[0] ||
+            "User";
+
+        accountButtons.innerHTML = `
+            <button class="notification-button" id="notificationButton" title="Notifications">
+                <span class="bell-icon">🔔</span>
+                <span class="notification-dot" id="notificationDot" style="display:none"></span>
+            </button>
+            <a href="plans.html" class="diamond-button" title="Upgrade Plan">💎</a>
+            <a href="profile.html" class="user-name-button" id="userNameButton">${escapeHomeHtml(instantName)}</a>
+            <a href="account.html" class="orders-button">Orders</a>
+            <a href="sell-ebook.html" class="orders-button">Sell Ebook</a>
+            <a href="#" class="orders-button get-app-button" id="getAppButton">Get App</a>
+            <button class="logout-button" id="logoutButton">Logout</button>
+        `;
+
+        accountButtons.classList.remove("auth-loading");
+        accountButtons.style.visibility = "visible";
+
+        const notificationDot = document.getElementById("notificationDot");
+        const userNameButton = document.getElementById("userNameButton");
+
+        // These do not depend on each other, so fetch together.
+        const [profileResult, unreadResult] = await Promise.all([
+            client
+                .from("profiles")
+                .select("name")
+                .eq("id", user.id)
+                .maybeSingle(),
+
+            client
+                .from("notifications")
+                .select("id", { count: "exact", head: true })
+                .eq("user_id", user.id)
+                .eq("is_read", false)
+        ]);
+
+        const profileName = profileResult.data?.name;
+
+        if (profileName) {
+            sessionStorage.setItem(profileNameCacheKey, profileName);
+
+            if (userNameButton && userNameButton.textContent !== profileName) {
+                userNameButton.textContent = profileName;
+            }
+        }
+
+        if (notificationDot) {
+            notificationDot.style.display =
+                (unreadResult.count || 0) > 0 ? "block" : "none";
+        }
+
+        document.getElementById("logoutButton").onclick = async function () {
+            await client.auth.signOut();
+            window.location.replace("index.html");
+        };
+
+        document.getElementById("notificationButton").onclick = async function () {
+            const mobileHeader = document.querySelector("header");
+            if (mobileHeader) mobileHeader.classList.remove("mobile-menu-open");
+
+            const panel = document.getElementById("notificationPanel");
+            const content = document.getElementById("notificationContent");
+
+            // Open instantly; fetch content only when user actually asks for it.
+            panel.classList.toggle("show");
+
+            if (!panel.classList.contains("show")) return;
+
+            content.innerHTML = "<p>Loading...</p>";
+
+            const { data: notifications, error } =
+                await client
+                    .from("notifications")
+                    .select("id, title, message, created_at, is_read")
+                    .eq("user_id", user.id)
+                    .order("created_at", { ascending: false })
+                    .limit(30);
+
+            if (error || !notifications || notifications.length === 0) {
+                content.innerHTML = "<p>No new notifications.</p>";
+                return;
+            }
+
+            content.innerHTML = "";
+
+            notifications.forEach(function (notification) {
+                const item = document.createElement("div");
+                item.className = "notification-item";
+
+                const date = notification.created_at
+                    ? new Date(notification.created_at).toLocaleDateString("en-IN")
+                    : "";
+
+                item.innerHTML = `
+                    <strong>${escapeHomeHtml(notification.title || "Notification")}</strong>
+                    <p>${escapeHomeHtml(notification.message || "")}</p>
+                    <small>${escapeHomeHtml(date)}</small>
+                `;
+
+                content.appendChild(item);
+            });
+
+            const unreadIds = notifications
+                .filter(n => !n.is_read)
+                .map(n => n.id);
+
+            if (unreadIds.length) {
+                // UI responds immediately; DB update can finish afterwards.
+                notificationDot.style.display = "none";
+
+                client
+                    .from("notifications")
+                    .update({ is_read: true })
+                    .in("id", unreadIds)
+                    .then(({ error }) => {
+                        if (error) {
+                            console.error("Notification update error:", error);
+                        }
+                    });
+            }
+        };
+
+    } catch (error) {
+        console.error("Home account state error:", error);
+        accountButtons.classList.remove("auth-loading");
+    }
+}
+
+function escapeHomeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+loadHomeAccountState();
+
+   </script>
+<script>
+    const mobileMenuButton =
+        document.getElementById("mobileMenuButton");
+
+    const pageHeader =
+        document.querySelector("header");
+
+    if (mobileMenuButton && pageHeader) {
+
+        mobileMenuButton.addEventListener("click", function () {
+
+            pageHeader.classList.toggle("mobile-menu-open");
+
+            const isOpen =
+                pageHeader.classList.contains("mobile-menu-open");
+
+            mobileMenuButton.setAttribute(
+                "aria-label",
+                isOpen ? "Close menu" : "Open menu"
+            );
+
+        });
+
+    }
+</script>
+<script>
+    const notificationCloseButton =
+        document.getElementById("notificationCloseButton");
+
+    if (notificationCloseButton) {
+
+        notificationCloseButton.onclick = function () {
+
+            const notificationPanel =
+                document.getElementById("notificationPanel");
+
+            notificationPanel.classList.remove("show");
+        };
+
+    }
+</script>
+<nav class="mobile-bottom-nav">
+
+    <a href="index.html" class="active">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 11L12 3L21 11"></path>
+            <path d="M5 10V21H19V10"></path>
+            <path d="M9 21V14H15V21"></path>
+        </svg>
+        <span>Home</span>
+    </a>
+
+    <a href="all-ebooks.html">
+        <svg viewBox="0 0 24 24">
+            <path d="M4 4H10C11.1 4 12 4.9 12 6V21C12 19.9 11.1 19 10 19H4Z"></path>
+            <path d="M20 4H14C12.9 4 12 4.9 12 6V21C12 19.9 12.9 19 14 19H20Z"></path>
+        </svg>
+        <span>Ebooks</span>
+    </a>
+
+    <a href="account.html">
+        <svg viewBox="0 0 24 24">
+            <path d="M6 7H18L20 21H4Z"></path>
+            <path d="M9 9V6A3 3 0 0 1 15 6V9"></path>
+        </svg>
+        <span>Orders</span>
+    </a>
+
+    <a href="profile.html">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 21C4.7 16.8 7.5 14 12 14C16.5 14 19.3 16.8 20 21"></path>
+        </svg>
+        <span>Account</span>
+    </a>
+
+</nav>
+
+<script>
+let deferredInstallPrompt = null;
+
+window.addEventListener("beforeinstallprompt", function (event) {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+});
+window.addEventListener("appinstalled", function () {
+    localStorage.setItem("createMediaAppInstalled", "true");
+});
+document.addEventListener("click", async function (event) {
+
+    const appButton = event.target.closest("#getAppButton");
+
+    if (!appButton) {
+        return;
+    }
+
+    event.preventDefault();
+
+   const isInstalled =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true ||
+        localStorage.getItem("createMediaAppInstalled") === "true";
+    if (isInstalled) {
+        document.getElementById("installedAppPopup").style.display = "flex";
+        return;
+    }
+
+    if (deferredInstallPrompt) {
+
+       deferredInstallPrompt.prompt();
+
+const installResult =
+    await deferredInstallPrompt.userChoice;
+
+if (installResult.outcome === "accepted") {
+    localStorage.setItem("createMediaAppInstalled", "true");
+}
+
+deferredInstallPrompt = null;
+    } else {
+
+        alert(
+            "App install option is not available yet. Please open createMedia in Chrome and try again."
+        );
+
+    }
+
+});
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./service-worker.js");
+    });
+}
+</script>
+<script src="./app-notifications.js" defer></script>
+<div id="installedAppPopup" class="installed-app-popup">
+    <div class="installed-app-popup-box">
+        <div class="installed-app-check">✓</div>
+        <h3>App Already Installed</h3>
+        <p>createMedia is already installed on this device.</p>
+        <button onclick="closeInstalledAppPopup()">OK</button>
+    </div>
+</div>
+<script>
+function closeInstalledAppPopup() {
+    document.getElementById("installedAppPopup").style.display = "none";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile - createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="profile-page-app">
+
+<section class="profile-page">
+
+    <a href="index.html" class="mobile-profile-back">
+        ← Back Home
+    </a>
+
+    <div class="profile-header">
+
+        <p class="section-label">MY ACCOUNT</p>
+
+       <h1>Your Profile</h1>
+
+<p>
+    Keep your personal details up to date and manage your account preferences.
+</p>
+
+    </div>
+
+
+    <div class="profile-card">
+
+        <div class="profile-avatar" id="profileAvatar">
+            S
+        </div>
+
+
+        <div class="profile-details">
+
+            <div class="profile-detail">
+
+                <span>FULL NAME</span>
+
+                <strong id="profileName">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="profile-detail">
+
+                <span>EMAIL ADDRESS</span>
+
+                <strong id="profileEmail">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="profile-detail">
+
+                <span>WHATSAPP NUMBER</span>
+
+                <strong id="profileWhatsapp">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="profile-detail">
+
+                <span>ACCOUNT</span>
+
+                <strong id="profileAccountType">
+                    createMedia Customer
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="profile-edit-card">
+<div class="profile-status">
+    <span class="status-dot"></span>
+    Account Active
+</div>
+
+       <div class="edit-heading">
+
+    <div>
+        <p class="section-label">PERSONAL DETAILS</p>
+
+        <h2>Account Information</h2>
+
+        <p>
+            Keep your profile details current and connected to your account.
+        </p>
+    </div>
+
+    
+</div>
+
+        <div class="edit-form">
+
+            <div class="edit-field">
+
+                <label for="editName">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="editName"
+                    placeholder="Enter your name"
+                >
+
+            </div>
+
+
+            <div class="edit-field">
+
+                <label for="editEmail">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="editEmail"
+                    disabled
+                >
+
+                <small>
+                    Email changes will be available after account verification is added.
+                </small>
+
+            </div>
+
+
+            <div class="edit-field">
+
+                <label for="editWhatsapp">
+                    WhatsApp Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="editWhatsapp"
+                    placeholder="Enter WhatsApp number"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="edit-actions">
+
+            <button
+                type="button"
+                class="save-profile-button"
+                id="saveProfile"
+            >
+                Save Changes
+            </button>
+
+            <button
+                type="button"
+                class="cancel-profile-button"
+                id="cancelProfile"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+        <p
+            class="profile-save-message"
+            id="profileSaveMessage"
+        ></p>
+
+    </div>
+<!-- PAYOUT ACCOUNT -->
+<div class="profile-edit-card payout-card">
+
+    <div class="edit-heading">
+        <div>
+            <p class="section-label">SELLER PAYOUTS</p>
+            <h2>Payout Account</h2>
+            <p>
+                Add your bank details to receive earnings from ebook sales.
+            </p>
+        </div>
+    </div>
+
+    <div class="edit-form">
+
+        <div class="edit-field">
+            <label for="accountHolderName">
+                Account Holder Name
+            </label>
+
+            <input
+                type="text"
+                id="accountHolderName"
+                placeholder="Enter account holder name"
+            >
+        </div>
+
+        <div class="edit-field">
+            <label for="bankAccountNumber">
+                Bank Account Number
+            </label>
+
+            <input
+                type="password"
+                id="bankAccountNumber"
+                placeholder="Enter bank account number"
+                inputmode="numeric"
+            >
+        </div>
+
+        <div class="edit-field">
+            <label for="confirmBankAccountNumber">
+                Confirm Account Number
+            </label>
+
+            <input
+                type="text"
+                id="confirmBankAccountNumber"
+                placeholder="Re-enter account number"
+                inputmode="numeric"
+            >
+        </div>
+
+        <div class="edit-field">
+            <label for="bankIfsc">
+                IFSC Code
+            </label>
+
+            <input
+                type="text"
+                id="bankIfsc"
+                placeholder="Example: SBIN0001234"
+                maxlength="11"
+            >
+        </div>
+
+        <div class="edit-field">
+            <label for="payoutUpi">
+                UPI ID (Optional)
+            </label>
+
+            <input
+                type="text"
+                id="payoutUpi"
+                placeholder="Example: name@upi"
+            >
+        </div>
+
+    </div>
+
+    <div class="edit-actions">
+        <button
+            type="button"
+            class="save-profile-button"
+            id="savePayoutDetails"
+        >
+            Save Payout Details
+        </button>
+    </div>
+
+    <p
+        class="profile-save-message"
+        id="payoutSaveMessage"
+    ></p>
+<div class="payout-linked-box" id="payoutLinkedBox" style="display: none;">
+
+    <div>
+        <strong>✓ Payout Account Linked</strong>
+        <p id="linkedBankAccount">Bank Account: ••••••••</p>
+        <p id="linkedIfsc">IFSC: —</p>
+    </div>
+
+</div>
+
+    <div class="payout-security-note">
+        <strong>🔒 Secure Payout Information</strong>
+        <span>
+            Your payout details are used only for processing seller withdrawals.
+        </span>
+    </div>
+
+</div>
+
+    <div class="profile-actions">
+
+        <a href="account.html">
+            View Orders →
+        </a>
+
+        <a href="index.html">
+            ← Back Home
+        </a>
+
+    </div>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentProfile = { name: "", email: "", whatsapp: "" };
+let currentUser = null;
+
+const payoutHolder = document.getElementById("accountHolderName");
+const payoutAccount = document.getElementById("bankAccountNumber");
+const payoutConfirm = document.getElementById("confirmBankAccountNumber");
+const payoutIfsc = document.getElementById("bankIfsc");
+const payoutUpi = document.getElementById("payoutUpi");
+const payoutMessage = document.getElementById("payoutSaveMessage");
+
+async function getLoggedInUser() {
+    if (currentUser) return currentUser;
+
+    // Fast local session read; avoids repeated auth.getUser() network calls.
+    const { data } = await supabaseClient.auth.getSession();
+    const user = data?.session?.user || null;
+
+    if (!user) {
+        window.location.replace("login.html");
+        return null;
+    }
+
+    currentUser = user;
+    return user;
+}
+
+function updateProfileDisplay() {
+    const name = currentProfile.name || "";
+    const email = currentProfile.email || "";
+    const whatsapp = currentProfile.whatsapp || "";
+
+    document.getElementById("profileName").textContent = name || "—";
+    document.getElementById("profileEmail").textContent = email || "—";
+    document.getElementById("profileWhatsapp").textContent = whatsapp || "—";
+    document.getElementById("profileAvatar").textContent =
+        name ? name.charAt(0).toUpperCase() : "S";
+
+    document.getElementById("editName").value = name;
+    document.getElementById("editEmail").value = email;
+    document.getElementById("editWhatsapp").value = whatsapp;
+}
+
+async function loadSupabaseProfile() {
+    const user = await getLoggedInUser();
+    if (!user) return;
+
+    const { data: profile, error } = await supabaseClient
+        .from("profiles")
+        .select("name, email, whatsapp")
+        .eq("id", user.id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Profile load error:", error);
+        return;
+    }
+
+    currentProfile = {
+        name: profile?.name ||
+              user.user_metadata?.name ||
+              user.user_metadata?.full_name || "",
+        email: profile?.email || user.email || "",
+        whatsapp: profile?.whatsapp || ""
+    };
+
+    updateProfileDisplay();
+}
+
+document.getElementById("saveProfile").onclick = async function() {
+    const message = document.getElementById("profileSaveMessage");
+    const button = document.getElementById("saveProfile");
+
+    const newName = document.getElementById("editName").value.trim();
+    const newWhatsapp = document.getElementById("editWhatsapp").value.trim();
+
+    const user = await getLoggedInUser();
+    if (!user) return;
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+    message.textContent = "";
+
+    const { error } = await supabaseClient
+        .from("profiles")
+        .update({
+            name: newName,
+            whatsapp: newWhatsapp,
+            updated_at: new Date().toISOString()
+        })
+        .eq("id", user.id);
+
+    if (error) {
+        console.error("Profile update error:", error);
+        message.textContent = "Could not update profile.";
+        button.disabled = false;
+        button.textContent = "Save Changes";
+        return;
+    }
+
+    currentProfile.name = newName;
+    currentProfile.whatsapp = newWhatsapp;
+    updateProfileDisplay();
+
+    message.textContent = "Profile updated successfully.";
+    button.disabled = false;
+    button.textContent = "Save Changes";
+};
+
+document.getElementById("cancelProfile").onclick = function() {
+    updateProfileDisplay();
+    document.getElementById("profileSaveMessage").textContent = "";
+};
+
+
+// =====================================
+// PAYOUT ACCOUNT — SUPABASE
+// =====================================
+
+function showLinkedPayoutAccount(data) {
+    const linkedBox = document.getElementById("payoutLinkedBox");
+
+    if (!data?.account_number) {
+        linkedBox.style.display = "none";
+        return;
+    }
+
+    const lastFour = String(data.account_number).slice(-4);
+
+    linkedBox.style.display = "block";
+    document.getElementById("linkedBankAccount").textContent =
+        "Bank Account: ••••••••" + lastFour;
+    document.getElementById("linkedIfsc").textContent =
+        "IFSC: " + (data.ifsc || "—");
+}
+
+async function loadPayoutDetails() {
+    const user = await getLoggedInUser();
+    if (!user) return;
+
+    const { data, error } = await supabaseClient
+        .from("seller_payout_accounts")
+        .select("account_holder_name, account_number, ifsc, upi_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Payout load error:", error);
+        return;
+    }
+
+    if (!data) {
+        document.getElementById("payoutLinkedBox").style.display = "none";
+        return;
+    }
+
+    payoutHolder.value = data.account_holder_name || "";
+    payoutAccount.value = "";
+    payoutConfirm.value = "";
+    payoutIfsc.value = data.ifsc || "";
+    payoutUpi.value = data.upi_id || "";
+
+    showLinkedPayoutAccount(data);
+}
+
+document.getElementById("savePayoutDetails").onclick = async function() {
+    payoutMessage.textContent = "";
+
+    const holder = payoutHolder.value.trim();
+    const account = payoutAccount.value.replace(/\s/g, "");
+    const confirmAccount = payoutConfirm.value.replace(/\s/g, "");
+    const ifsc = payoutIfsc.value.trim().toUpperCase();
+    const upi = payoutUpi.value.trim();
+
+    if (!holder) {
+        payoutMessage.textContent = "Please enter the account holder name.";
+        return;
+    }
+
+    if (!account) {
+        payoutMessage.textContent = "Please enter your bank account number.";
+        return;
+    }
+
+    if (!/^\d{6,18}$/.test(account)) {
+        payoutMessage.textContent = "Please enter a valid bank account number.";
+        return;
+    }
+
+    if (!confirmAccount) {
+        payoutMessage.textContent = "Please confirm your bank account number.";
+        return;
+    }
+
+    if (account !== confirmAccount) {
+        payoutMessage.textContent = "Account numbers do not match.";
+        return;
+    }
+
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) {
+        payoutMessage.textContent = "Please enter a valid IFSC code.";
+        return;
+    }
+
+    const user = await getLoggedInUser();
+    if (!user) return;
+
+    const button = document.getElementById("savePayoutDetails");
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    const { error } = await supabaseClient
+        .from("seller_payout_accounts")
+        .upsert({
+            user_id: user.id,
+            account_holder_name: holder,
+            account_number: account,
+            ifsc: ifsc,
+            upi_id: upi || null,
+            updated_at: new Date().toISOString()
+        }, {
+            onConflict: "user_id"
+        });
+
+    if (error) {
+        console.error("Payout save error:", error);
+        payoutMessage.textContent = "Could not save payout details.";
+        button.disabled = false;
+        button.textContent = "Save Payout Details";
+        return;
+    }
+
+    payoutIfsc.value = ifsc;
+    payoutAccount.value = "";
+    payoutConfirm.value = "";
+
+    payoutMessage.textContent = "✓ Payout account saved successfully.";
+    showLinkedPayoutAccount({ account_number: account, ifsc: ifsc });
+
+    button.disabled = false;
+    button.textContent = "Save Payout Details";
+};
+
+async function initializeProfilePage() {
+    const user = await getLoggedInUser();
+    if (!user) return;
+
+    // Show auth-known identity immediately.
+    currentProfile = {
+        name:
+            user.user_metadata?.name ||
+            user.user_metadata?.full_name ||
+            user.email?.split("@")[0] ||
+            "",
+        email: user.email || "",
+        whatsapp: ""
+    };
+    updateProfileDisplay();
+
+    // Profile and payout details are independent, so load together.
+    const [profileResult, payoutResult] = await Promise.all([
+        supabaseClient
+            .from("profiles")
+            .select("name, email, whatsapp, role, seller_status")
+            .eq("id", user.id)
+            .maybeSingle(),
+
+        supabaseClient
+            .from("seller_payout_accounts")
+            .select("account_holder_name, account_number, ifsc, upi_id")
+            .eq("user_id", user.id)
+            .maybeSingle()
+    ]);
+
+    if (profileResult.error) {
+        console.error("Profile load error:", profileResult.error);
+    } else {
+        const profile = profileResult.data;
+
+        const accountTypeNode = document.getElementById("profileAccountType");
+        if (accountTypeNode) {
+            const role = String(profile?.role || "").toLowerCase();
+            const sellerStatus = String(profile?.seller_status || "").toLowerCase();
+
+            if (role === "admin") {
+                accountTypeNode.textContent = "createMedia Admin";
+            } else if (
+                role === "seller" ||
+                sellerStatus === "active" ||
+                sellerStatus === "approved"
+            ) {
+                accountTypeNode.textContent = "createMedia Creator";
+            } else {
+                accountTypeNode.textContent = "createMedia Customer";
+            }
+        }
+
+        currentProfile = {
+            name:
+                profile?.name ||
+                currentProfile.name,
+            email:
+                profile?.email ||
+                currentProfile.email,
+            whatsapp:
+                profile?.whatsapp || ""
+        };
+
+        updateProfileDisplay();
+    }
+
+    if (payoutResult.error) {
+        console.error("Payout load error:", payoutResult.error);
+    } else if (payoutResult.data) {
+        const payout = payoutResult.data;
+
+        payoutHolder.value = payout.account_holder_name || "";
+        payoutAccount.value = "";
+        payoutConfirm.value = "";
+        payoutIfsc.value = payout.ifsc || "";
+        payoutUpi.value = payout.upi_id || "";
+
+        showLinkedPayoutAccount(payout);
+    } else {
+        document.getElementById("payoutLinkedBox").style.display = "none";
+    }
+}
+
+initializeProfilePage();
+</script>
+<nav class="mobile-bottom-nav">
+
+    <a href="index.html">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 11L12 3L21 11"></path>
+            <path d="M5 10V21H19V10"></path>
+            <path d="M9 21V14H15V21"></path>
+        </svg>
+        <span>Home</span>
+    </a>
+
+    <a href="all-ebooks.html">
+        <svg viewBox="0 0 24 24">
+            <path d="M4 4H10C11.1 4 12 4.9 12 6V21C12 19.9 11.1 19 10 19H4Z"></path>
+            <path d="M20 4H14C12.9 4 12 4.9 12 6V21C12 19.9 12.9 19 14 19H20Z"></path>
+        </svg>
+        <span>Ebooks</span>
+    </a>
+
+    <a href="account.html">
+        <svg viewBox="0 0 24 24">
+            <path d="M6 7H18L20 21H4Z"></path>
+            <path d="M9 9V6A3 3 0 0 1 15 6V9"></path>
+        </svg>
+        <span>Orders</span>
+    </a>
+
+    <a href="profile.html" class="active">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 21C4.7 16.8 7.5 14 12 14C16.5 14 19.3 16.8 20 21"></path>
+        </svg>
+        <span>Account</span>
+    </a>
+
+</nav>
+<script src="./app-notifications.js" defer></script>
+
+</body>
+
+</html>

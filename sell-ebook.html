@@ -1,0 +1,4242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+    // Prevent protected seller UI from flashing before auth check finishes.
+    document.documentElement.style.visibility = "hidden";
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sell Your Ebook | createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+
+    <style>
+/* =========================================
+   SELLER QUICK ACCESS
+========================================= */
+
+.seller-quick-nav {
+    width: min(920px, calc(100% - 40px));
+    margin: 30px auto;
+}
+
+.seller-quick-menu {
+    background: #ffffff;
+    border: 1px solid #e7e7e7;
+    border-radius: 16px;
+
+    box-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.07);
+
+    overflow: hidden;
+}
+
+.seller-quick-menu summary {
+    padding: 18px 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    cursor: pointer;
+    list-style: none;
+
+    color: #111111;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.seller-quick-menu summary::-webkit-details-marker {
+    display: none;
+}
+
+.seller-quick-menu summary span {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.seller-quick-menu summary small {
+    color: #888888;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.seller-quick-menu summary b {
+    font-size: 20px;
+    font-weight: 500;
+    transition: transform 0.25s ease;
+}
+
+.seller-quick-menu[open] summary b {
+    transform: rotate(180deg);
+}
+
+.seller-quick-options {
+    padding: 8px;
+    border-top: 1px solid #eeeeee;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.seller-quick-options a {
+    padding: 15px 16px;
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    background: #fafafa;
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+
+    color: #111111;
+    text-decoration: none;
+
+    transition: 0.2s ease;
+}
+
+.seller-quick-options a:hover {
+    background: #f4f4f4;
+    border-color: #dddddd;
+    transform: translateY(-1px);
+}
+
+.seller-quick-options a > span {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #111111;
+    color: #ffffff;
+    border-radius: 10px;
+
+    font-size: 15px;
+}
+
+.seller-quick-options a div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.seller-quick-options strong {
+    font-size: 13px;
+}
+
+.seller-quick-options small {
+    color: #777777;
+    font-size: 11px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+#withdrawalHistory,
+#myEbooks {
+    scroll-margin-top: 30px;
+}
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f8f9;
+            color: #111;
+        }
+
+        .page-header {
+            max-width: 1100px;
+            margin: 30px auto 0;
+            padding: 22px 30px;
+            background: #fff;
+            border: 1px solid #e6e6e6;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.07);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .back-home {
+            text-decoration: none;
+            color: #111;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .back-home:hover {
+            opacity: 0.55;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 45px auto 80px;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            margin-bottom: 35px;
+        }
+
+        .page-title p {
+            margin: 0 0 10px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #777;
+        }
+
+        .page-title h1 {
+            margin: 0;
+            font-size: 42px;
+            line-height: 1.1;
+        }
+
+        .page-title span {
+            display: block;
+            margin-top: 12px;
+            color: #777;
+            font-size: 15px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .seller-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 25px;
+        }
+
+        .seller-card {
+            background: #fff;
+            border: 1px solid #e7e7e7;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+        }
+
+        .seller-card h2 {
+            margin: 0 0 8px;
+            font-size: 21px;
+        }
+
+        .seller-card-description {
+            margin: 0 0 25px;
+            color: #777;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            transition: 0.25s ease;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #111;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+        }
+
+        .file-note {
+            margin-top: 7px;
+            color: #999;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .submit-button {
+            width: 100%;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 11px;
+            background: #111;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .submit-button:hover {
+            background: #222;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .seller-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .info-box {
+            padding: 20px;
+            background: #fafafa;
+            border: 1px solid #ededed;
+            border-radius: 15px;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #777;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .my-ebooks {
+            margin-top: 30px;
+        }
+
+        .my-ebooks h2 {
+            margin: 0 0 18px;
+            font-size: 22px;
+        }
+
+        .ebook-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .empty-message {
+            padding: 25px;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 15px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        .seller-ebook {
+            display: grid;
+            grid-template-columns: 90px 1fr auto;
+            align-items: center;
+            gap: 18px;
+            padding: 18px;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 16px;
+        }
+
+        .seller-ebook-cover {
+            width: 90px;
+            height: 110px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #eee;
+        }
+
+        .seller-ebook-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .seller-ebook-info strong {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 15px;
+        }
+
+        .seller-ebook-info p {
+            margin: 0;
+            color: #777;
+            font-size: 12px;
+        }
+
+        .status {
+            padding: 7px 11px;
+            border-radius: 20px;
+            background: #fff4d6;
+            color: #9a6b00;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status.approved {
+            background: #e6f7ee;
+            color: #087f5b;
+        }
+
+        .status.rejected {
+            background: #fdeaea;
+            color: #c62828;
+        }
+
+        .custom-alert {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .custom-alert-box {
+            width: min(90%, 380px);
+            padding: 25px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .custom-alert-box strong {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 17px;
+        }
+
+        .custom-alert-box p {
+            margin: 0 0 20px;
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .custom-alert-box button {
+            border: none;
+            padding: 10px 22px;
+            border-radius: 9px;
+            background: #111;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        @media (max-width: 800px) {
+
+            .page-header {
+                margin: 15px;
+                padding: 18px 20px;
+            }
+
+            .container {
+                margin-top: 30px;
+            }
+
+            .page-title h1 {
+                font-size: 32px;
+            }
+
+            .seller-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .seller-card {
+                padding: 22px;
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .seller-ebook {
+                grid-template-columns: 70px 1fr;
+            }
+
+            .seller-ebook-cover {
+                width: 70px;
+                height: 90px;
+            }
+
+            .seller-ebook .status {
+                grid-column: 2;
+                justify-self: start;
+            }
+
+        }
+        .edit-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .edit-modal-box {
+            width: min(92%, 450px);
+            padding: 28px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.2);
+        }
+
+        .edit-modal-box h3 {
+            margin: 0 0 20px;
+            font-size: 20px;
+        }
+
+        .edit-modal-group {
+            margin-bottom: 15px;
+        }
+
+        .edit-modal-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .edit-modal-group input,
+        .edit-modal-group textarea {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+        }
+
+        .edit-modal-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .edit-modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .edit-save-button,
+        .edit-cancel-button {
+            flex: 1;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .edit-save-button {
+            background: #111;
+            color: #fff;
+        }
+
+        .edit-cancel-button {
+            background: #f1f1f1;
+            color: #333;
+        }
+        .seller-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .seller-actions button {
+            border: none;
+            padding: 8px 13px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+.listing-ebook {
+    background: #e8f7ee;
+    color: #168447;
+}
+
+.listing-ebook:hover {
+    background: #d8f1e2;
+    transform: translateY(-1px);
+}
+
+        .edit-ebook {
+            background: #f1f5f7;
+            color: #333;
+        }
+
+        .edit-ebook:hover {
+            background: #e5ebee;
+            transform: translateY(-1px);
+        }
+
+        .delete-ebook {
+            background: #fff0f0;
+            color: #c62828;
+        }
+
+        .delete-ebook:hover {
+            background: #fde1e1;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 500px) {
+
+            .seller-actions {
+                grid-column: 2;
+                justify-content: flex-start;
+            }
+
+        }
+
+        .seller-ebook {
+            transition: all 0.25s ease;
+        }
+
+        .seller-ebook:hover {
+            transform: translateY(-3px);
+            border-color: #dcdcdc;
+            box-shadow: 0 14px 35px rgba(0,0,0,0.08);
+        }
+
+        .seller-ebook-cover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+        }
+
+        .seller-ebook-info strong {
+            font-size: 15px;
+            letter-spacing: 0.1px;
+        }
+
+        .seller-ebook-info p {
+            margin-top: 5px;
+            color: #888;
+        }
+
+        .status {
+            box-shadow: 0 4px 12px rgba(154,107,0,0.08);
+        }
+        .seller-card {
+            transition: all 0.3s ease;
+        }
+
+        .seller-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            background: #fcfcfc;
+        }
+
+        .form-group input:hover,
+        .form-group textarea:hover {
+            border-color: #cfcfcf;
+        }
+
+        .form-group input[type="file"] {
+            padding: 11px 12px;
+            background: #fafafa;
+            cursor: pointer;
+        }
+
+        .form-group input[type="file"]::file-selector-button {
+            margin-right: 10px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            background: #111;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .submit-button {
+            margin-top: 5px;
+            letter-spacing: 0.2px;
+        }
+        .page-header {
+            border-color: #dfe5e8;
+            box-shadow:
+                0 18px 45px rgba(0,0,0,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+            transition: all 0.3s ease;
+        }
+
+        .page-header:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 22px 55px rgba(0,0,0,0.10),
+                inset 0 1px 0 rgba(255,255,255,0.95);
+        }
+
+        .brand {
+            letter-spacing: -0.4px;
+        }
+
+        .back-home {
+            padding: 9px 14px;
+            border-radius: 9px;
+            transition: all 0.25s ease;
+        }
+
+        .back-home:hover {
+            background: #f1f5f7;
+            opacity: 1;
+            transform: translateY(-1px);
+        }
+        .page-title p {
+            color: #8a8f93;
+            letter-spacing: 2.5px;
+        }
+
+        .page-title h1 {
+            letter-spacing: -1.2px;
+            font-weight: 800;
+        }
+
+        .page-title span {
+            max-width: 650px;
+            color: #858585;
+        }
+
+        .my-ebooks h2 {
+            letter-spacing: -0.4px;
+        }
+        .seller-info .seller-card {
+            background: linear-gradient(145deg, #ffffff, #fafbfc);
+        }
+
+        .seller-info .seller-card-description {
+            color: #858585;
+        }
+
+        .info-box {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .info-box::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: #111;
+            opacity: 0;
+            transition: 0.25s ease;
+        }
+
+        .info-box:hover {
+            transform: translateX(3px);
+            background: #fff;
+            border-color: #dedede;
+            box-shadow: 0 8px 22px rgba(0,0,0,0.05);
+        }
+
+        .info-box:hover::before {
+            opacity: 1;
+        }
+        .edit-modal {
+            backdrop-filter: blur(6px);
+        }
+
+        .edit-modal-box {
+            border: 1px solid rgba(0,0,0,0.06);
+            animation: editModalIn 0.22s ease;
+        }
+
+        @keyframes editModalIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .edit-modal-box h3 {
+            letter-spacing: -0.4px;
+        }
+
+        .edit-modal-group input:focus,
+        .edit-modal-group textarea:focus {
+            border-color: #111;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+        }
+
+        .edit-save-button {
+            transition: all 0.25s ease;
+        }
+
+        .edit-save-button:hover {
+            background: #222;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .edit-cancel-button {
+            transition: all 0.25s ease;
+        }
+
+        .edit-cancel-button:hover {
+            background: #e7e7e7;
+        }
+        .status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 12px;
+            border: 1px solid rgba(154,107,0,0.12);
+            box-shadow: 0 4px 12px rgba(154,107,0,0.06);
+            letter-spacing: 0.4px;
+        }
+
+        .status.pending {
+            background: #fff8e8;
+            color: #9a6b00;
+        }
+
+        .status.approved {
+            border-color: rgba(8,127,91,0.12);
+            box-shadow: 0 4px 12px rgba(8,127,91,0.06);
+        }
+
+        .status.rejected {
+            border-color: rgba(198,40,40,0.12);
+            box-shadow: 0 4px 12px rgba(198,40,40,0.06);
+        }
+        .empty-message {
+            position: relative;
+            text-align: center;
+            padding: 35px 25px;
+            background: linear-gradient(145deg, #ffffff, #fafbfc);
+            border: 1px solid #e5e8ea;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.04);
+        }
+
+        .empty-message::before {
+            content: "＋";
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: #f1f3f4;
+            color: #777;
+            font-size: 22px;
+            font-weight: 300;
+        }
+        .submit-button {
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+        }
+
+        .submit-button::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.18),
+                transparent
+            );
+            transform: skewX(-20deg);
+            transition: 0.6s ease;
+        }
+
+        .submit-button:hover::after {
+            left: 130%;
+        }
+        @media (max-width: 500px) {
+
+            .page-title {
+                margin-bottom: 25px;
+            }
+
+            .page-title h1 {
+                font-size: 30px;
+                letter-spacing: -0.8px;
+            }
+
+            .page-title span {
+                font-size: 13px;
+            }
+
+            .seller-ebook {
+                padding: 15px;
+                gap: 14px;
+            }
+
+            .seller-ebook-info strong {
+                font-size: 14px;
+            }
+
+            .seller-ebook-info p {
+                font-size: 11px;
+            }
+
+            .seller-actions {
+                gap: 6px;
+            }
+
+            .seller-actions button {
+                padding: 7px 11px;
+                font-size: 10px;
+            }
+
+            .status {
+                font-size: 10px;
+                padding: 6px 10px;
+            }
+
+            .edit-modal-box {
+                padding: 22px;
+                border-radius: 17px;
+            }
+
+            .edit-modal-box h3 {
+                font-size: 18px;
+            }
+
+        }
+        body {
+            background:
+                radial-gradient(
+                    circle at 10% 0%,
+                    rgba(220,236,242,0.45),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 15%,
+                    rgba(240,240,240,0.7),
+                    transparent 28%
+                ),
+                #f7f8f9;
+        }
+
+        .container {
+            position: relative;
+        }
+        /* Premium Colour Accents */
+
+        .brand {
+            color: #087f5b;
+        }
+
+        .page-title p {
+            color: #087f5b;
+        }
+
+        .page-title h1 {
+            color: #171717;
+        }
+
+        .page-title h1::after {
+            content: "";
+            display: block;
+            width: 55px;
+            height: 4px;
+            margin-top: 14px;
+            background: linear-gradient(
+                90deg,
+                #087f5b,
+                #5bb89a
+            );
+            border-radius: 10px;
+        }
+
+        .seller-card h2 {
+            color: #202020;
+        }
+
+        .seller-card h2::first-letter {
+            color: #087f5b;
+        }
+
+        .info-box strong {
+            color: #087f5b;
+        }
+
+        .seller-ebook-info strong {
+            color: #222;
+        }
+
+        .seller-ebook:hover .seller-ebook-info strong {
+            color: #087f5b;
+        }
+
+        .edit-save-button {
+            background: #087f5b;
+        }
+
+        .edit-save-button:hover {
+            background: #066b4d;
+        }
+
+        .submit-button {
+            background: linear-gradient(
+                135deg,
+                #111,
+                #087f5b
+            );
+        }
+
+        .submit-button:hover {
+            background: linear-gradient(
+                135deg,
+                #222,
+                #066b4d
+            );
+        }
+        .seller-ebook {
+            border: 1px solid #b7dfd0;
+            box-shadow:
+                0 10px 30px rgba(8,127,91,0.06),
+                inset 0 0 0 1px rgba(8,127,91,0.03);
+        }
+
+        .seller-ebook:hover {
+            border-color: #087f5b;
+            box-shadow:
+                0 16px 40px rgba(8,127,91,0.12);
+        }
+        .seller-wallet {
+            margin-bottom: 35px;
+            padding: 30px;
+            background: linear-gradient(145deg, #ffffff, #f8fcfa);
+            border: 1px solid #b7dfd0;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(8,127,91,0.07);
+        }
+
+       .wallet-header {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    align-items: center;
+    column-gap: 28px;
+    row-gap: 10px;
+    margin-bottom: 28px;
+    position: relative;
+}
+.seller-upload-usage,
+.seller-storage-usage {
+    padding: 8px 12px;
+    background: #f7fbf9;
+    border: 1px solid #e1eee8;
+    border-radius: 10px;
+    color: #666;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+        .wallet-header p {
+            margin: 0 0 7px;
+            color: #087f5b;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .wallet-header h2 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: -0.4px;
+        }
+
+        .wallet-status {
+            padding: 10px 60px;
+            border-radius:12px;
+            background: #e6f7ee;
+            color: #087f5b;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+transform: translateX(-300px) translateY(-30px); 
+        }
+
+        .wallet-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    width: 620px;
+}
+        .wallet-card {
+            padding: 18px;
+            background: #fff;
+            border: 1px solid #e4eee9;
+            border-radius: 15px;
+            transition: all 0.25s ease;
+        }
+
+        .wallet-card:hover {
+            transform: translateY(-3px);
+            border-color: #9ed1bd;
+            box-shadow: 0 10px 25px rgba(8,127,91,0.08);
+        }
+
+        .wallet-card span {
+            display: block;
+            margin-bottom: 9px;
+            color: #777;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .wallet-card strong {
+            display: block;
+            color: #087f5b;
+            font-size: 24px;
+            line-height: 1.1;
+        }
+
+        .wallet-card small {
+            display: block;
+            margin-top: 7px;
+            color: #999;
+            font-size: 10px;
+        }
+
+        .wallet-bottom {
+    margin-top: 18px;
+    margin-left: 0;
+    width: 285px;
+    max-width: 285px;
+}
+        .withdraw-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 18px 20px;
+            background: #111;
+            color: #fff;
+            border-radius: 15px;
+        }
+
+        .withdraw-box span {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .withdraw-box strong {
+            font-size: 22px;
+        }
+@media (min-width: 801px) {
+    .withdraw-box {
+        transform: translateX(50px);
+    }
+
+    .wallet-note {
+        transform: translateX(55px);
+    }
+}
+
+        .withdraw-button {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 9px;
+            background: #087f5b;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .withdraw-button:hover {
+            background: #0a956d;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(8,127,91,0.25);
+        }
+
+        .wallet-note {
+            margin-top: 9px;
+            color: #999;
+            font-size: 10px;
+            text-align: right;
+        }
+@media (min-width: 801px) {
+    .seller-upload-usage,
+    .seller-storage-usage {
+        transform: translateX(-285px) translateY(-30px);
+    }
+}        @media (max-width: 800px) {
+
+            .wallet-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .seller-wallet {
+                padding: 20px;
+            }
+
+            .wallet-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .wallet-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .wallet-card strong {
+                font-size: 20px;
+            }
+
+            .withdraw-box {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .withdraw-button {
+                width: 100%;
+            }
+
+            .wallet-note {
+                text-align: left;
+            }
+
+        }
+.seller-wallet {
+    margin-top: 35px !important;
+}
+.sales-history {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 28px;
+    background: linear-gradient(145deg, #ffffff, #f8fcfa);
+    border: 1px solid #b7dfd0;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(8,127,91,0.06);
+}
+
+.sales-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.sales-history-header p {
+    margin: 0 0 7px;
+    color: #087f5b;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.sales-history-header h2 {
+    margin: 0;
+    color: #202020;
+    font-size: 22px;
+}
+
+.sales-history-header > span {
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: #e6f7ee;
+    color: #087f5b;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.sales-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sales-empty {
+    padding: 25px;
+    border: 1px dashed #b7dfd0;
+    border-radius: 14px;
+    color: #999;
+    font-size: 12px;
+    text-align: center;
+    background: #fbfdfc;
+}
+
+@media (max-width: 500px) {
+
+    .sales-history {
+        padding: 20px;
+    }
+
+    .sales-history-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+.sale-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid #e4eee9;
+    border-radius: 14px;
+    transition: all 0.25s ease;
+}
+
+.sale-item:hover {
+    border-color: #9ed1bd;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(8,127,91,0.07);
+}
+
+.sale-item strong {
+    display: block;
+    color: #222;
+    font-size: 13px;
+}
+
+.sale-item small {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+    font-size: 10px;
+}
+
+.sale-item .sale-amount {
+    color: #087f5b;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+@media (max-width: 500px) {
+
+    .sale-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sale-item .sale-amount {
+        align-self: flex-end;
+    }
+
+}
+.withdrawal-history {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 28px;
+    background: linear-gradient(145deg, #ffffff, #f8fcfa);
+    border: 1px solid #b7dfd0;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(8,127,91,0.06);
+}
+
+.withdrawal-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.withdrawal-history-header p {
+    margin: 0 0 7px;
+    color: #087f5b;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.withdrawal-history-header h2 {
+    margin: 0;
+    color: #202020;
+    font-size: 22px;
+}
+
+.withdrawal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.withdrawal-empty {
+    padding: 25px;
+    border: 1px dashed #b7dfd0;
+    border-radius: 14px;
+    color: #999;
+    font-size: 12px;
+    text-align: center;
+    background: #fbfdfc;
+}
+
+@media (max-width: 500px) {
+
+    .withdrawal-history {
+        padding: 20px;
+    }
+
+    .withdrawal-history-header {
+        align-items: flex-start;
+    }
+
+}
+.withdrawal-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 18px;
+    background: #fff;
+    border: 1px solid #e4eee9;
+    border-radius: 14px;
+    transition: all 0.25s ease;
+}
+
+.withdrawal-item:hover {
+    border-color: #9ed1bd;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(8,127,91,0.07);
+}
+
+.withdrawal-item strong {
+    display: block;
+    color: #222;
+    font-size: 14px;
+}
+
+.withdrawal-item small {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+    font-size: 10px;
+}
+
+.withdrawal-status {
+    padding: 7px 11px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.withdrawal-status.pending {
+    background: #fff4df;
+    color: #b06b00;
+}
+
+.withdrawal-status.success {
+    background: #e6f7ee;
+    color: #087f5b;
+}
+
+@media (max-width: 500px) {
+
+    .withdrawal-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .withdrawal-status {
+        align-self: flex-end;
+    }
+
+}
+.withdraw-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(8px);
+}
+
+.withdraw-modal-box {
+    width: 100%;
+    max-width: 430px;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #dceee7;
+    border-radius: 22px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.20);
+}
+
+.withdraw-modal-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.withdraw-modal-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: #e6f7ee;
+    color: #087f5b;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.withdraw-modal-top p {
+    margin: 0 0 4px;
+    color: #087f5b;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+}
+
+.withdraw-modal-top h3 {
+    margin: 0;
+    color: #222;
+    font-size: 22px;
+}
+
+.withdraw-modal-subtitle {
+    margin: 20px 0;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.withdraw-balance-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    background: #f7fbf9;
+    border: 1px solid #e3f0eb;
+    border-radius: 12px;
+}
+
+.withdraw-balance-line span {
+    color: #777;
+    font-size: 12px;
+}
+
+.withdraw-balance-line strong {
+    color: #087f5b;
+    font-size: 17px;
+}
+
+.withdraw-modal-box label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.withdraw-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dce5e1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.withdraw-input-wrap span {
+    padding-left: 15px;
+    color: #087f5b;
+    font-weight: 800;
+}
+
+.withdraw-input-wrap input {
+    width: 100%;
+    padding: 14px 12px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    color: #222;
+}
+
+.withdraw-modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.withdraw-modal-buttons button {
+    flex: 1;
+    padding: 13px;
+    border-radius: 11px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.withdraw-cancel {
+    background: #f5f5f5;
+    color: #555;
+    border: 1px solid #ddd;
+}
+
+.withdraw-confirm {
+    background: #087f5b;
+    color: #fff;
+    border: 1px solid #087f5b;
+}
+
+.withdraw-confirm:hover {
+    background: #066b4d;
+}
+.custom-alert {
+    z-index: 20000 !important;
+}
+
+.withdraw-modal {
+    z-index: 9999;
+}
+/* Wallet right-side overflow fix */
+.wallet-bottom {
+    transform: translateX(-20px);
+}
+
+.wallet-note {
+    padding-right: 20px;
+}
+/* PREMIUM DELETE EBOOK POPUP */
+
+.delete-ebook-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(15, 20, 18, 0.55);
+    backdrop-filter: blur(7px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.delete-ebook-modal.show {
+    display: flex;
+}
+
+.delete-ebook-box {
+    width: 100%;
+    max-width: 420px;
+    padding: 36px 32px 30px;
+    background: #ffffff;
+    border: 1px solid #e4eee9;
+    border-radius: 22px;
+    text-align: center;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.22);
+    animation: deletePopupOpen 0.25s ease;
+}
+
+.delete-ebook-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fff0f0;
+    color: #d9363e;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.delete-ebook-label {
+    margin-bottom: 8px;
+    color: #087f5b;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.delete-ebook-box h3 {
+    margin: 0 0 12px;
+    color: #111;
+    font-size: 25px;
+}
+
+.delete-ebook-text {
+    margin: 0 auto 26px;
+    max-width: 320px;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.delete-ebook-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.delete-ebook-buttons button {
+    flex: 1;
+    padding: 13px 16px;
+    border-radius: 11px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#cancelDeleteEbook {
+    background: #f5f7f6;
+    color: #555;
+    border: 1px solid #dde5e1;
+}
+
+#confirmDeleteEbook {
+    background: #d9363e;
+    color: #ffffff;
+    border: 1px solid #d9363e;
+}
+
+#cancelDeleteEbook:hover,
+#confirmDeleteEbook:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes deletePopupOpen {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+/* =========================================
+   SELLER DASHBOARD - MOBILE APP STYLE
+========================================= */
+
+@media (max-width: 600px) {
+
+    body {
+        overflow-x: hidden !important;
+    }
+
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 25px auto 100px !important;
+        padding: 0 14px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* PAGE TITLE */
+
+    .page-title {
+        margin-bottom: 25px !important;
+    }
+
+    .page-title h1 {
+        font-size: 36px !important;
+        line-height: 1 !important;
+        letter-spacing: -1.5px !important;
+    }
+
+    .page-title span {
+        font-size: 13px !important;
+    }
+
+
+    /* SELLER WALLET */
+
+    .seller-wallet {
+        width: 100% !important;
+        box-sizing: border-box !important;
+
+        margin: 25px 0 !important;
+        padding: 20px !important;
+
+        border-radius: 20px !important;
+        overflow: hidden !important;
+    }
+
+
+    /* WALLET HEADER */
+
+    .wallet-header {
+        display: block !important;
+
+        margin-bottom: 20px !important;
+    }
+
+    .wallet-header p {
+        font-size: 9px !important;
+        letter-spacing: 2px !important;
+    }
+
+    .wallet-header h2 {
+        font-size: 25px !important;
+        margin-top: 5px !important;
+    }
+
+   .wallet-status {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 12px 5px 0 0 !important;
+    padding: 7px 11px !important;
+    transform: none !important;
+    font-size: 9px !important;
+}
+
+.seller-upload-usage {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 12px 0 0 0 !important;
+    transform: none !important;
+    font-size: 9px !important;
+}
+
+.seller-storage-usage {
+    display: block !important;
+    width: fit-content !important;
+    margin: 8px 0 0 0 !important;
+    transform: none !important;
+    font-size: 9px !important;
+}
+    /* WALLET CARDS */
+
+    .wallet-grid {
+        display: grid !important;
+
+        grid-template-columns: 1fr 1fr !important;
+
+        width: 100% !important;
+        gap: 9px !important;
+    }
+
+    .wallet-card {
+        width: 100% !important;
+        min-width: 0 !important;
+
+        padding: 15px !important;
+
+        border-radius: 14px !important;
+    }
+
+    .wallet-card span {
+        font-size: 9px !important;
+        line-height: 1.3 !important;
+    }
+
+    .wallet-card strong {
+        font-size: 19px !important;
+        margin-top: 5px !important;
+    }
+
+    .wallet-card small {
+        font-size: 8px !important;
+        line-height: 1.4 !important;
+    }
+
+
+    /* WITHDRAW AREA */
+
+    .wallet-bottom {
+        width: 100% !important;
+        max-width: none !important;
+
+        margin: 14px 0 0 !important;
+
+        transform: none !important;
+    }
+
+    .withdraw-box {
+        width: 100% !important;
+        box-sizing: border-box !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+
+        gap: 13px !important;
+
+        padding: 18px !important;
+
+        border-radius: 15px !important;
+    }
+
+    .withdraw-box span {
+        font-size: 9px !important;
+    }
+
+    .withdraw-box strong {
+        font-size: 23px !important;
+    }
+
+    .withdraw-button {
+        width: 100% !important;
+
+        padding: 13px !important;
+
+        border-radius: 10px !important;
+
+        font-size: 12px !important;
+    }
+
+    .wallet-note {
+        padding: 0 !important;
+        margin-top: 9px !important;
+
+        transform: none !important;
+
+        text-align: center !important;
+
+        font-size: 9px !important;
+        line-height: 1.5 !important;
+    }
+
+
+    /* SALES HISTORY */
+
+    .sales-history,
+    .withdrawal-history {
+        width: 100% !important;
+        box-sizing: border-box !important;
+
+        margin: 18px 0 !important;
+        padding: 20px !important;
+
+        border-radius: 20px !important;
+
+        overflow: hidden !important;
+    }
+
+    .sales-history-header,
+    .withdrawal-history-header {
+        display: flex !important;
+        flex-direction: column !important;
+
+        align-items: flex-start !important;
+
+        gap: 10px !important;
+
+        margin-bottom: 18px !important;
+    }
+
+    .sales-history-header p,
+    .withdrawal-history-header p {
+        font-size: 9px !important;
+        letter-spacing: 2px !important;
+    }
+
+    .sales-history-header h2,
+    .withdrawal-history-header h2 {
+        font-size: 25px !important;
+        letter-spacing: -0.8px !important;
+    }
+
+    .sales-history-header > span {
+        font-size: 9px !important;
+    }
+
+
+    /* SALES ITEM */
+
+    .sale-item,
+    .withdrawal-item {
+        width: 100% !important;
+        box-sizing: border-box !important;
+
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+
+        gap: 8px !important;
+
+        padding: 15px !important;
+
+        border-radius: 13px !important;
+    }
+
+    .sale-item .sale-amount {
+        align-self: flex-start !important;
+
+        font-size: 15px !important;
+    }
+
+    .withdrawal-status {
+        align-self: flex-start !important;
+    }
+
+
+    /* EMPTY STATES */
+
+    .sales-empty,
+    .withdrawal-empty {
+        padding: 30px 15px !important;
+
+        border-radius: 13px !important;
+
+        font-size: 11px !important;
+        line-height: 1.5 !important;
+    }
+
+
+    /* MY EBOOKS */
+
+    .my-ebooks {
+        margin-top: 25px !important;
+    }
+
+    .my-ebooks h2 {
+        font-size: 25px !important;
+    }
+
+
+    /* WITHDRAW MODAL */
+
+    .withdraw-modal {
+        padding: 14px !important;
+    }
+
+    .withdraw-modal-box {
+        width: 100% !important;
+
+        padding: 22px 18px !important;
+
+        border-radius: 20px !important;
+    }
+
+    .withdraw-modal-top h3 {
+        font-size: 20px !important;
+    }
+
+    .withdraw-modal-buttons {
+        flex-direction: column !important;
+    }
+
+    .withdraw-modal-buttons button {
+        width: 100% !important;
+    }
+
+}
+@media (max-width: 600px) {
+
+    .seller-wallet .wallet-grid {
+        margin-top: 8px !important;
+    }
+
+}
+/* SELLER EARN - PC */
+@media (min-width: 801px) {
+    .seller-earn-link {
+        position: absolute !important;
+        right: 0;
+        top: 72px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+
+        padding: 8px 14px;
+        border: 1px solid #bfe8d8;
+        border-radius: 10px;
+        background: #f4fbf8;
+        color: #087f5b;
+
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+        z-index: 5;
+    }
+}
+/* MORE WAYS TO EARN */
+.earning-opportunity {
+    margin: 0 0 35px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+
+    background: linear-gradient(135deg, #f1fbf6, #ffffff);
+    border: 1px solid #b7dfd0;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(8, 127, 91, 0.06);
+}
+
+.earning-opportunity-content p {
+    margin: 0 0 6px;
+    color: #087f5b;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.earning-opportunity-content h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+}
+
+.earning-opportunity-content span {
+    color: #666;
+    font-size: 12px;
+}
+
+.earning-opportunity-button {
+    flex-shrink: 0;
+    padding: 11px 17px;
+    background: #087f5b;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+}
+/* MORE WAYS TO EARN - MOBILE */
+@media (max-width: 600px) {
+
+    .earning-opportunity {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 18px 0 25px !important;
+        padding: 18px !important;
+
+        display: block !important;
+
+        border-radius: 18px !important;
+    }
+
+    .earning-opportunity-content p {
+        font-size: 8px !important;
+        letter-spacing: 1.8px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .earning-opportunity-content h2 {
+        font-size: 20px !important;
+        line-height: 1.2 !important;
+        margin-bottom: 8px !important;
+    }
+
+    .earning-opportunity-content span {
+        display: block !important;
+        font-size: 11px !important;
+        line-height: 1.6 !important;
+    }
+
+    .earning-opportunity-button {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 100% !important;
+        box-sizing: border-box !important;
+
+        margin-top: 15px !important;
+        padding: 12px 14px !important;
+
+        border-radius: 11px !important;
+        font-size: 11px !important;
+    }
+}
+/* =========================================
+   SELLER SUSPENSION / REACTIVATION
+========================================= */
+
+.seller-suspended-notice {
+    margin-bottom: 28px;
+    padding: 22px 24px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.06);
+}
+
+.seller-suspended-notice > strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #111;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.seller-suspended-notice > p {
+    margin: 0 0 17px;
+    color: #666;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.request-reactivation-button,
+.reactivation-reason-box button {
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 9px;
+    background: #111;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.request-reactivation-button:hover,
+.reactivation-reason-box button:hover {
+    opacity: 0.84;
+}
+
+.reactivation-reason-box {
+    margin-top: 15px;
+}
+
+.reactivation-reason-box label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.reactivation-reason-box textarea {
+    width: 100%;
+    min-height: 95px;
+    padding: 12px 13px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    outline: none;
+    resize: vertical;
+    font: inherit;
+    box-sizing: border-box;
+}
+
+.reactivation-reason-box textarea:focus {
+    border-color: #111;
+}
+
+@media (max-width: 768px) {
+    .seller-suspended-notice {
+        padding: 18px 16px;
+        border-radius: 14px;
+    }
+
+    .request-reactivation-button,
+    .reactivation-reason-box button {
+        width: 100%;
+    }
+}
+    </style>
+
+</head>
+
+<body>
+
+<header class="page-header">
+
+    <div class="brand">
+        createMedia
+    </div>
+
+    <a href="index.html" class="back-home">
+        ← Back Home
+    </a>
+
+</header>
+
+
+<main class="container">
+<div id="sellerSuspendedNotice"
+     class="seller-suspended-notice"
+     style="display: none;">
+
+    <strong>Seller Account Suspended</strong>
+
+    <p>
+        Your seller account has been suspended.
+        You cannot submit new ebooks at this time.
+    </p>
+<button type="button"
+        id="requestReactivationButton"
+        class="request-reactivation-button">
+    Request Reactivation
+</button>
+
+<div id="reactivationReasonBox"
+     class="reactivation-reason-box"
+     style="display: none;">
+
+    <label for="reactivationReason">
+        Why should your seller account be reactivated?
+    </label>
+
+    <textarea id="reactivationReason"
+              placeholder="Enter your reason..."
+              maxlength="500"></textarea>
+
+    <button type="button"
+            id="submitReactivationRequest">
+        Submit Request
+    </button>
+
+</div>
+
+</div>
+
+    <div class="page-title">
+
+        <p>CREATOR MARKETPLACE</p>
+
+        <h1>Sell Your Ebook.</h1>
+
+        <span>
+            Upload your digital ebook and manage your submissions from one place.
+        </span>
+
+    </div>
+
+
+    <div class="seller-layout">
+
+        <section class="seller-card">
+
+            <h2>Add Your Ebook</h2>
+
+            <p class="seller-card-description">
+                Submit your ebook details below. For now, your submission is saved
+                locally on this device.
+            </p>
+
+
+            <form id="sellerForm">
+
+                <div class="form-group">
+
+                    <label for="ebookName">
+                        Ebook Title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="ebookName"
+                        placeholder="Enter your ebook title"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="ebookPrice">
+                        Price (₹)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="ebookPrice"
+                        placeholder="Example: 199"
+                        min="1"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="ebookDescription">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="ebookDescription"
+                        placeholder="Tell customers what your ebook is about..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="ebookCover">
+                        Cover Image
+                    </label>
+
+                    <input
+                        type="file"
+                        id="ebookCover"
+                        accept="image/*"
+                        required
+                    >
+
+                    <div class="file-note">
+                        Choose the cover image for your ebook.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="ebookFile">
+                        Ebook File
+                    </label>
+
+                    <input
+                        type="file"
+                        id="ebookFile"
+                        accept=".pdf,.epub"
+                        required
+                    >
+
+                    <div class="file-note">
+                        PDF or EPUB file. Real cloud storage will be connected later.
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="submit-button"
+                >
+                    Submit Ebook
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <aside class="seller-info">
+
+            <div class="seller-card">
+
+                <h2>How Selling Works</h2>
+
+                <p class="seller-card-description">
+                    Your current seller system is only a local demo.
+                </p>
+
+
+                <div class="info-box">
+
+                    <strong>01 · Add your ebook</strong>
+
+                    <p>
+                        Enter your title, price, description and files.
+                    </p>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <strong>02 · Submission review</strong>
+
+                    <p>
+                        Your ebook will initially appear as Pending.
+                    </p>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <strong>03 · Approval</strong>
+
+                    <p>
+                        Later, an admin system will approve or reject submissions.
+                    </p>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <strong>04 · Start selling</strong>
+
+                    <p>
+                        After approval, the ebook can appear in the marketplace.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+<section class="seller-wallet">
+
+    <div class="wallet-header">
+
+        <div>
+            <p>SELLER DASHBOARD</p>
+            <h2>Sales & Wallet</h2>
+        </div>
+
+      <div class="wallet-status">
+    ● Seller Account · <span id="sellerPlanBadge">FREE PLAN</span>
+</div>
+
+<div class="seller-upload-usage" id="sellerUploadUsage">
+    0 / 15 ebooks used
+</div>
+
+<div class="seller-storage-usage" id="sellerStorageUsage">
+    Storage: 0 MB / 1 GB
+</div>
+
+    <div class="wallet-grid">
+
+        <div class="wallet-card">
+            <span>Total Sales</span>
+            <strong id="totalSales">0</strong>
+            <small>Ebooks sold</small>
+        </div>
+
+        <div class="wallet-card">
+            <span>Total Revenue</span>
+            <strong id="totalRevenue">₹0</strong>
+            <small>Gross sales</small>
+        </div>
+
+        <div class="wallet-card">
+            <span>Available Balance</span>
+            <strong id="availableBalance">₹0</strong>
+            <small>Available to withdraw</small>
+        </div>
+<div class="wallet-card" id="withdrawStatusCard">
+    <span id="withdrawStatusTitle">Withdrawal Success</span>
+    <strong id="pendingBalance">₹0</strong>
+    <small id="withdrawStatusText">Total successful withdrawals</small>
+</div>
+
+    </div>
+
+    <div class="wallet-bottom">
+
+        <div class="withdraw-box">
+
+            <div>
+                <span>Wallet Balance</span>
+                <strong id="walletBalance">₹0</strong>
+            </div>
+
+            <button
+                type="button"
+                class="withdraw-button"
+                id="withdrawButton">
+                Withdraw
+            </button>
+
+        </div>
+
+        <div class="wallet-note">
+            Withdrawals will be connected to the real payout system later.
+        </div>
+
+    </div>
+
+</section>
+<section class="earning-opportunity">
+
+    <div class="earning-opportunity-content">
+        <p>MORE WAYS TO EARN</p>
+        <h2>Earn Beyond Selling Ebooks</h2>
+        <span>
+            Share ebooks, refer creators and discover more ways to earn with createMedia.
+        </span>
+    </div>
+
+    <a href="earn.html" class="earning-opportunity-button">
+        Explore Earning →
+    </a>
+
+</section>
+<section class="sales-history">
+
+    <div class="sales-history-header">
+        <div>
+            <p>TRANSACTION HISTORY</p>
+            <h2>Sales History</h2>
+        </div>
+
+        <span id="salesCount">0 Sales</span>
+    </div>
+
+    <div class="sales-list" id="salesList">
+
+        <div class="sales-empty">
+            No sales yet.
+        </div>
+
+    </div>
+
+</section>
+<!-- SELLER QUICK NAVIGATION -->
+
+<div class="seller-quick-nav">
+
+    <details class="seller-quick-menu">
+
+        <summary>
+            <span>
+                <small>QUICK ACCESS</small>
+                Manage Seller Activity
+            </span>
+
+            <b>⌄</b>
+        </summary>
+
+        <div class="seller-quick-options">
+
+            <a href="#myEbooks">
+                <span>📚</span>
+
+                <div>
+                    <strong>Ebook Listings</strong>
+                    <small>View published & unlisted ebooks</small>
+                </div>
+            </a>
+
+            <a href="#withdrawalHistory">
+                <span>↗</span>
+
+                <div>
+                    <strong>Withdrawal Transactions</strong>
+                    <small>View your withdrawal history</small>
+                </div>
+            </a>
+
+        </div>
+
+    </details>
+
+</div>
+
+<section class="withdrawal-history" id="withdrawalHistory">
+
+    <div class="withdrawal-history-header">
+
+        <div>
+            <p>WITHDRAWALS</p>
+            <h2>Withdrawal History</h2>
+        </div>
+
+    </div>
+
+    <div
+        class="withdrawal-list"
+        id="withdrawalList"
+    >
+
+        <div class="withdrawal-empty">
+            No withdrawal requests yet.
+        </div>
+
+    </div>
+
+</section>
+
+
+    <section class="my-ebooks" id="myEbooks">
+
+        <h2>
+            My Ebooks
+        </h2>
+
+        <div
+            class="ebook-list"
+            id="ebookList"
+        ></div>
+
+    </section>
+
+</main>
+
+
+<div
+    class="custom-alert"
+    id="customAlert"
+>
+
+    <div class="custom-alert-box">
+
+        <strong id="alertTitle">
+            Done
+        </strong>
+
+        <p id="alertMessage">
+            Your ebook has been submitted.
+        </p>
+
+        <button id="alertButton">
+            Okay
+        </button>
+
+    </div>
+
+</div>
+<div class="edit-modal" id="editModal">
+
+    <div class="edit-modal-box">
+
+        <h3>Edit Ebook</h3>
+
+        <div class="edit-modal-group">
+            <label for="editTitle">Ebook Title</label>
+            <input type="text" id="editTitle">
+        </div>
+
+        <div class="edit-modal-group">
+            <label for="editPrice">Price (₹)</label>
+            <input type="number" id="editPrice" min="1">
+        </div>
+
+        <div class="edit-modal-group">
+            <label for="editDescription">Description</label>
+            <textarea id="editDescription"></textarea>
+        </div>
+
+        <div class="edit-modal-buttons">
+
+            <button
+                type="button"
+                class="edit-cancel-button"
+                id="editCancelButton">
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="edit-save-button"
+                id="editSaveButton">
+                Save Changes
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- PREMIUM DELETE EBOOK MODAL -->
+<div class="delete-ebook-modal" id="deleteEbookModal">
+
+    <div class="delete-ebook-box">
+
+        <div class="delete-ebook-icon">!</div>
+
+        <p class="delete-ebook-label">CREATOR MARKETPLACE</p>
+
+        <h3>Delete Ebook?</h3>
+
+        <p class="delete-ebook-text">
+            Are you sure you want to delete this ebook?
+            This action cannot be undone.
+        </p>
+
+        <div class="delete-ebook-buttons">
+
+            <button type="button" id="cancelDeleteEbook">
+                Cancel
+            </button>
+
+            <button type="button" id="confirmDeleteEbook">
+                Delete Ebook
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const { createClient } = supabase;
+
+const supabaseUrl = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const supabaseAnonKey = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+
+const supabaseClient =
+    createClient(supabaseUrl, supabaseAnonKey);
+// =========================================================
+// SELLER ACCOUNT / REACTIVATION / MEMBERSHIP — SUPABASE
+// =========================================================
+
+let currentSellerUser = null;
+let currentSellerProfile = null;
+let sellerCurrentPlan = "free";
+
+const requestReactivationButton =
+    document.getElementById("requestReactivationButton");
+
+const reactivationReasonBox =
+    document.getElementById("reactivationReasonBox");
+
+const sellerPlanBadge =
+    document.getElementById("sellerPlanBadge");
+
+function applySellerPlanBadge() {
+    if (!sellerPlanBadge) return;
+
+    if (sellerCurrentPlan === "pro") {
+        sellerPlanBadge.textContent = "PRO PLAN";
+    } else if (sellerCurrentPlan === "proplus") {
+        sellerPlanBadge.textContent = "PRO PLUS";
+    } else {
+        sellerPlanBadge.textContent = "FREE PLAN";
+    }
+}
+
+async function loadSellerMembership(userId) {
+    const { data, error } =
+        await supabaseClient
+            .from("seller_memberships")
+            .select("plan, status, expires_at")
+            .eq("seller_id", userId)
+            .maybeSingle();
+
+    if (error) {
+        console.error("Seller membership error:", error);
+        sellerCurrentPlan = "free";
+        applySellerPlanBadge();
+        return sellerCurrentPlan;
+    }
+
+    if (!data) {
+        const { data: created, error: createError } =
+            await supabaseClient
+                .from("seller_memberships")
+                .insert({
+                    seller_id: userId,
+                    plan: "free",
+                    status: "active"
+                })
+                .select("plan, status, expires_at")
+                .single();
+
+        if (createError) {
+            console.error("Free membership create error:", createError);
+            sellerCurrentPlan = "free";
+        } else {
+            sellerCurrentPlan = created?.plan || "free";
+        }
+    } else {
+        const expiredByDate =
+            data.expires_at &&
+            new Date(data.expires_at).getTime() <= Date.now();
+
+        sellerCurrentPlan =
+            data.status === "active" && !expiredByDate
+                ? (data.plan || "free")
+                : "free";
+    }
+
+    applySellerPlanBadge();
+    return sellerCurrentPlan;
+}
+
+function setSellerSuspendedUI(isSuspended) {
+    const suspendedNotice =
+        document.getElementById("sellerSuspendedNotice");
+
+    const suspendedSellerForm =
+        document.getElementById("sellerForm");
+
+    const suspendedSellerLayout =
+        document.querySelector(".seller-layout");
+
+    if (isSuspended) {
+        document.body.classList.add("seller-account-suspended");
+
+        if (suspendedNotice) suspendedNotice.style.display = "block";
+        if (suspendedSellerForm) suspendedSellerForm.style.display = "none";
+        if (suspendedSellerLayout) suspendedSellerLayout.style.display = "none";
+    } else {
+        document.body.classList.remove("seller-account-suspended");
+
+        if (suspendedNotice) suspendedNotice.style.display = "none";
+        if (suspendedSellerForm) suspendedSellerForm.style.display = "";
+        if (suspendedSellerLayout) suspendedSellerLayout.style.display = "";
+    }
+}
+
+function showReactivationForm() {
+    if (!requestReactivationButton || !reactivationReasonBox) return;
+
+    reactivationReasonBox.style.display = "block";
+    reactivationReasonBox.innerHTML = `
+        <label for="reactivationReason">
+            Why should your seller account be reactivated?
+        </label>
+
+        <textarea id="reactivationReason"
+                  placeholder="Enter your reason..."
+                  maxlength="500"></textarea>
+
+        <button type="button"
+                id="submitReactivationRequest">
+            Submit Request
+        </button>
+    `;
+
+    requestReactivationButton.style.display = "none";
+}
+
+async function loadReactivationState(userId) {
+    if (!requestReactivationButton || !reactivationReasonBox) return;
+
+    const { data, error } =
+        await supabaseClient
+            .from("seller_reactivation_requests")
+            .select(
+                "id, reason, status, rejection_reason, requested_at, reviewed_at"
+            )
+            .eq("seller_id", userId)
+            .order("requested_at", { ascending: false })
+            .limit(20);
+
+    if (error) {
+        console.error("Reactivation load error:", error);
+        requestReactivationButton.style.display = "inline-block";
+        return;
+    }
+
+    const requests = data || [];
+    const pending = requests.find(item => item.status === "pending");
+
+    if (pending) {
+        requestReactivationButton.style.display = "none";
+        reactivationReasonBox.style.display = "block";
+        reactivationReasonBox.innerHTML =
+            "<strong>Your reactivation request is pending review.</strong>";
+        return;
+    }
+
+    const rejected = requests.find(item => item.status === "rejected");
+
+    if (rejected) {
+        reactivationReasonBox.style.display = "block";
+        reactivationReasonBox.innerHTML = `
+            <strong>Reactivation Request Rejected</strong>
+            <p>
+                Reason:
+                ${rejected.rejection_reason || "No reason provided."}
+            </p>
+        `;
+
+        requestReactivationButton.style.display = "inline-block";
+        requestReactivationButton.textContent = "Request Again";
+        return;
+    }
+
+    reactivationReasonBox.style.display = "none";
+    requestReactivationButton.style.display = "inline-block";
+    requestReactivationButton.textContent = "Request Reactivation";
+}
+
+async function initializeSellerAccount() {
+    const {
+        data: { session },
+        error: authError
+    } = await supabaseClient.auth.getSession();
+    const user = session?.user || null;
+
+    if (authError || !user) {
+        console.error("Seller auth error:", authError);
+        const returnTo = encodeURIComponent("sell-ebook.html");
+        window.location.replace("login.html?return=" + returnTo);
+        return;
+    }
+
+    // Authenticated: reveal the seller dashboard only now.
+    document.documentElement.style.visibility = "visible";
+
+    currentSellerUser = user;
+
+    const { data: profile, error: profileError } =
+        await supabaseClient
+            .from("profiles")
+            .select("id, email, role, seller_status")
+            .eq("id", user.id)
+            .maybeSingle();
+
+    if (profileError) {
+        console.error("Seller profile error:", profileError);
+        return;
+    }
+
+    currentSellerProfile = profile || null;
+
+    await loadSellerMembership(user.id);
+
+    const isSuspended =
+        currentSellerProfile?.seller_status === "suspended";
+
+    setSellerSuspendedUI(isSuspended);
+
+    if (isSuspended) {
+        await loadReactivationState(user.id);
+    }
+}
+
+if (requestReactivationButton) {
+    requestReactivationButton.addEventListener(
+        "click",
+        showReactivationForm
+    );
+}
+
+if (reactivationReasonBox) {
+    reactivationReasonBox.addEventListener(
+        "click",
+        async function(event) {
+            if (event.target.id !== "submitReactivationRequest") return;
+
+            const reasonInput =
+                document.getElementById("reactivationReason");
+
+            const reason =
+                reasonInput ? reasonInput.value.trim() : "";
+
+            if (!reason) {
+                alert("Please enter a reason.");
+                return;
+            }
+
+            let user = currentSellerUser;
+
+            if (!user) {
+                const {
+                    data: { session: authSession },
+                    error: authError
+                } = await supabaseClient.auth.getSession();
+                const authUser = authSession?.user || null;
+
+                if (authError || !authUser) {
+                    alert("Please sign in again.");
+                    return;
+                }
+
+                user = authUser;
+                currentSellerUser = authUser;
+            }
+
+            const submitButton = event.target;
+            submitButton.disabled = true;
+            submitButton.textContent = "Submitting...";
+
+            const { data: pending, error: pendingError } =
+                await supabaseClient
+                    .from("seller_reactivation_requests")
+                    .select("id")
+                    .eq("seller_id", user.id)
+                    .eq("status", "pending")
+                    .limit(1);
+
+            if (pendingError) {
+                console.error("Pending request check error:", pendingError);
+                submitButton.disabled = false;
+                submitButton.textContent = "Submit Request";
+                alert("Request could not be checked. Please try again.");
+                return;
+            }
+
+            if ((pending || []).length) {
+                reactivationReasonBox.innerHTML =
+                    "<strong>Your reactivation request is pending review.</strong>";
+                return;
+            }
+
+            const { error: insertError } =
+                await supabaseClient
+                    .from("seller_reactivation_requests")
+                    .insert({
+                        seller_id: user.id,
+                        reason: reason,
+                        status: "pending"
+                    });
+
+            if (insertError) {
+                console.error("Reactivation submit error:", insertError);
+                submitButton.disabled = false;
+                submitButton.textContent = "Submit Request";
+                alert("Request submit nahi hui. Please try again.");
+                return;
+            }
+
+            reactivationReasonBox.innerHTML =
+                "<strong>Reactivation request submitted. It is pending review.</strong>";
+        }
+    );
+}
+
+const sellerAccountReady = initializeSellerAccount();
+
+async function updateUploadUsage() {
+
+    await sellerAccountReady;
+
+    const currentPlan = sellerCurrentPlan || "free";
+
+    const { data: { session } } =
+        await supabaseClient.auth.getSession();
+    const user = session?.user || null;
+
+    const usage =
+        document.getElementById("sellerUploadUsage");
+
+    if (!usage || !user) return;
+
+    const { count, error } =
+        await supabaseClient
+            .from("ebooks")
+            .select("id", { count: "exact", head: true })
+            .eq("seller_id", user.id);
+
+    if (error) {
+        console.error("Upload usage error:", error);
+        return;
+    }
+
+    const ebookCount = count || 0;
+
+    if (currentPlan === "proplus") {
+        usage.textContent = ebookCount + " ebooks · Unlimited uploads";
+    } else if (currentPlan === "pro") {
+        usage.textContent = ebookCount + " / 50 ebooks used";
+    } else {
+        usage.textContent = ebookCount + " / 15 ebooks used";
+    }
+}
+updateUploadUsage();
+
+const sellerForm =
+    document.getElementById("sellerForm");
+const ebookList =
+    document.getElementById("ebookList");
+
+const customAlert =
+    document.getElementById("customAlert");
+
+const alertTitle =
+    document.getElementById("alertTitle");
+
+const alertMessage =
+    document.getElementById("alertMessage");
+
+const alertButton =
+    document.getElementById("alertButton");
+
+
+function showAlert(title, message) {
+
+    alertTitle.textContent = title;
+
+    alertMessage.textContent = message;
+
+    customAlert.style.display = "flex";
+
+}
+
+
+alertButton.onclick = function() {
+
+    customAlert.style.display = "none";
+
+};
+
+
+let sellerEbooksCache = [];
+const sellerCoverUrlCache = new Map();
+let sellerUserCache = null;
+
+async function getSellerUserCached() {
+    if (sellerUserCache) return sellerUserCache;
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const user = session?.user || null;
+    sellerUserCache = user;
+    return sellerUserCache;
+}
+
+async function getSellerEbooksFromSupabase(forceRefresh = false) {
+    if (!forceRefresh && sellerEbooksCache.length) {
+        return sellerEbooksCache;
+    }
+
+    const user = await getSellerUserCached();
+    if (!user) return [];
+
+    const { data, error } = await supabaseClient
+        .from("ebooks")
+        .select("id,seller_id,title,description,price,cover_path,file_path,status,listing_status,ebook_type,created_at,rejection_reason")
+        .eq("seller_id", user.id)
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Supabase ebooks error:", error);
+        return sellerEbooksCache;
+    }
+
+    const rows = data || [];
+    const missingCoverPaths = [
+        ...new Set(
+            rows
+                .map(ebook => ebook.cover_path)
+                .filter(path => path && !sellerCoverUrlCache.has(path))
+        )
+    ];
+
+    if (missingCoverPaths.length) {
+        const { data: signedRows, error: signedError } =
+            await supabaseClient.storage
+                .from("ebook-covers")
+                .createSignedUrls(missingCoverPaths, 3600);
+
+        if (!signedError && signedRows) {
+            signedRows.forEach(function(item, index) {
+                const path = item.path || missingCoverPaths[index];
+                if (path && item.signedUrl) {
+                    sellerCoverUrlCache.set(path, item.signedUrl);
+                }
+            });
+        } else if (signedError) {
+            console.error("Cover batch signed URL error:", signedError);
+        }
+    }
+
+    const ebooksWithCovers = rows.map(function(ebook) {
+        return {
+            ...ebook,
+            cover: sellerCoverUrlCache.get(ebook.cover_path) || ""
+        };
+    });
+
+    sellerEbooksCache = ebooksWithCovers;
+    return sellerEbooksCache;
+}
+
+function renderSellerEbooksFromData(ebooks) {
+    ebookList.innerHTML = "";
+
+    if (!ebooks.length) {
+        ebookList.innerHTML = `
+            <div class="empty-message" id="addFirstEbook">
+                You haven't submitted any ebooks yet.
+            </div>
+        `;
+        document.getElementById("addFirstEbook").onclick = function() {
+            document.getElementById("sellerForm").scrollIntoView({ behavior: "smooth", block: "center" });
+        };
+        return;
+    }
+
+    ebooks.forEach(function(ebook) {
+        const item = document.createElement("div");
+        item.className = "seller-ebook";
+        item.id = "seller-ebook-" + ebook.id;
+        item.dataset.status = ebook.status || "pending";
+        item.dataset.listingStatus = ebook.listing_status || "unlisted";
+
+        item.innerHTML = `
+            <div class="seller-ebook-cover">
+                <img src="${ebook.cover || ""}" alt="${ebook.title}">
+            </div>
+            <div class="seller-ebook-info">
+                <strong>${ebook.title}</strong>
+                <p>₹${ebook.price} · ${new Date(ebook.created_at).toLocaleDateString("en-IN")}</p>
+            </div>
+            <div class="seller-actions">
+                <span class="status ${ebook.status}">${(ebook.status || "pending").toUpperCase()}</span>
+                ${ebook.status === "rejected" && ebook.rejection_reason
+                    ? `<div class="seller-rejection-reason"><strong>Reason:</strong> ${ebook.rejection_reason}</div>`
+                    : ""}
+                <button type="button" class="listing-ebook" onclick="toggleSellerEbookListing('${ebook.id}')">
+                    ${ebook.listing_status === "listed"
+                        ? "Unlist"
+                        : ebook.status === "rejected"
+                            ? "Resubmit"
+                            : ebook.status === "approved"
+                                ? "Publish Now"
+                                : "Publish"}
+                </button>
+                <button type="button" class="edit-ebook" onclick="editSellerEbook('${ebook.id}')">Edit</button>
+                <button type="button" class="delete-ebook" onclick="deleteSellerEbook('${ebook.id}')">Delete</button>
+            </div>
+        `;
+        ebookList.appendChild(item);
+    });
+}
+
+async function renderSellerEbooks(forceRefresh = false) {
+    const ebooks = await getSellerEbooksFromSupabase(forceRefresh);
+    renderSellerEbooksFromData(ebooks);
+}
+
+async function saveEbookCoverToStorage(ebookId, coverFile) {
+
+    const { data: { session } } =
+        await supabaseClient.auth.getSession();
+    const user = session?.user || null;
+
+    if (!user) {
+        throw new Error("User not logged in.");
+    }
+
+    const extension =
+        coverFile.name.split(".").pop().toLowerCase();
+
+    const coverPath =
+        user.id + "/" + ebookId + "." + extension;
+
+    const { error } =
+        await supabaseClient
+            .storage
+            .from("ebook-covers")
+            .upload(coverPath, coverFile, {
+                upsert: false,
+                contentType: coverFile.type
+            });
+
+    if (error) {
+        throw error;
+    }
+
+    return coverPath;
+}
+async function saveEbookFileToDB(ebookId, ebookFile) {
+
+    const { data: { session } } =
+        await supabaseClient.auth.getSession();
+    const user = session?.user || null;
+
+    if (!user) {
+        throw new Error("User not logged in.");
+    }
+
+    const fileExtension =
+        ebookFile.name.split(".").pop().toLowerCase();
+
+    const filePath =
+        user.id + "/" + ebookId + "." + fileExtension;
+
+    const { error } =
+        await supabaseClient
+            .storage
+            .from("ebook-files")
+            .upload(filePath, ebookFile, {
+                upsert: false,
+                contentType: ebookFile.type
+            });
+
+    if (error) {
+        throw error;
+    }
+
+    return filePath;
+}
+
+sellerForm.onsubmit = async function(event) {
+
+    event.preventDefault();
+
+    const { data: { session } } =
+        await supabaseClient.auth.getSession();
+    const user = session?.user || null;
+
+    if (!user) {
+        showAlert("Login Required", "Please login before submitting an ebook.");
+        return;
+    }
+
+    const name = document.getElementById("ebookName").value.trim();
+    const price = document.getElementById("ebookPrice").value.trim();
+    const description = document.getElementById("ebookDescription").value.trim();
+    const coverFile = document.getElementById("ebookCover").files[0];
+    const ebookFile = document.getElementById("ebookFile").files[0];
+
+    if (!name || !price || !description) {
+        showAlert("Missing Details", "Please fill in all ebook details.");
+        return;
+    }
+
+    if (!coverFile || !ebookFile) {
+        showAlert("Missing File", "Please select both the cover image and ebook file.");
+        return;
+    }
+
+    const allowedImageTypes = ["image/jpeg", "image/png"];
+    if (!allowedImageTypes.includes(coverFile.type)) {
+        showAlert("Invalid Cover Image", "Please select a JPG or PNG image.");
+        return;
+    }
+
+    if (coverFile.size > 5 * 1024 * 1024) {
+        showAlert("Image Too Large", "Please select an image smaller than 5 MB.");
+        return;
+    }
+
+    const allowedEbookTypes = ["application/pdf", "application/epub+zip"];
+    if (!allowedEbookTypes.includes(ebookFile.type)) {
+        showAlert("Invalid Ebook File", "Please select a valid PDF or EPUB file.");
+        return;
+    }
+
+    if (ebookFile.size > 20 * 1024 * 1024) {
+        showAlert("Ebook File Too Large", "Please select a PDF or EPUB file smaller than 20 MB.");
+        return;
+    }
+
+    await sellerAccountReady;
+
+    const currentPlan = sellerCurrentPlan || "free";
+    const uploadLimit =
+        currentPlan === "proplus"
+            ? Infinity
+            : currentPlan === "pro"
+                ? 50
+                : 15;
+
+    const { count, error: countError } =
+        await supabaseClient
+            .from("ebooks")
+            .select("id", { count: "exact", head: true })
+            .eq("seller_id", user.id);
+
+    if (countError) {
+        console.error(countError);
+        showAlert("Database Error", "Your ebook limit could not be checked.");
+        return;
+    }
+
+    if ((count || 0) >= uploadLimit) {
+        showAlert(
+            "Upload Limit Reached",
+            currentPlan === "free"
+                ? "Your Free plan allows up to 15 ebooks. Upgrade your plan to upload more."
+                : "Your Pro plan allows up to 50 ebooks. Upgrade to Pro Plus for unlimited uploads."
+        );
+        return;
+    }
+
+    const uploadId = crypto.randomUUID();
+    let coverPath = "";
+    let filePath = "";
+
+    try {
+        coverPath = await saveEbookCoverToStorage(uploadId, coverFile);
+        filePath = await saveEbookFileToDB(uploadId, ebookFile);
+
+        const { error: ebookDbError } =
+            await supabaseClient
+                .from("ebooks")
+                .insert({
+                    seller_id: user.id,
+                    title: name,
+                    description: description,
+                    price: Number(price),
+                    file_path: filePath,
+                    cover_path: coverPath,
+                    status: "pending",
+                    listing_status: "unlisted",
+                    ebook_type: "seller"
+                });
+
+        if (ebookDbError) throw ebookDbError;
+
+        sellerForm.reset();
+        sellerEbooksCache = [];
+        await renderSellerEbooks(true);
+        await updateUploadUsage();
+
+        showAlert(
+            "Ebook Submitted",
+            "Your ebook has been saved and is currently pending review."
+        );
+
+    } catch (error) {
+        console.error("Ebook submit error:", error);
+
+        if (coverPath) {
+            await supabaseClient.storage.from("ebook-covers").remove([coverPath]);
+        }
+        if (filePath) {
+            await supabaseClient.storage.from("ebook-files").remove([filePath]);
+        }
+
+        showAlert("Upload Failed", "Your ebook could not be submitted. Please try again.");
+    }
+};
+
+let ebookToDeleteId = null;
+async function toggleSellerEbookListing(id) {
+    const item = document.getElementById("seller-ebook-" + id);
+    const button = item?.querySelector(".listing-ebook");
+    const cachedEbook = sellerEbooksCache.find(e => String(e.id) === String(id));
+
+    let ebook = cachedEbook;
+    if (!ebook) {
+        const { data, error } = await supabaseClient
+            .from("ebooks")
+            .select("id,status,listing_status,title")
+            .eq("id", id)
+            .single();
+        if (error || !data) {
+            showAlert("Error", "Ebook could not be loaded.");
+            return;
+        }
+        ebook = data;
+    }
+
+    if (button) {
+        button.disabled = true;
+        button.dataset.oldText = button.textContent;
+        button.textContent = ebook.status === "rejected" ? "Submitting..." : "Updating...";
+    }
+
+    if (ebook.status === "rejected") {
+        const oldStatus = ebook.status;
+        const oldListing = ebook.listing_status;
+        ebook.status = "pending";
+        ebook.listing_status = "unlisted";
+        if (cachedEbook) renderSellerEbooksFromData(sellerEbooksCache);
+
+        const { error } = await supabaseClient
+            .from("ebooks")
+            .update({ status: "pending", listing_status: "unlisted" })
+            .eq("id", id);
+
+        if (error) {
+            ebook.status = oldStatus;
+            ebook.listing_status = oldListing;
+            if (cachedEbook) renderSellerEbooksFromData(sellerEbooksCache);
+            console.error(error);
+            showAlert("Error", "Ebook could not be resubmitted.");
+            return;
+        }
+
+        showAlert("Submitted for Review", "Your ebook has been resubmitted for platform review.");
+        return;
+    }
+
+    if (ebook.listing_status !== "listed" && ebook.status !== "approved") {
+        if (button) {
+            button.disabled = false;
+            button.textContent = button.dataset.oldText || "Publish";
+        }
+        showAlert("Wait for Platform Review", "Your ebook is under review. Please wait for platform approval.");
+        return;
+    }
+
+    const oldListingStatus = ebook.listing_status;
+    const newListingStatus = oldListingStatus === "listed" ? "unlisted" : "listed";
+
+    // Optimistic UI: button changes immediately while Supabase updates.
+    ebook.listing_status = newListingStatus;
+    if (cachedEbook) {
+        renderSellerEbooksFromData(sellerEbooksCache);
+    } else if (button) {
+        button.disabled = false;
+        button.textContent = newListingStatus === "listed" ? "Unlist" : "Publish Now";
+    }
+
+    const { error: updateError } = await supabaseClient
+        .from("ebooks")
+        .update({ listing_status: newListingStatus })
+        .eq("id", id);
+
+    if (updateError) {
+        ebook.listing_status = oldListingStatus;
+        if (cachedEbook) renderSellerEbooksFromData(sellerEbooksCache);
+        console.error(updateError);
+        showAlert("Update Failed", "Listing status could not be updated.");
+        return;
+    }
+
+    showAlert(
+        newListingStatus === "listed" ? "Ebook Published" : "Ebook Unlisted",
+        newListingStatus === "listed"
+            ? "Your ebook is now listed on the marketplace."
+            : "Your ebook has been removed from the marketplace."
+    );
+}
+
+function deleteSellerEbook(id) {
+
+
+    ebookToDeleteId = id;
+
+    const deleteModal =
+        document.getElementById("deleteEbookModal");
+
+    if (deleteModal) {
+        deleteModal.classList.add("show");
+    }
+}
+document.getElementById("cancelDeleteEbook").onclick =
+    function() {
+
+        document
+            .getElementById("deleteEbookModal")
+            .classList.remove("show");
+
+        ebookToDeleteId = null;
+    };
+
+document.getElementById("confirmDeleteEbook").onclick =
+    async function() {
+
+        if (!ebookToDeleteId) return;
+
+        const { data: ebook, error: loadError } =
+            await supabaseClient
+                .from("ebooks")
+                .select("cover_path, file_path")
+                .eq("id", ebookToDeleteId)
+                .single();
+
+        if (loadError || !ebook) {
+            showAlert("Delete Failed", "Ebook could not be loaded.");
+            return;
+        }
+
+        const { error } =
+            await supabaseClient
+                .from("ebooks")
+                .delete()
+                .eq("id", ebookToDeleteId);
+
+        if (error) {
+            console.error(error);
+            showAlert("Delete Failed", "Ebook could not be deleted.");
+            return;
+        }
+
+        if (ebook.cover_path) {
+            await supabaseClient.storage.from("ebook-covers").remove([ebook.cover_path]);
+        }
+        if (ebook.file_path) {
+            await supabaseClient.storage.from("ebook-files").remove([ebook.file_path]);
+        }
+
+        document.getElementById("deleteEbookModal").classList.remove("show");
+        ebookToDeleteId = null;
+        sellerEbooksCache = [];
+
+        await renderSellerEbooks(true);
+        await updateUploadUsage();
+
+        showAlert("Ebook Deleted", "Your ebook has been deleted successfully.");
+    };
+
+async function editSellerEbook(id) {
+
+    const { data: ebook, error } =
+        await supabaseClient
+            .from("ebooks")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+    if (error || !ebook) {
+        showAlert(
+            "Error",
+            "Ebook could not be loaded."
+        );
+        return;
+    }
+
+    document.getElementById("editTitle").value =
+        ebook.title;
+
+    document.getElementById("editPrice").value =
+        ebook.price;
+
+    document.getElementById("editDescription").value =
+        ebook.description;
+
+    document.getElementById("editModal").style.display =
+        "flex";
+
+    document.getElementById("editSaveButton").onclick =
+        async function() {
+
+            const newTitle =
+                document.getElementById("editTitle").value.trim();
+
+            const newPrice =
+                document.getElementById("editPrice").value.trim();
+
+            const newDescription =
+                document.getElementById("editDescription").value.trim();
+
+            if (!newTitle || !newPrice || !newDescription) {
+
+                showAlert(
+                    "Missing Details",
+                    "Please fill in all ebook details."
+                );
+
+                return;
+            }
+
+            const { error: updateError } =
+                await supabaseClient
+                    .from("ebooks")
+                    .update({
+                        title: newTitle,
+                        price: Number(newPrice),
+                        description: newDescription
+                    })
+                    .eq("id", id);
+
+            if (updateError) {
+                console.error(updateError);
+
+                showAlert(
+                    "Update Failed",
+                    "Ebook could not be updated."
+                );
+
+                return;
+            }
+
+            document.getElementById("editModal").style.display =
+                "none";
+
+            sellerEbooksCache = [];
+            await renderSellerEbooks(true);
+
+            showAlert(
+                "Ebook Updated",
+                "Your ebook details have been updated successfully."
+            );
+        };
+}
+document.getElementById("editCancelButton").onclick =
+    function() {
+
+        document.getElementById("editModal").style.display =
+            "none";
+
+    };
+
+renderSellerEbooks();
+const publishEbookId =
+    new URLSearchParams(window.location.search)
+        .get("ebook");
+
+if (publishEbookId) {
+
+    setTimeout(function () {
+
+        const targetEbook =
+            document.getElementById(
+                "seller-ebook-" + publishEbookId
+            );
+
+        if (targetEbook) {
+
+            targetEbook.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+        }
+
+    }, 300);
+
+}
+async function getCurrentSellerUser() {
+    if (currentSellerUser) return currentSellerUser;
+    if (sellerUserCache) return sellerUserCache;
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const user = session?.user || null;
+    if (user) {
+        currentSellerUser = user;
+        sellerUserCache = user;
+    }
+    return user;
+}
+
+async function getSellerPayoutAccount(userId) {
+    const { data, error } = await supabaseClient
+        .from("seller_payout_accounts")
+        .select("account_holder_name, account_number, ifsc, upi_id")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Payout account error:", error);
+        return null;
+    }
+    return data || null;
+}
+
+async function updateSellerWallet() {
+    const user = await getCurrentSellerUser();
+    if (!user) return;
+
+    const [ordersResult, withdrawalsResult] = await Promise.all([
+        supabaseClient
+            .from("orders")
+            .select("id, amount, seller_earning, payment_status, order_status, created_at")
+            .eq("seller_id", user.id)
+            .eq("payment_status", "paid")
+            .eq("order_status", "completed")
+            .order("created_at", { ascending: false }),
+
+        supabaseClient
+            .from("withdrawals")
+            .select("id, amount, status, rejection_reason, requested_at")
+            .eq("seller_id", user.id)
+            .order("requested_at", { ascending: false })
+    ]);
+
+    if (ordersResult.error) console.error("Seller orders error:", ordersResult.error);
+    if (withdrawalsResult.error) console.error("Seller withdrawals error:", withdrawalsResult.error);
+
+    const sellerOrders = ordersResult.data || [];
+    const totalSales = sellerOrders.length;
+    const totalRevenue = sellerOrders.reduce(function(total, order) {
+        return total + Number(order.seller_earning || 0);
+    }, 0);
+
+    const sellerWithdrawals = withdrawalsResult.data || [];
+    const totalWithdrawn = sellerWithdrawals
+        .filter(w => w.status === "pending" || w.status === "success")
+        .reduce((total, w) => total + Number(w.amount || 0), 0);
+
+    let affiliateEarnings = 0;
+    let creatorReferralEarnings = 0;
+
+    const { data: affiliateAccount, error: affiliateAccountError } =
+        await supabaseClient
+            .from("affiliate_accounts")
+            .select("id")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+    if (affiliateAccountError) {
+        console.error("Affiliate account error:", affiliateAccountError);
+    }
+
+    if (affiliateAccount?.id) {
+        const { data: affiliateSales, error: affiliateSalesError } =
+            await supabaseClient
+                .from("affiliate_sales")
+                .select("commission_amount, status")
+                .eq("affiliate_id", affiliateAccount.id)
+                .eq("status", "completed");
+
+        if (affiliateSalesError) {
+            console.error("Affiliate sales error:", affiliateSalesError);
+        } else {
+            affiliateEarnings = (affiliateSales || []).reduce(
+                (total, sale) =>
+                    total + Number(sale.commission_amount || 0),
+                0
+            );
+        }
+    }
+
+    const { data: referralAccount, error: referralAccountError } =
+        await supabaseClient
+            .from("creator_referral_accounts")
+            .select("id")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+    if (referralAccountError) {
+        console.error("Creator referral account error:", referralAccountError);
+    }
+
+    if (referralAccount?.id) {
+        const { data: creatorReferrals, error: creatorReferralsError } =
+            await supabaseClient
+                .from("creator_referrals")
+                .select("reward_amount, status")
+                .eq("referrer_id", referralAccount.id)
+                .eq("status", "completed");
+
+        if (creatorReferralsError) {
+            console.error(
+                "Creator referral earnings error:",
+                creatorReferralsError
+            );
+        } else {
+            creatorReferralEarnings = (creatorReferrals || []).reduce(
+                (total, referral) =>
+                    total + Number(referral.reward_amount || 0),
+                0
+            );
+        }
+    }
+
+    const totalWalletEarnings =
+        totalRevenue +
+        affiliateEarnings +
+        creatorReferralEarnings;
+    const availableBalance = Math.max(0, totalWalletEarnings - totalWithdrawn);
+
+    const pendingAmount = sellerWithdrawals
+        .filter(w => w.status === "pending")
+        .reduce((total, w) => total + Number(w.amount || 0), 0);
+
+    const successfulAmount = sellerWithdrawals
+        .filter(w => w.status === "success")
+        .reduce((total, w) => total + Number(w.amount || 0), 0);
+
+    const statusTitle = document.getElementById("withdrawStatusTitle");
+    const statusAmount = document.getElementById("pendingBalance");
+    const statusText = document.getElementById("withdrawStatusText");
+
+    if (pendingAmount > 0) {
+        statusTitle.textContent = "Pending Withdrawal";
+        statusAmount.textContent = "₹" + pendingAmount;
+        statusAmount.style.color = "#dc3545";
+        statusText.textContent = "Waiting for approval";
+    } else {
+        statusTitle.textContent = "Withdrawal Success";
+        statusAmount.textContent = "₹" + successfulAmount;
+        statusAmount.style.color = "#087f5b";
+        statusText.textContent = "Total successful withdrawals";
+    }
+
+    document.getElementById("totalSales").textContent = totalSales;
+    document.getElementById("totalRevenue").textContent = "₹" + totalRevenue;
+    document.getElementById("availableBalance").textContent = "₹" + availableBalance;
+    document.getElementById("walletBalance").textContent = "₹" + availableBalance;
+
+    const salesList = document.getElementById("salesList");
+    if (salesList) {
+        if (!sellerOrders.length) {
+            salesList.innerHTML = '<div class="sales-empty">No sales yet.</div>';
+        } else {
+            salesList.innerHTML = sellerOrders.map(order => `
+                <div class="sale-item">
+                    <div>
+                        <strong>Order ${String(order.id).slice(0, 8)}</strong>
+                        <small>${new Date(order.created_at).toLocaleDateString("en-IN")}</small>
+                    </div>
+                    <strong class="sale-amount">₹${Number(order.seller_earning || 0)}</strong>
+                </div>
+            `).join("");
+        }
+    }
+}
+
+async function renderWithdrawalHistory() {
+    const user = await getCurrentSellerUser();
+    if (!user) return;
+
+    const withdrawalList = document.getElementById("withdrawalList");
+    if (!withdrawalList) return;
+
+    const [{ data: withdrawals, error }, payout] = await Promise.all([
+        supabaseClient
+            .from("withdrawals")
+            .select("id, amount, status, rejection_reason, requested_at")
+            .eq("seller_id", user.id)
+            .order("requested_at", { ascending: false }),
+        getSellerPayoutAccount(user.id)
+    ]);
+
+    if (error) {
+        console.error(error);
+        withdrawalList.innerHTML = '<div class="withdrawal-empty">Could not load withdrawals.</div>';
+        return;
+    }
+
+    if (!withdrawals || withdrawals.length === 0) {
+        withdrawalList.innerHTML = '<div class="withdrawal-empty">No withdrawal requests yet.</div>';
+        return;
+    }
+
+    const last4 = payout?.account_number ? payout.account_number.slice(-4) : "";
+    const payoutText = last4 && payout?.ifsc
+        ? "Bank: ••••" + last4 + " · IFSC: " + payout.ifsc
+        : payout?.upi_id
+            ? "UPI: " + payout.upi_id
+            : "Payout account linked";
+
+    withdrawalList.innerHTML = "";
+
+    withdrawals.forEach(function(withdrawal) {
+        const item = document.createElement("div");
+        item.className = "withdrawal-item";
+
+        const leftSide = document.createElement("div");
+        leftSide.innerHTML = `
+            <strong>₹${withdrawal.amount}</strong>
+            <small>Withdrawal ID: ${withdrawal.id}</small>
+            <small>${new Date(withdrawal.requested_at).toLocaleDateString("en-IN")}</small>
+            <small>${payoutText}</small>
+            ${withdrawal.status === "rejected" && withdrawal.rejection_reason
+                ? `<small class="withdrawal-rejection-reason">Reason: ${withdrawal.rejection_reason}</small>`
+                : ""}
+        `;
+
+        const rightSide = document.createElement("div");
+        rightSide.className = "withdrawal-status-area";
+        rightSide.innerHTML = `<span class="withdrawal-status ${withdrawal.status}">${withdrawal.status.toUpperCase()}</span>`;
+
+        item.appendChild(leftSide);
+        item.appendChild(rightSide);
+        withdrawalList.appendChild(item);
+    });
+}
+
+updateSellerWallet();
+renderWithdrawalHistory();
+
+document.getElementById("withdrawButton").onclick = async function() {
+    const user = await getCurrentSellerUser();
+    if (!user) {
+        showAlert("Login Required", "Please login before requesting a withdrawal.");
+        return;
+    }
+
+    const payout = await getSellerPayoutAccount(user.id);
+    if (!payout || (!payout.account_number && !payout.upi_id)) {
+        showAlert("Link Payout Account", "Please add your bank details in Profile before requesting a withdrawal.");
+        return;
+    }
+
+    const balanceText = document.getElementById("walletBalance").textContent;
+    const balance = Number(balanceText.replace("₹", "").replace(/,/g, ""));
+
+    const withdrawModal = document.getElementById("withdrawModal");
+    const withdrawAmountInput = document.getElementById("withdrawAmount");
+    const withdrawAvailableBalance = document.getElementById("withdrawAvailableBalance");
+
+    withdrawAvailableBalance.textContent = "₹" + balance;
+    withdrawAmountInput.value = "";
+    withdrawModal.style.display = "flex";
+    withdrawAmountInput.focus();
+
+    document.getElementById("withdrawCancel").onclick = function() {
+        withdrawModal.style.display = "none";
+    };
+
+    document.getElementById("withdrawConfirm").onclick = async function() {
+        const withdrawAmount = Number(withdrawAmountInput.value);
+
+        if (isNaN(withdrawAmount) || withdrawAmount < 100) {
+            showAlert("Minimum Withdrawal ₹100", "You must withdraw at least ₹100.");
+            return;
+        }
+        if (withdrawAmount > 5000) {
+            showAlert("Maximum Withdrawal ₹5,000", "You can withdraw a maximum of ₹5,000 in one transaction.");
+            return;
+        }
+        if (withdrawAmount > balance) {
+            showAlert("Insufficient Balance", "You cannot withdraw more than your available balance.");
+            return;
+        }
+
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+
+        const { data: todayRows, error: todayError } = await supabaseClient
+            .from("withdrawals")
+            .select("amount, status")
+            .eq("seller_id", user.id)
+            .gte("requested_at", startOfToday.toISOString());
+
+        if (todayError) {
+            console.error(todayError);
+            showAlert("Error", "Daily withdrawal limit could not be checked.");
+            return;
+        }
+
+        const todayWithdrawn = (todayRows || [])
+            .filter(w => w.status === "pending" || w.status === "success")
+            .reduce((total, w) => total + Number(w.amount || 0), 0);
+
+        if (todayWithdrawn + withdrawAmount > 30000) {
+            const remainingLimit = Math.max(0, 30000 - todayWithdrawn);
+            showAlert("Daily Limit ₹30,000", "Your remaining withdrawal limit for today is ₹" + remainingLimit + ".");
+            return;
+        }
+
+        const { error: insertError } = await supabaseClient
+            .from("withdrawals")
+            .insert({
+                seller_id: user.id,
+                amount: withdrawAmount,
+                status: "pending"
+            });
+
+        if (insertError) {
+            console.error(insertError);
+            showAlert("Withdrawal Failed", "Your withdrawal request could not be submitted.");
+            return;
+        }
+
+        withdrawModal.style.display = "none";
+        await updateSellerWallet();
+        await renderWithdrawalHistory();
+
+        showAlert(
+            "Withdrawal Requested",
+            "₹" + withdrawAmount + " withdrawal request has been submitted and is now pending approval."
+        );
+    };
+};
+
+            </script>
+<div class="withdraw-modal" id="withdrawModal">
+    <div class="withdraw-modal-box">
+
+        <div class="withdraw-modal-top">
+            <span class="withdraw-modal-icon">₹</span>
+
+            <div>
+                <p>SELLER WALLET</p>
+                <h3>Withdraw Funds</h3>
+            </div>
+        </div>
+
+        <p class="withdraw-modal-subtitle">
+            Enter the amount you want to withdraw from your available balance.
+        </p>
+
+        <div class="withdraw-balance-line">
+            <span>Available Balance</span>
+            <strong id="withdrawAvailableBalance">₹0</strong>
+        </div>
+
+        <label for="withdrawAmount">
+            Withdrawal Amount
+        </label>
+
+        <div class="withdraw-input-wrap">
+            <span>₹</span>
+            <input
+                type="number"
+                id="withdrawAmount"
+                min="1"
+                step="1"
+                placeholder="Enter amount"
+            >
+        </div>
+
+        <div class="withdraw-modal-buttons">
+            <button
+                type="button"
+                class="withdraw-cancel"
+                id="withdrawCancel"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="withdraw-confirm"
+                id="withdrawConfirm"
+            >
+                Withdraw
+            </button>
+        </div>
+
+    </div>
+<!-- PREMIUM DELETE EBOOK MODAL -->
+<div class="delete-ebook-modal" id="deleteEbookModal">
+    <div class="delete-ebook-box">
+
+        <div class="delete-ebook-icon">!</div>
+
+        <p class="delete-ebook-label">CREATOR MARKETPLACE</p>
+
+        <h3>Delete Ebook?</h3>
+
+        <p class="delete-ebook-text">
+            Are you sure you want to delete this ebook?
+            This action cannot be undone.
+        </p>
+
+        <div class="delete-ebook-buttons">
+            <button type="button" id="cancelDeleteEbook">
+                Cancel
+            </button>
+
+            <button type="button" id="confirmDeleteEbook">
+                Delete Ebook
+            </button>
+        </div>
+
+</div>
+</div>
+<script>
+
+
+</script>
+<script src="./app-notifications.js" defer></script>
+
+</body>
+</html>

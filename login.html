@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>createMedia — Login</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>createMedia</h1>
+<a href="index.html" class="auth-back-home">
+    ← Home
+</a>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="all-ebooks.html">Ebooks</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#contact">Contact</a>
+        </nav>
+    </header>
+
+
+    <main>
+
+        <section class="login-section">
+
+            <div class="login-box">
+
+                <p class="login-label">
+                    WELCOME BACK
+                </p>
+
+                <h2>
+                    Login to<br>
+                    createMedia.
+                </h2>
+
+                <p class="login-text">
+                    Sign in to access your createMedia account.
+                </p>
+
+
+               <form id="loginForm">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+
+                    <label>
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+
+                    <button type="submit">
+                        Login →
+                    </button>
+         </form>
+
+
+                <p class="signup-text">
+                    Don't have an account?
+                    <a href="signup.html">
+    Create one
+</a>
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            © 2026 createMedia. All Rights Reserved.
+        </p>
+
+        <div class="footer-links">
+
+            <a href="privacy.html">
+                Privacy Policy
+            </a>
+
+            <a href="terms.html">
+                Terms & Conditions
+            </a>
+
+            <a href="refund.html">
+                Refund Policy
+            </a>
+
+        </div>
+
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.getElementById("loginForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const email = this.querySelector('input[type="email"]').value.trim().toLowerCase();
+    const password = this.querySelector('input[type="password"]').value;
+    const button = this.querySelector('button[type="submit"]');
+
+    button.disabled = true;
+    button.textContent = "Logging in...";
+
+    try {
+        const { data: loginData, error: loginError } =
+            await supabaseClient.auth.signInWithPassword({ email, password });
+
+        if (loginError || !loginData?.user) {
+            throw loginError || new Error("Login failed.");
+        }
+
+        /*
+           signInWithPassword already returns the authenticated user/session.
+           Avoid an extra auth.getUser() network round-trip.
+        */
+        const user = loginData.user;
+
+        const { data: profile, error: profileError } =
+            await supabaseClient
+                .from("profiles")
+                .select("id, role")
+                .eq("id", user.id)
+                .single();
+
+        if (profileError || !profile) {
+            console.error("Profile lookup failed:", profileError);
+            throw new Error("Your account profile could not be loaded.");
+        }
+
+        const role = String(profile.role || "").trim().toLowerCase();
+        const returnAfterLogin =
+            sessionStorage.getItem("createMediaReturnAfterLogin");
+
+        if (role === "admin") {
+            sessionStorage.removeItem("createMediaReturnAfterLogin");
+            window.location.replace("admin.html");
+            return;
+        }
+
+        if (returnAfterLogin && !returnAfterLogin.toLowerCase().includes("admin")) {
+            sessionStorage.removeItem("createMediaReturnAfterLogin");
+            window.location.replace(returnAfterLogin);
+            return;
+        }
+
+        sessionStorage.removeItem("createMediaReturnAfterLogin");
+        window.location.replace("index.html");
+
+    } catch (error) {
+        console.error("Login error:", error);
+        alert(error?.message || "Login failed.");
+        button.disabled = false;
+        button.textContent = "Login →";
+    }
+});
+</script>
+
+</body>
+
+</html>

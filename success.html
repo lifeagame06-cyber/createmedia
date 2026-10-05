@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Payment Successful - createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #111;
+        }
+
+        .success-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        .success-box {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .success-icon {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            background: #22c55e;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #888;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 38px;
+            margin-bottom: 18px;
+        }
+
+        .message {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .delivery-box {
+            background: #f7f7f7;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .delivery-box p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .home-button {
+            display: inline-block;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: 0.25s ease;
+        }
+
+        .home-button:hover {
+            transform: translateY(-3px);
+            opacity: 0.9;
+        }
+
+        .note {
+            margin-top: 18px;
+            font-size: 13px;
+            color: #999;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .success-page {
+                padding: 20px 15px;
+            }
+
+            .success-box {
+                padding: 40px 22px;
+                border-radius: 16px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .success-icon {
+                width: 68px;
+                height: 68px;
+                font-size: 32px;
+            }
+
+        }
+/* PREMIUM SUCCESS ACTION BUTTONS */
+
+.view-ebook-button {
+    display: block;
+    width: 100%;
+
+    margin: 28px 0 12px;
+    padding: 15px 20px;
+
+    box-sizing: border-box;
+
+    background: #07834b;
+    color: #ffffff;
+
+    border-radius: 11px;
+
+    text-align: center;
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    box-shadow: 0 8px 20px rgba(7, 131, 75, 0.18);
+
+    transition: 0.2s ease;
+}
+
+.view-ebook-button:hover {
+    background: #066f40;
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 12px 26px rgba(7, 131, 75, 0.24);
+}
+/* SUCCESS PAGE - BACK BUTTON */
+
+.home-button {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-top: 12px;
+    padding: 14px 20px;
+
+    background: #111111;
+    color: #ffffff;
+
+    border-radius: 11px;
+
+    text-align: center;
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.10);
+
+    transition: 0.2s ease;
+}
+
+.home-button:hover {
+    background: #242424;
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+/* PREMIUM EBOOK PREPARING LOADER */
+
+.ebook-preparing {
+    width: 100%;
+    box-sizing: border-box;
+
+    margin: 28px 0 12px;
+    padding: 15px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+
+    background: #f4fbf7;
+    border: 1px solid #d7eee1;
+    border-radius: 11px;
+
+    color: #087647;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ebook-preparing-spinner {
+    width: 18px;
+    height: 18px;
+
+    border: 2px solid #c9e8d8;
+    border-top-color: #07834b;
+    border-radius: 50%;
+
+    animation: ebookPreparingSpin 0.75s linear infinite;
+}
+
+@keyframes ebookPreparingSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+#viewEbookButton {
+    animation: viewEbookReveal 0.45s ease forwards;
+}
+
+@keyframes viewEbookReveal {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="success-page">
+
+        <div class="success-box">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+
+            <p class="label">
+                PAYMENT CONFIRMED
+            </p>
+
+
+            <h1>
+                Payment Successful
+            </h1>
+
+
+            <p class="message">
+    Thank you for your purchase.
+    Your ebook order has been successfully received.
+</p>
+
+<div class="delivery-box">
+
+    <p>
+        Ebook:
+        <strong id="successEbookName">Ebook 1</strong>
+    </p>
+
+    <p>
+        Amount:
+        <strong id="successPrice">₹199</strong>
+    </p>
+
+</div>
+<div class="ebook-preparing" id="ebookPreparing">
+
+    <div class="ebook-preparing-spinner"></div>
+
+    <span>Preparing your ebook...</span>
+
+</div>
+
+<a href="account.html#orders"
+   class="view-ebook-button"
+   id="viewEbookButton"
+   style="display: none;">
+    View My Ebook
+</a>
+           
+
+            <a href="index.html" class="home-button">
+                Back to createMedia
+            </a>
+
+
+            <p class="note">
+                Please keep your order details for reference.
+            </p>
+
+        </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const params = new URLSearchParams(window.location.search);
+const orderId = params.get("order");
+const sellerEbookId = params.get("sellerEbook");
+const ebookParam = params.get("ebook");
+
+const legacyPlatformEbooks = [
+    { name: "Ebook 1", price: 199 },
+    { name: "Ebook 2", price: 249 },
+    { name: "Ebook 3", price: 299 },
+    { name: "Ebook 4", price: 349 },
+    { name: "Ebook 5", price: 399 }
+];
+
+function isUuid(value) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value || "");
+}
+
+function showPreparing(show) {
+    document.getElementById("ebookPreparing").style.display = show ? "flex" : "none";
+}
+
+function showViewButton(href) {
+    const button = document.getElementById("viewEbookButton");
+    button.href = href;
+    button.style.display = "block";
+}
+
+function showNotVerified() {
+    document.querySelector(".label").textContent = "PAYMENT NOT VERIFIED";
+    document.querySelector("h1").textContent = "Order Not Confirmed";
+    document.querySelector(".message").textContent =
+        "This page cannot confirm a purchase until the payment is verified by createMedia.";
+    showPreparing(false);
+    document.getElementById("viewEbookButton").style.display = "none";
+}
+
+async function loadVerifiedOrder(user) {
+    if (!orderId || !isUuid(orderId)) return null;
+
+    const { data, error } = await supabaseClient
+        .from("orders")
+        .select("id, buyer_id, ebook_id, ebook_title, amount, payment_status, order_status")
+        .eq("id", orderId)
+        .eq("buyer_id", user.id)
+        .eq("payment_status", "paid")
+        .eq("order_status", "completed")
+        .maybeSingle();
+
+    if (error) {
+        console.error("Verified order load error:", error);
+        return null;
+    }
+
+    return data || null;
+}
+
+async function loadDisplayEbook() {
+    const databaseId = sellerEbookId || (isUuid(ebookParam) ? ebookParam : null);
+
+    if (databaseId) {
+        const { data, error } = await supabaseClient
+            .from("ebooks")
+            .select("id, title, price")
+            .eq("id", databaseId)
+            .maybeSingle();
+
+        if (!error && data) {
+            return { name: data.title, price: Number(data.price || 0) };
+        }
+    }
+
+    const index = Number.parseInt(ebookParam, 10);
+    if (Number.isInteger(index) && index >= 0 && index < legacyPlatformEbooks.length) {
+        return legacyPlatformEbooks[index];
+    }
+
+    return null;
+}
+
+async function initializeSuccessPage() {
+    const { data: { session }, error: authError } = await supabaseClient.auth.getSession();
+
+    if (authError) console.error("Success auth error:", authError);
+
+    const user = session?.user || null;
+
+    if (!user) {
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            window.location.pathname + window.location.search
+        );
+        window.location.href = "login.html";
+        return;
+    }
+
+    const verifiedOrder = await loadVerifiedOrder(user);
+
+    if (verifiedOrder) {
+        document.getElementById("successEbookName").textContent =
+            verifiedOrder.ebook_title || "Your Ebook";
+        document.getElementById("successPrice").textContent =
+            "₹" + Number(verifiedOrder.amount || 0).toLocaleString("en-IN");
+
+        showPreparing(false);
+        showViewButton("ebook.html?order=" + encodeURIComponent(verifiedOrder.id));
+        return;
+    }
+
+    /*
+       Current payment.html still has a demo navigation while the real gateway
+       and Edge Function are not connected. Display the selected product for UI
+       testing, but NEVER create an order, sale, seller earning, affiliate reward,
+       referral reward, notification, or ebook access from this browser page.
+    */
+    const displayEbook = await loadDisplayEbook();
+
+    if (displayEbook) {
+        document.getElementById("successEbookName").textContent = displayEbook.name;
+        document.getElementById("successPrice").textContent =
+            "₹" + Number(displayEbook.price || 0).toLocaleString("en-IN");
+    }
+
+    showNotVerified();
+}
+
+initializeSuccessPage();
+</script>
+<script src="./app-notifications.js" defer></script>
+</body>
+
+</html>

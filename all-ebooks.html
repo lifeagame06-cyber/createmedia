@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>All Ebooks - createMedia</title>
+    <link rel="preload" as="image" href="images/ebook.jpg">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #111;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 60px 30px 80px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .top {
+            text-align: center;
+            margin-bottom: 55px;
+        }
+
+        .brand {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 35px;
+        }
+
+        .label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #777;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            max-width: 650px;
+            margin: auto;
+            color: #666;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+
+        .ebooks-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+
+        .ebook-card {
+            background: white;
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+            transition: 0.3s ease;
+            overflow: hidden;
+        }
+
+        .ebook-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 22px 45px rgba(0, 0, 0, 0.13);
+        }
+
+
+        .ebook-cover {
+    width: 100%;
+    height: 240px;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #eee;
+    margin-bottom: 18px;
+}
+
+.ebook-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+        .ebook-number {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .ebook-card h2 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            min-height: 45px;
+            margin-bottom: 18px;
+        }
+
+
+        .bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .buy-button {
+            display: inline-block;
+            padding: 11px 18px;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.25s ease;
+        }
+
+        .buy-button:hover {
+            transform: translateY(-2px);
+            opacity: 0.88;
+        }
+
+
+        .back-home {
+            display: block;
+            width: fit-content;
+            margin: 55px auto 0;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-home:hover {
+            color: #111;
+        }
+
+
+        @media (max-width: 900px) {
+
+            .ebooks-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+@media (max-width: 768px) {
+
+    .ebooks-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+        @media (max-width: 600px) {
+
+            .page {
+                padding: 40px 18px 60px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .ebooks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ebook-cover {
+                height: 340px;
+            }
+
+        }
+/* PREMIUM ALL EBOOKS */
+
+body {
+    background:
+        radial-gradient(circle at top left, rgba(0, 0, 0, 0.035), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.035), transparent 35%),
+        #f7f7f7;
+}
+
+.page {
+    padding-top: 70px;
+}
+
+.top {
+    margin-bottom: 65px;
+}
+
+.brand {
+    letter-spacing: -0.5px;
+}
+
+.label {
+    color: #999;
+    letter-spacing: 5px;
+}
+
+h1 {
+    font-size: 52px;
+    letter-spacing: -1.5px;
+}
+
+.subtitle {
+    color: #777;
+}
+
+.ebooks-grid {
+    gap: 32px;
+}
+
+.ebook-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 22px;
+    padding: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.07);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ebook-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 28px 60px rgba(0, 0, 0, 0.13);
+}
+
+.ebook-cover {
+    height: 250px;
+    background: #f1f1f1;
+    border-radius: 17px;
+    margin-bottom: 20px;
+}
+
+.ebook-card h2 {
+    font-size: 25px;
+    letter-spacing: -0.3px;
+}
+
+.description {
+    color: #707070;
+}
+
+.price {
+    font-size: 21px;
+}
+
+.buy-button {
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: #111;
+}
+
+.buy-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
+    opacity: 1;
+}
+
+.back-home {
+    margin-top: 65px;
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    transition: 0.25s ease;
+}
+
+.back-home:hover {
+    transform: translateY(-2px);
+    border-color: #bbb;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+/* =====================================
+   MOBILE APP BOTTOM NAVIGATION
+===================================== */
+
+.mobile-bottom-nav {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .mobile-bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+
+        height: 64px;
+        padding: 6px 8px;
+
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid #e8e8e8;
+        border-radius: 18px;
+
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.14);
+
+        z-index: 9999;
+    }
+
+    .mobile-bottom-nav a {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        gap: 3px;
+
+        color: #777;
+        text-decoration: none;
+
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .mobile-bottom-nav a svg {
+        width: 21px;
+        height: 21px;
+
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+    }
+
+    .mobile-bottom-nav a.active {
+        color: #111;
+        font-weight: 700;
+    }
+
+    body {
+        padding-bottom: 85px;
+    }
+}
+/* MOBILE EBOOK SEARCH */
+
+.mobile-ebook-search {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .mobile-ebook-search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        width: 100%;
+        margin: 0 0 28px;
+        padding: 13px 16px;
+
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 14px;
+
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .mobile-ebook-search svg {
+        width: 19px;
+        height: 19px;
+        flex-shrink: 0;
+
+        fill: none;
+        stroke: #777;
+        stroke-width: 1.8;
+    }
+
+    .mobile-ebook-search input {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+
+        font-size: 14px;
+        color: #111;
+        font-family: inherit;
+    }
+
+    .mobile-ebook-search input::placeholder {
+        color: #999;
+    }
+}
+.no-ebooks-found {
+    display: none;
+    text-align: center;
+    padding: 45px 20px;
+    margin: 10px 0 30px;
+    color: #777;
+}
+
+.no-ebooks-found strong {
+    display: block;
+    margin-bottom: 7px;
+    color: #111;
+    font-size: 18px;
+}
+
+.no-ebooks-found span {
+    font-size: 13px;
+}
+/* MOBILE EBOOK SORT */
+
+.mobile-ebook-sort {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .mobile-ebook-sort {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        width: 100%;
+        margin: -12px 0 24px;
+        padding: 10px 14px;
+
+        background: #fff;
+        border: 1px solid #e8e8e8;
+        border-radius: 12px;
+    }
+
+    .mobile-ebook-sort span {
+        font-size: 12px;
+        font-weight: 600;
+        color: #777;
+    }
+
+    .mobile-ebook-sort select {
+        border: none;
+        outline: none;
+        background: transparent;
+
+        color: #111;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: inherit;
+
+        cursor: pointer;
+    }
+}
+/* MOBILE EBOOK RESULT COUNT */
+
+.ebook-result-count {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .ebook-result-count {
+        display: block;
+        margin: -10px 2px 20px;
+
+        font-size: 12px;
+        font-weight: 600;
+        color: #777;
+    }
+}
+@media (max-width: 768px) {
+
+    .ebooks-grid {
+        grid-template-columns: 1fr !important;
+        gap: 22px;
+    }
+
+}
+    </style>
+
+</head>
+
+
+<body>
+
+    <main class="page">
+
+        <div class="container">
+
+            <div class="top">
+
+                <div class="brand">
+                    createMedia
+                </div>
+
+                <p class="label">
+                    THE COMPLETE COLLECTION
+                </p>
+
+                <h1>
+                    All Ebooks
+                </h1>
+
+                <p class="subtitle">
+                    Explore the complete createMedia ebook collection
+                    and choose the one that interests you the most.
+                </p>
+
+            </div>
+</div>
+
+<div class="mobile-ebook-search">
+    <svg viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="M16.5 16.5L21 21"></path>
+    </svg>
+
+    <input
+        type="search"
+        id="ebookSearch"
+        placeholder="Search ebooks..."
+        autocomplete="off"
+    >
+</div>
+
+<div class="mobile-ebook-sort">
+    <span>Sort by</span>
+
+    <select id="ebookSort">
+        <option value="default">Default</option>
+        <option value="low-high">Price: Low to High</option>
+        <option value="high-low">Price: High to Low</option>
+        <option value="a-z">Name: A–Z</option>
+    </select>
+</div>
+<div class="ebook-result-count" id="ebookResultCount">
+    1 ebook
+</div>
+<div class="no-ebooks-found" id="noEbooksFound">
+    <strong>No ebooks found</strong>
+    <span>Try searching with a different title.</span>
+
+    
+</div>
+<div class="ebooks-grid">
+
+        
+
+                <!-- EBOOK 1 -->
+
+                <div class="ebook-card">
+
+                    <div class="ebook-cover">
+
+                        <img
+                            src="images/ebook.jpg"
+                            alt="Ebook 1"
+                        >
+
+                    </div>
+
+                    <p class="ebook-number">
+                        EBOOK 01
+                    </p>
+
+                    <h2>
+                        Ebook 1
+                    </h2>
+
+                    <p class="description">
+                        A short description of Ebook 1 will appear here.
+                    </p>
+
+                    <div class="bottom">
+
+                        <span class="price">
+                            ₹199
+                        </span>
+
+                        <a
+                            href="checkout.html?ebook=0"
+                            class="buy-button"
+                        >
+                            View Ebook
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EBOOK 2 -->
+
+                <div class="ebook-card">
+
+                    <div class="ebook-cover">
+
+                        <img
+                            src="images/image1.jpg"
+                            alt="Ebook 2"
+                        >
+
+                    </div>
+
+                    <p class="ebook-number">
+                        EBOOK 02
+                    </p>
+
+                    <h2>
+                        Ebook 2
+                    </h2>
+
+                    <p class="description">
+                        A short description of Ebook 2 will appear here.
+                    </p>
+
+                    <div class="bottom">
+
+                        <span class="price">
+                            ₹249
+                        </span>
+
+                        <a
+                            href="checkout.html?ebook=1"
+                            class="buy-button"
+                        >
+                            View Ebook
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EBOOK 3 -->
+
+                <div class="ebook-card">
+
+                    <div class="ebook-cover">
+
+                        <img
+                            src="images/image2.jpg"
+                            alt="Ebook 3"
+                        >
+
+                    </div>
+
+                    <p class="ebook-number">
+                        EBOOK 03
+                    </p>
+
+                    <h2>
+                        Ebook 3
+                    </h2>
+
+                    <p class="description">
+                        A short description of Ebook 3 will appear here.
+                    </p>
+
+                    <div class="bottom">
+
+                        <span class="price">
+                            ₹299
+                        </span>
+
+                        <a
+                            href="checkout.html?ebook=2"
+                            class="buy-button"
+                        >
+                            View Ebook
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EBOOK 4 -->
+
+                <div class="ebook-card">
+
+                    <div class="ebook-cover">
+
+                        <img
+                            src="images/image3.jpg"
+                            alt="Ebook 4"
+                        >
+
+                    </div>
+
+                    <p class="ebook-number">
+                        EBOOK 04
+                    </p>
+
+                    <h2>
+                        Ebook 4
+                    </h2>
+
+                    <p class="description">
+                        A short description of Ebook 4 will appear here.
+                    </p>
+
+                    <div class="bottom">
+
+                        <span class="price">
+                            ₹349
+                        </span>
+
+                        <a
+                            href="checkout.html?ebook=3"
+                            class="buy-button"
+                        >
+                            View Ebook
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EBOOK 5 -->
+
+                <div class="ebook-card">
+
+                    <div class="ebook-cover">
+
+                        <img
+                            src="images/image4.jpg"
+                            alt="Ebook 5"
+                        >
+
+                    </div>
+
+                    <p class="ebook-number">
+                        EBOOK 05
+                    </p>
+
+                    <h2>
+                        Ebook 5
+                    </h2>
+
+                    <p class="description">
+                        A short description of Ebook 5 will appear here.
+                    </p>
+
+                    <div class="bottom">
+
+                        <span class="price">
+                            ₹399
+                        </span>
+
+                        <a
+                            href="checkout.html?ebook=4"
+                            class="buy-button"
+                        >
+                            View Ebook
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <a
+                href="index.html"
+                class="back-home"
+            >
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </main>
+
+
+<script>
+    const ebookSearch = document.getElementById("ebookSearch");
+    const ebookSort = document.getElementById("ebookSort");
+    const ebookGrid = document.querySelector(".ebooks-grid");
+    const ebookCards = Array.from(document.querySelectorAll(".ebook-card"));
+    const noEbooksFound = document.getElementById("noEbooksFound");
+const ebookResultCount = document.getElementById("ebookResultCount");
+    function searchEbooks() {
+
+        const searchText =
+            ebookSearch.value.toLowerCase().replace(/\s+/g, "");
+
+        let visibleCount = 0;
+
+        ebookCards.forEach(function (card) {
+
+            const cardText =
+                card.textContent.toLowerCase().replace(/\s+/g, "");
+
+            if (cardText.includes(searchText)) {
+                card.style.display = "";
+                visibleCount++;
+            } else {
+                card.style.display = "none";
+            }
+
+        });
+
+      if (noEbooksFound) {
+    noEbooksFound.style.display =
+        visibleCount === 0 ? "block" : "none";
+}
+
+if (ebookResultCount) {
+    ebookResultCount.textContent =
+        visibleCount + (visibleCount === 1 ? " ebook" : " ebooks");
+}
+}
+
+if (ebookSearch) {
+    ebookSearch.addEventListener("input", searchEbooks);
+}
+
+if (ebookSort && ebookGrid) {
+        ebookSort.addEventListener("change", function () {
+
+            let sortedCards = [...ebookCards];
+
+            if (ebookSort.value === "low-high") {
+
+                sortedCards.sort(function (a, b) {
+                    const priceA = parseFloat(
+                        a.querySelector(".price").textContent.replace(/[^\d.]/g, "")
+                    );
+
+                    const priceB = parseFloat(
+                        b.querySelector(".price").textContent.replace(/[^\d.]/g, "")
+                    );
+
+                    return priceA - priceB;
+                });
+
+            } else if (ebookSort.value === "high-low") {
+
+                sortedCards.sort(function (a, b) {
+                    const priceA = parseFloat(
+                        a.querySelector(".price").textContent.replace(/[^\d.]/g, "")
+                    );
+
+                    const priceB = parseFloat(
+                        b.querySelector(".price").textContent.replace(/[^\d.]/g, "")
+                    );
+
+                    return priceB - priceA;
+                });
+
+            } else if (ebookSort.value === "a-z") {
+
+                sortedCards.sort(function (a, b) {
+                    const nameA = a.querySelector("h2").textContent.trim();
+                    const nameB = b.querySelector("h2").textContent.trim();
+
+                    return nameA.localeCompare(nameB);
+                });
+
+            }
+
+            sortedCards.forEach(function (card) {
+                ebookGrid.appendChild(card);
+            });
+
+            searchEbooks();
+        });
+    }
+</script>
+<nav class="mobile-bottom-nav">
+
+    <a href="index.html">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 11L12 3L21 11"></path>
+            <path d="M5 10V21H19V10"></path>
+            <path d="M9 21V14H15V21"></path>
+        </svg>
+        <span>Home</span>
+    </a>
+
+    <a href="all-ebooks.html" class="active">
+        <svg viewBox="0 0 24 24">
+            <path d="M4 4H10C11.1 4 12 4.9 12 6V21C12 19.9 11.1 19 10 19H4Z"></path>
+            <path d="M20 4H14C12.9 4 12 4.9 12 6V21C12 19.9 12.9 19 14 19H20Z"></path>
+        </svg>
+        <span>Ebooks</span>
+    </a>
+
+    <a href="account.html">
+        <svg viewBox="0 0 24 24">
+            <path d="M6 7H18L20 21H4Z"></path>
+            <path d="M9 9V6A3 3 0 0 1 15 6V9"></path>
+        </svg>
+        <span>Orders</span>
+    </a>
+
+    <a href="profile.html">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 21C4.7 16.8 7.5 14 12 14C16.5 14 19.3 16.8 20 21"></path>
+        </svg>
+        <span>Account</span>
+    </a>
+
+</nav>
+<script src="./app-notifications.js" defer></script>
+
+</body>
+
+</html>

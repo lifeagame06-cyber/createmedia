@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>createMedia — Ebook</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+
+    <h1>createMedia</h1>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="all-ebooks.html">Ebooks</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+    </nav>
+
+</header>
+
+
+<main>
+
+    <section class="ebook-reader">
+
+        <div class="ebook-reader-top">
+
+            <p class="section-label">
+                YOUR EBOOK
+            </p>
+
+            <h2 id="ebookTitle">
+                Ebook 1
+            </h2>
+
+            <p id="ebookDescription">
+                Your purchased ebook is ready to read.
+            </p>
+
+        </div>
+
+
+        <div class="ebook-content">
+
+            <div class="ebook-cover-large">
+
+                <img
+                    id="ebookImage"
+                    src="images/ebook.jpg"
+                    alt="Ebook"
+                    decoding="async"
+                    fetchpriority="high"
+                >
+
+            </div>
+
+
+            <div class="ebook-reader-info">
+
+    <span class="reader-status">
+        PURCHASED
+    </span>
+
+    <h3>
+        Your digital book
+    </h3>
+
+    <p>
+        Your ebook is ready to read. Access your digital content
+        anytime from your createMedia account.
+    </p>
+
+    <div class="reader-meta">
+
+        <div>
+            <span>FORMAT</span>
+            <strong>Digital Ebook</strong>
+        </div>
+
+        <div>
+            <span>ACCESS</span>
+            <strong>Instant Access</strong>
+        </div>
+
+    </div>
+<button type="button" id="downloadEbookButton" class="download-ebook-button">
+    Download Ebook
+</button>
+
+    <div class="reader-actions">
+
+        <a href="account.html">
+            ← Back to Account
+        </a>
+
+        <a href="all-ebooks.html">
+            Browse More Ebooks
+        </a>
+
+    </div>
+
+</div>
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        © 2026 createMedia. All Rights Reserved.
+    </p>
+
+    <div class="footer-links">
+
+        <a href="privacy.html">
+            Privacy Policy
+        </a>
+
+        <a href="terms.html">
+            Terms & Conditions
+        </a>
+
+        <a href="refund.html">
+            Refund Policy
+        </a>
+
+    </div>
+
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const params = new URLSearchParams(window.location.search);
+const orderId = params.get("order");
+
+let currentUser = null;
+let purchasedOrder = null;
+let purchasedEbook = null;
+
+function showEbookAlert(title, message) {
+    document.getElementById("ebookAlertTitle").textContent = title;
+    document.getElementById("ebookAlertMessage").textContent = message;
+    document.getElementById("ebookAlertModal").style.display = "flex";
+}
+
+document.getElementById("ebookAlertClose").onclick = function() {
+    document.getElementById("ebookAlertModal").style.display = "none";
+};
+
+async function createCoverUrl(path) {
+    if (!path) return "images/ebook.jpg";
+
+    const { data, error } = await supabaseClient.storage
+        .from("ebook-covers")
+        .createSignedUrl(path, 60 * 60);
+
+    if (error || !data?.signedUrl) {
+        console.error("Cover URL error:", error);
+        return "images/ebook.jpg";
+    }
+
+    return data.signedUrl;
+}
+
+function disableDownload() {
+    const button = document.getElementById("downloadEbookButton");
+    button.disabled = true;
+    button.style.opacity = "0.55";
+    button.style.cursor = "not-allowed";
+}
+
+async function initializePurchasedEbook() {
+    const {
+        data: { session },
+        error: authError
+    } = await supabaseClient.auth.getSession();
+
+    if (authError) {
+        console.error("Ebook auth error:", authError);
+    }
+
+    const user = session?.user || null;
+
+    if (!user) {
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            window.location.pathname + window.location.search
+        );
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = user;
+
+    if (!orderId) {
+        disableDownload();
+        showEbookAlert(
+            "Order Required",
+            "Open this ebook from your purchased orders."
+        );
+        return;
+    }
+
+    /*
+        RLS must only expose orders belonging to the logged-in buyer.
+        We additionally filter buyer_id, paid and completed here.
+    */
+    const { data: order, error: orderError } = await supabaseClient
+        .from("orders")
+        .select("id, buyer_id, ebook_id, ebook_title, amount, payment_status, order_status")
+        .eq("id", orderId)
+        .eq("buyer_id", user.id)
+        .eq("payment_status", "paid")
+        .eq("order_status", "completed")
+        .maybeSingle();
+
+    if (orderError) {
+        console.error("Order verification error:", orderError);
+    }
+
+    if (!order) {
+        disableDownload();
+        showEbookAlert(
+            "Access Not Available",
+            "A verified completed purchase is required to access this ebook."
+        );
+        return;
+    }
+
+    purchasedOrder = order;
+
+    if (!order.ebook_id) {
+        disableDownload();
+        showEbookAlert(
+            "Ebook Unavailable",
+            "This order is not linked to an ebook file yet."
+        );
+        return;
+    }
+
+    const { data: ebook, error: ebookError } = await supabaseClient
+        .from("ebooks")
+        .select("id, title, description, cover_path, file_path, ebook_type")
+        .eq("id", order.ebook_id)
+        .maybeSingle();
+
+    if (ebookError) {
+        console.error("Ebook load error:", ebookError);
+    }
+
+    if (!ebook) {
+        disableDownload();
+        showEbookAlert(
+            "Ebook Not Found",
+            "The ebook linked to this order could not be found."
+        );
+        return;
+    }
+
+    purchasedEbook = ebook;
+
+    document.getElementById("ebookTitle").textContent =
+        ebook.title || order.ebook_title || "Your Ebook";
+
+    document.getElementById("ebookDescription").textContent =
+        ebook.description || "Your purchased ebook is ready to read.";
+
+    document.getElementById("ebookImage").alt =
+        ebook.title || "Ebook";
+
+    // Cover signing is visual-only; hydrate it after access is already verified/rendered.
+    createCoverUrl(ebook.cover_path).then(function(url) {
+        const image = document.getElementById("ebookImage");
+        if (image && url) image.src = url;
+    });
+
+    if (!ebook.file_path) {
+        disableDownload();
+    }
+}
+
+document.getElementById("downloadEbookButton").onclick = async function() {
+    if (!currentUser || !purchasedOrder || !purchasedEbook) {
+        showEbookAlert(
+            "Access Not Available",
+            "A verified completed purchase is required to download this ebook."
+        );
+        return;
+    }
+
+    if (!purchasedEbook.file_path) {
+        showEbookAlert(
+            "Ebook Unavailable",
+            "This ebook file is not available for download yet."
+        );
+        return;
+    }
+
+    /*
+        Production security:
+        ebook-files stays private. Do NOT add a broad buyer Storage SELECT policy.
+
+        The final download backend should be a Supabase Edge Function. It will
+        receive only the order id, verify the logged-in buyer owns a paid and
+        completed order, read the ebook file_path server-side, then return a
+        short-lived signed download URL.
+
+        Direct browser signing is deliberately not used here because the current
+        Storage policy only allows the seller to access their own private file.
+    */
+    showEbookAlert(
+        "Secure Download Pending",
+        "Your purchase is verified. Secure ebook download will be enabled when the payment/download backend is connected."
+    );
+};
+
+initializePurchasedEbook();
+</script>
+
+<div class="ebook-alert-overlay" id="ebookAlertModal" style="display:none;">
+    <div class="ebook-alert-box">
+        <div class="ebook-alert-icon">!</div>
+        <h3 id="ebookAlertTitle">Ebook Unavailable</h3>
+        <p id="ebookAlertMessage">This ebook file is not available for download.</p>
+        <button type="button" id="ebookAlertClose">Okay</button>
+    </div>
+</div>
+
+<script src="./app-notifications.js" defer></script>
+</body>
+</html>

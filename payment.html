@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Payment - createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <style>
+.failed-test-button {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #555;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    transition: 0.2s ease;
+}
+
+.failed-test-button:hover {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #111;
+        }
+
+        .payment-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .payment-box {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            padding: 45px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+            text-align: center;
+        }
+
+        .brand {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .payment-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #888;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .ebook-name {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 22px;
+        }
+
+        .price {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .payment-option {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            color: #111;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .payment-option:hover {
+            transform: translateY(-2px);
+            border-color: #111;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .upi-box {
+            margin-top: 22px;
+            padding: 20px;
+            background: #f7f7f7;
+            border-radius: 12px;
+        }
+
+        .upi-box p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .qr-box {
+            width: 160px;
+            height: 160px;
+            margin: 15px auto 18px;
+            border: 2px dashed #bbb;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .upi-text {
+            margin-top: 5px;
+        }
+
+        .upi-id {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .pay-button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #111;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .pay-button:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        .secure-text {
+            margin-top: 18px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 22px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back:hover {
+            color: #111;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+
+            .payment-page {
+                padding: 25px 15px;
+            }
+
+            .payment-box {
+                padding: 35px 22px;
+                border-radius: 16px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .price {
+                font-size: 30px;
+            }
+
+            .qr-box {
+                width: 145px;
+                height: 145px;
+            }
+
+        }
+/* =====================================
+   PAYMENT - MOBILE APP DESIGN
+===================================== */
+
+@media (max-width: 600px) {
+
+    body.payment-page-app {
+        background: #f5f6f7 !important;
+    }
+
+    .payment-page-app .payment-page {
+        min-height: 100vh !important;
+
+        padding: 20px 14px 30px !important;
+
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+    }
+
+    .payment-page-app .payment-box {
+        width: 100% !important;
+        max-width: 390px !important;
+
+        margin-top: 10px !important;
+        padding: 27px 18px 24px !important;
+
+        background: #fff !important;
+        border: 1px solid #e8e8e8 !important;
+        border-radius: 22px !important;
+
+        box-shadow: 0 14px 40px rgba(0,0,0,0.08) !important;
+    }
+
+    .payment-page-app .brand {
+        margin-bottom: 23px !important;
+
+        font-size: 23px !important;
+        letter-spacing: -0.7px !important;
+    }
+
+    .payment-page-app .payment-label {
+        margin-bottom: 9px !important;
+
+        font-size: 9px !important;
+        letter-spacing: 2.5px !important;
+    }
+
+    .payment-page-app h1 {
+        margin-bottom: 9px !important;
+
+        font-size: 30px !important;
+        line-height: 1.05 !important;
+        letter-spacing: -1.2px !important;
+    }
+
+    .payment-page-app .ebook-name {
+        margin-bottom: 12px !important;
+
+        font-size: 14px !important;
+    }
+
+    .payment-page-app .price {
+        margin-bottom: 22px !important;
+
+        font-size: 30px !important;
+    }
+
+    .payment-page-app .payment-option {
+        width: 100% !important;
+        min-height: 50px !important;
+
+        margin-bottom: 10px !important;
+        padding: 0 15px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        border-radius: 12px !important;
+
+        font-size: 14px !important;
+    }
+
+    .payment-page-app .upi-box {
+        margin-top: 18px !important;
+        padding: 17px 14px !important;
+
+        border-radius: 13px !important;
+    }
+
+    .payment-page-app .upi-box p {
+        font-size: 12px !important;
+    }
+
+    .payment-page-app .qr-box {
+        width: 145px !important;
+        height: 145px !important;
+
+        margin: 14px auto 16px !important;
+
+        border-radius: 11px !important;
+    }
+
+    .payment-page-app .upi-id {
+        font-size: 15px !important;
+    }
+
+    .payment-page-app .pay-button {
+        width: 100% !important;
+        min-height: 52px !important;
+
+        margin-top: 18px !important;
+        padding: 0 16px !important;
+
+        border-radius: 13px !important;
+
+        font-size: 14px !important;
+        font-weight: 700 !important;
+
+        box-shadow: 0 9px 22px rgba(0,0,0,0.13) !important;
+    }
+
+    .payment-page-app .failed-test-button {
+        min-height: 46px !important;
+
+        margin-top: 10px !important;
+        padding: 0 15px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        border-radius: 11px !important;
+
+        font-size: 12px !important;
+    }
+
+    .payment-page-app .secure-text {
+        margin-top: 15px !important;
+
+        font-size: 11px !important;
+        line-height: 1.5 !important;
+    }
+
+    .payment-page-app .back {
+        margin-top: 18px !important;
+        font-size: 13px !important;
+    }
+
+}
+
+    </style>
+
+</head>
+
+
+<body class="payment-page-app">
+
+    <div class="payment-page">
+
+        <div class="payment-box">
+
+            <div class="brand">
+                createMedia
+            </div>
+
+
+            <p class="payment-label">
+                Secure Checkout
+            </p>
+
+
+            <h1>
+                Choose Payment
+            </h1>
+
+
+            <p class="ebook-name" id="paymentEbookName">
+    Ebook 1
+</p>
+
+            <div class="price" id="paymentPrice">
+    ₹199
+</div>
+
+
+            <button class="payment-option">
+                Google Pay
+            </button>
+
+
+            <button class="payment-option">
+                PhonePe
+            </button>
+
+
+            <button class="payment-option">
+                Paytm
+            </button>
+
+
+            <button class="payment-option">
+                UPI / QR Code
+            </button>
+
+
+            <div class="upi-box">
+
+                <p>
+                    Scan & Pay with any UPI App
+                </p>
+
+
+                <div class="qr-box">
+                    QR CODE
+                </div>
+
+
+                <p class="upi-text">
+                    Or pay using UPI ID
+                </p>
+
+
+                <div class="upi-id">
+                    yourupi@upi
+                </div>
+
+            </div>
+
+
+           <button class="pay-button" id="payButton">
+    Pay ₹199
+</button> <a href="#" id="failedButton" class="failed-test-button">
+    Test Failed Payment
+</a>           <p class="secure-text">
+                Secure payment • Digital product • Instant access
+            </p>
+
+
+            <a href="#" class="back" id="backDetails">
+    ← Back to Customer Details
+</a>
+       </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const params = new URLSearchParams(window.location.search);
+const sellerEbookId = params.get("sellerEbook");
+const ebookParam = params.get("ebook");
+const affiliateRef = params.get("ref");
+
+const legacyPlatformEbooks = [
+    { name: "Ebook 1", price: 199 },
+    { name: "Ebook 2", price: 249 },
+    { name: "Ebook 3", price: 299 },
+    { name: "Ebook 4", price: 349 },
+    { name: "Ebook 5", price: 399 }
+];
+
+let currentUser = null;
+let selectedDatabaseEbook = null;
+let selectedEbook = null;
+let legacyIndex = null;
+
+function isUuid(value) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        .test(value || "");
+}
+
+async function loadDatabaseEbook(id) {
+    const { data, error } = await supabaseClient
+        .from("ebooks")
+        .select("id, title, price, ebook_type, seller_id, status, listing_status")
+        .eq("id", id)
+        .eq("status", "approved")
+        .eq("listing_status", "listed")
+        .maybeSingle();
+
+    if (error) {
+        console.error("Payment ebook load error:", error);
+        return null;
+    }
+
+    return data || null;
+}
+
+function buildRoute(pageName) {
+    let url;
+
+    if (selectedDatabaseEbook) {
+        if (
+            sellerEbookId ||
+            selectedDatabaseEbook.ebook_type === "seller"
+        ) {
+            url =
+                pageName + "?sellerEbook=" +
+                encodeURIComponent(selectedDatabaseEbook.id);
+        } else {
+            url =
+                pageName + "?ebook=" +
+                encodeURIComponent(selectedDatabaseEbook.id);
+        }
+    } else {
+        url =
+            pageName + "?ebook=" +
+            encodeURIComponent(legacyIndex ?? 0);
+    }
+
+    if (affiliateRef) {
+        url += "&ref=" + encodeURIComponent(affiliateRef);
+    }
+
+    return url;
+}
+
+function disablePayment(message) {
+    const payButton = document.getElementById("payButton");
+    payButton.disabled = true;
+    payButton.textContent = message || "Payment Unavailable";
+    payButton.style.opacity = "0.55";
+    payButton.style.cursor = "not-allowed";
+}
+
+async function initializePaymentPage() {
+    const {
+        data: { session },
+        error: authError
+    } = await supabaseClient.auth.getSession();
+
+    if (authError) {
+        console.error("Payment auth error:", authError);
+    }
+
+    const user = session?.user || null;
+
+    if (!user) {
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            window.location.pathname + window.location.search
+        );
+
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = user;
+
+    const databaseId =
+        sellerEbookId ||
+        (isUuid(ebookParam) ? ebookParam : null);
+
+    if (databaseId) {
+        selectedDatabaseEbook =
+            await loadDatabaseEbook(databaseId);
+
+        if (!selectedDatabaseEbook) {
+            document.getElementById("paymentEbookName").textContent =
+                "Ebook unavailable";
+            document.getElementById("paymentPrice").textContent = "";
+            disablePayment("Ebook Unavailable");
+            return;
+        }
+
+        selectedEbook = {
+            name: selectedDatabaseEbook.title,
+            price: Number(selectedDatabaseEbook.price || 0)
+        };
+    } else {
+        legacyIndex = Number.parseInt(ebookParam, 10);
+
+        if (
+            !Number.isInteger(legacyIndex) ||
+            legacyIndex < 0 ||
+            legacyIndex >= legacyPlatformEbooks.length
+        ) {
+            legacyIndex = 0;
+        }
+
+        selectedEbook = legacyPlatformEbooks[legacyIndex];
+    }
+
+    const formattedPrice =
+        "₹" + Number(selectedEbook.price).toLocaleString("en-IN");
+
+    document.getElementById("paymentEbookName").textContent =
+        selectedEbook.name;
+
+    document.getElementById("paymentPrice").textContent =
+        formattedPrice;
+
+    document.getElementById("payButton").textContent =
+        "Pay " + formattedPrice;
+
+    document.getElementById("backDetails").href =
+        buildRoute("details.html");
+
+    document.getElementById("failedButton").href =
+        buildRoute("failed.html");
+}
+
+document.getElementById("payButton").onclick = async function() {
+    if (!currentUser || !selectedEbook) return;
+
+    /*
+        IMPORTANT:
+        A paid order must never be inserted directly by browser JavaScript.
+        The orders table intentionally has no client INSERT policy.
+
+        When Razorpay/another gateway is connected, this button should call
+        a Supabase Edge Function that:
+        1. creates the gateway order,
+        2. verifies the payment server-side,
+        3. inserts the completed order using trusted server credentials,
+        4. calculates seller/platform/affiliate earnings server-side,
+        5. returns the verified order id.
+
+        Until that backend exists, this page keeps the existing demo-success
+        navigation without creating fake Supabase sales/orders.
+    */
+
+    const button = document.getElementById("payButton");
+    button.disabled = true;
+    button.textContent = "Processing...";
+
+    const { data: orderId, error: orderError } =
+    await supabaseClient.rpc("create_demo_order", {
+        p_ebook_id: selectedDatabaseEbook?.id
+    });
+
+if (orderError) {
+    console.error("Demo order error:", orderError);
+    alert("Order create nahi hua: " + orderError.message);
+
+    button.disabled = false;
+    button.textContent =
+        "Pay ₹" + Number(selectedEbook.price).toLocaleString("en-IN");
+
+    return;
+}
+
+window.location.href =
+    "success.html?order=" + encodeURIComponent(orderId);
+};
+
+initializePaymentPage();
+</script>
+<script src="./app-notifications.js" defer></script>
+
+</body>
+
+</html>

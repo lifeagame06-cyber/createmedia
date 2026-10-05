@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout - createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #111;
+        }
+
+        .checkout-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .checkout-box {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 45px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .brand {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .checkout-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #888;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 36px;
+            margin-bottom: 25px;
+        }
+
+        .ebook-cover {
+            width: 180px;
+            height: 245px;
+            margin: 0 auto 22px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        }
+
+        .ebook-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .ebook-name {
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .price {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 28px;
+        }
+
+        .order-note {
+            background: #f7f7f7;
+            padding: 16px;
+            border-radius: 10px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .continue-button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: 0.25s ease;
+        }
+
+        .continue-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+            opacity: 0.92;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back:hover {
+            color: #111;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .checkout-page {
+                padding: 25px 15px;
+            }
+
+            .checkout-box {
+                padding: 35px 22px;
+                border-radius: 16px;
+            }
+
+            h1 {
+                font-size: 31px;
+            }
+
+            .ebook-cover {
+                width: 165px;
+                height: 225px;
+            }
+
+            .price {
+                font-size: 30px;
+            }
+
+        }
+/* PREMIUM CHECKOUT */
+
+body {
+    background:
+        radial-gradient(circle at top left, rgba(0, 0, 0, 0.035), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.035), transparent 35%),
+        #f5f5f5;
+}
+
+.checkout-page {
+    padding: 60px 20px;
+}
+
+.checkout-box {
+    max-width: 520px;
+    padding: 50px 45px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 24px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.10);
+}
+
+.brand {
+    letter-spacing: -0.5px;
+}
+
+.checkout-label {
+    color: #999;
+    letter-spacing: 4px;
+}
+
+h1 {
+    font-size: 38px;
+    letter-spacing: -0.8px;
+}
+
+.ebook-cover {
+    width: 195px;
+    height: 265px;
+    border-radius: 14px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
+}
+
+.ebook-cover img {
+    object-fit: contain;
+    background: #f1f1f1;
+}
+
+.ebook-name {
+    font-size: 20px;
+}
+
+.price {
+    font-size: 34px;
+}
+
+.order-note {
+    border: 1px solid #eee;
+    background: #fafafa;
+    border-radius: 12px;
+}
+
+.continue-button {
+    padding: 17px;
+    border-radius: 11px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
+}
+
+.continue-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+}
+
+.back {
+    margin-top: 24px;
+    transition: 0.2s ease;
+}
+
+.back:hover {
+    transform: translateX(-3px);
+}
+/* =====================================
+   CHECKOUT - MOBILE APP DESIGN
+===================================== */
+
+@media (max-width: 600px) {
+
+    body.checkout-page-app {
+        background: #f5f6f7 !important;
+    }
+
+    .checkout-page-app .checkout-page {
+        min-height: 100vh !important;
+
+        padding: 20px 14px 30px !important;
+
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+    }
+
+    .checkout-page-app .checkout-box {
+        width: 100% !important;
+        max-width: 390px !important;
+
+        margin-top: 10px !important;
+        padding: 26px 18px 24px !important;
+
+        background: #fff !important;
+        border: 1px solid #e8e8e8 !important;
+        border-radius: 22px !important;
+
+        box-shadow: 0 14px 40px rgba(0,0,0,0.08) !important;
+    }
+
+    .checkout-page-app .brand {
+        margin-bottom: 24px !important;
+
+        font-size: 23px !important;
+        letter-spacing: -0.7px !important;
+    }
+
+    .checkout-page-app .checkout-label {
+        margin-bottom: 10px !important;
+
+        font-size: 9px !important;
+        letter-spacing: 2.5px !important;
+    }
+
+    .checkout-page-app h1 {
+        margin-bottom: 22px !important;
+
+        font-size: 30px !important;
+        line-height: 1.05 !important;
+        letter-spacing: -1.2px !important;
+    }
+
+    .checkout-page-app .ebook-cover {
+        width: 175px !important;
+        height: 238px !important;
+
+        margin: 0 auto 18px !important;
+
+        border-radius: 13px !important;
+
+        box-shadow: 0 14px 30px rgba(0,0,0,0.14) !important;
+    }
+
+    .checkout-page-app .ebook-name {
+        margin-bottom: 8px !important;
+
+        font-size: 18px !important;
+    }
+
+    .checkout-page-app .price {
+        margin-bottom: 20px !important;
+
+        font-size: 30px !important;
+    }
+
+    .checkout-page-app .order-note {
+        margin-bottom: 18px !important;
+        padding: 13px 14px !important;
+
+        border-radius: 11px !important;
+
+        font-size: 12px !important;
+        line-height: 1.55 !important;
+    }
+
+    .checkout-page-app .continue-button {
+        min-height: 52px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        padding: 0 16px !important;
+
+        border-radius: 13px !important;
+
+        font-size: 14px !important;
+        font-weight: 700 !important;
+
+        box-shadow: 0 9px 22px rgba(0,0,0,0.13) !important;
+    }
+
+    .checkout-page-app .back {
+        margin-top: 18px !important;
+
+        font-size: 13px !important;
+    }
+
+}
+
+
+    </style>
+
+</head>
+
+
+<body class="checkout-page-app">
+<div class="checkout-page">
+
+        <div class="checkout-box" id="checkoutBox">
+
+            <div class="brand">
+                createMedia
+            </div>
+
+
+            <p class="checkout-label">
+                ORDER SUMMARY
+            </p>
+
+
+            <h1>
+                Your Checkout
+            </h1>
+
+
+            <div class="ebook-cover">
+
+                <img
+                    id="checkoutImage"
+                    src=""
+                    alt="Ebook Cover"
+                    decoding="async"
+                    fetchpriority="high"
+                >
+
+            </div>
+
+
+            <div class="ebook-name" id="checkoutName"></div>
+
+
+            <div class="price" id="checkoutPrice"></div>
+
+
+            <div class="order-note">
+                Digital ebook • Instant access after successful payment
+            </div>
+
+
+            <a href="#" class="continue-button" id="detailsButton">
+    Continue to Payment
+</a>
+
+            <a href="index.html" class="back">
+                ← Back to createMedia
+            </a>
+
+        </div>
+
+    </div>
+
+
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const params = new URLSearchParams(window.location.search);
+const sellerEbookId = params.get("sellerEbook");
+const ebookParam = params.get("ebook");
+const affiliateRef = params.get("ref");
+
+const legacyPlatformEbooks = [
+    { name: "Ebook 1", image: "images/ebook.jpg",  price: 199 },
+    { name: "Ebook 2", image: "images/image1.jpg", price: 249 },
+    { name: "Ebook 3", image: "images/image2.jpg", price: 299 },
+    { name: "Ebook 4", image: "images/image3.jpg", price: 349 },
+    { name: "Ebook 5", image: "images/image4.jpg", price: 399 }
+];
+
+function isUuid(value) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        .test(value || "");
+}
+
+function finishCheckoutArrival() {}
+
+function setUnavailable() {
+    document.getElementById("checkoutImage").src = "";
+    document.getElementById("checkoutName").textContent = "Ebook unavailable";
+    document.getElementById("checkoutPrice").textContent = "";
+
+    const button = document.getElementById("detailsButton");
+    button.textContent = "Ebook Unavailable";
+    button.removeAttribute("href");
+    button.style.pointerEvents = "none";
+    button.style.opacity = "0.55";
+    finishCheckoutArrival();
+}
+
+async function signedCoverUrl(path) {
+    if (!path) return "";
+
+    const { data, error } = await supabaseClient.storage
+        .from("ebook-covers")
+        .createSignedUrl(path, 60 * 60);
+
+    if (error || !data?.signedUrl) {
+        console.error("Cover URL error:", error);
+        return "";
+    }
+
+    return data.signedUrl;
+}
+
+async function loadDatabaseEbook(id) {
+    const { data, error } = await supabaseClient
+        .from("ebooks")
+        .select("id, title, price, cover_path, ebook_type, seller_id, status, listing_status")
+        .eq("id", id)
+        .eq("status", "approved")
+        .eq("listing_status", "listed")
+        .maybeSingle();
+
+    if (error) {
+        console.error("Checkout ebook error:", error);
+        return null;
+    }
+
+    return data || null;
+}
+
+async function initializeCheckout() {
+    const {
+        data: { session },
+        error: authError
+    } = await supabaseClient.auth.getSession();
+
+    if (authError) {
+        console.error("Checkout auth error:", authError);
+    }
+
+    const user = session?.user || null;
+
+    if (!user) {
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            window.location.pathname + window.location.search
+        );
+
+        window.location.href = "login.html";
+        return;
+    }
+
+    let selected = null;
+    let detailsUrl = "";
+
+    const databaseId =
+        sellerEbookId ||
+        (isUuid(ebookParam) ? ebookParam : null);
+
+    if (databaseId) {
+        const cacheKey = "createMediaCheckout_" + databaseId;
+        let cached = null;
+
+        try {
+            cached = JSON.parse(sessionStorage.getItem(cacheKey) || "null");
+        } catch (_) {}
+
+        if (cached && cached.name && cached.price != null) {
+            selected = {
+                name: cached.name,
+                price: Number(cached.price),
+                image: cached.image || ""
+            };
+            detailsUrl = cached.detailsUrl || "";
+        } else {
+            const ebook = await loadDatabaseEbook(databaseId);
+
+            if (!ebook) {
+                setUnavailable();
+                return;
+            }
+
+            const realCover = await signedCoverUrl(ebook.cover_path);
+
+            detailsUrl = (sellerEbookId || ebook.ebook_type === "seller")
+                ? "details.html?sellerEbook=" + encodeURIComponent(ebook.id)
+                : "details.html?ebook=" + encodeURIComponent(ebook.id);
+
+            selected = {
+                name: ebook.title,
+                price: Number(ebook.price || 0),
+                image: realCover || ""
+            };
+
+            try {
+                sessionStorage.setItem(cacheKey, JSON.stringify({
+                    name: selected.name,
+                    price: selected.price,
+                    image: selected.image,
+                    detailsUrl: detailsUrl
+                }));
+            } catch (_) {}
+        }
+    } else {
+        let index = Number.parseInt(ebookParam, 10);
+
+        if (
+            !Number.isInteger(index) ||
+            index < 0 ||
+            index >= legacyPlatformEbooks.length
+        ) {
+            index = 0;
+        }
+
+        const ebook = legacyPlatformEbooks[index];
+
+        selected = {
+            name: ebook.name,
+            price: ebook.price,
+            image: ebook.image
+        };
+
+        detailsUrl =
+            "details.html?ebook=" +
+            encodeURIComponent(index);
+    }
+
+    const checkoutImage = document.getElementById("checkoutImage");
+    if (selected.image) {
+        checkoutImage.style.visibility = "hidden";
+        checkoutImage.onload = function() {
+            checkoutImage.style.visibility = "visible";
+        };
+        checkoutImage.onerror = function() {
+            checkoutImage.style.visibility = "hidden";
+        };
+        checkoutImage.src = selected.image;
+        if (checkoutImage.complete && checkoutImage.naturalWidth > 0) {
+            checkoutImage.style.visibility = "visible";
+        }
+    } else {
+        checkoutImage.removeAttribute("src");
+        checkoutImage.style.visibility = "hidden";
+    }
+    checkoutImage.alt = selected.name;
+    document.getElementById("checkoutName").textContent = selected.name;
+    document.getElementById("checkoutPrice").textContent =
+        "₹" + Number(selected.price).toLocaleString("en-IN");
+
+    /*
+        Affiliate reference is carried forward to payment.
+        Commission is created only after verified payment by the future
+        secure order/payment backend, never trusted from browser input.
+    */
+    if (affiliateRef) {
+        detailsUrl +=
+            (detailsUrl.includes("?") ? "&" : "?") +
+            "ref=" + encodeURIComponent(affiliateRef);
+    }
+
+    const detailsButton = document.getElementById("detailsButton");
+    detailsButton.href = detailsUrl;
+
+    // Warm the next page in the browser cache without delaying checkout.
+    const nextPagePrefetch = document.createElement("link");
+    nextPagePrefetch.rel = "prefetch";
+    nextPagePrefetch.href = detailsUrl;
+    document.head.appendChild(nextPagePrefetch);
+
+}
+
+initializeCheckout();
+</script>
+<script src="./app-notifications.js" defer></script>
+</body>
+
+</html>

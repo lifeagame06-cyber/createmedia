@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Sellers | createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body style="visibility:hidden;">
+
+<header class="admin-header">
+
+    <div>
+        <h1>createMedia</h1>
+       
+    </div>
+
+    <a href="admin.html"
+       class="admin-sellers-back">
+        ← Dashboard
+    </a>
+
+</header>
+
+<main class="admin-sellers-page">
+
+    <section class="admin-sellers-hero">
+
+        <div class="section-label">
+            SELLER MANAGEMENT
+        </div>
+
+        <h2>Manage Sellers</h2>
+
+        <p>
+            View and manage all sellers on createMedia.
+        </p>
+
+    </section>
+
+    <section class="admin-sellers-content">
+
+        <div class="admin-sellers-toolbar">
+
+            <input
+                type="text"
+                id="adminSellerSearch"
+                placeholder="Search seller by name or email...">
+
+        </div>
+
+        <div
+            id="adminAllSellerList"
+            class="admin-all-seller-list">
+        </div>
+
+    </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const { createClient } = supabase;
+
+const supabaseUrl =
+    "https://aafuqhcolkmvswgnzjod.supabase.co";
+
+const supabaseAnonKey =
+    "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+
+const supabaseClient =
+    createClient(supabaseUrl, supabaseAnonKey);
+
+let adminSellersAuthorized = false;
+
+async function requireAdminSellersAccess() {
+    const { data: { session }, error: authError } =
+        await supabaseClient.auth.getSession();
+
+    const user = session?.user || null;
+
+    if (authError || !user) {
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            "admin-sellers.html"
+        );
+        window.location.replace("login.html");
+        return false;
+    }
+
+    const { data: profile, error: profileError } =
+        await supabaseClient
+            .from("profiles")
+            .select("id, role")
+            .eq("id", user.id)
+            .single();
+
+    const role = String(profile?.role || "").trim().toLowerCase();
+
+    if (profileError || role !== "admin") {
+        console.error("Admin sellers access denied:", profileError || "Not admin");
+        window.location.replace("index.html");
+        return false;
+    }
+
+    adminSellersAuthorized = true;
+    document.body.style.visibility = "visible";
+    return true;
+}
+
+
+async function renderAllSellers() {
+
+    const container =
+        document.getElementById("adminAllSellerList");
+
+    container.innerHTML =
+        '<p class="admin-seller-empty">Loading sellers...</p>';
+
+    const [
+        profilesResult,
+        ebooksResult,
+        ordersResult
+    ] = await Promise.all([
+
+        supabaseClient
+            .from("profiles")
+            .select("id, email, name, role, seller_status"),
+
+        supabaseClient
+            .from("ebooks")
+            .select("id, seller_id, ebook_type"),
+
+        supabaseClient
+            .from("orders")
+            .select(
+                "id, seller_id, seller_earning, payment_status, order_status"
+            )
+    ]);
+
+
+    if (profilesResult.error) {
+        console.error(
+            "Admin sellers profiles error:",
+            profilesResult.error
+        );
+
+        container.innerHTML =
+            '<p class="admin-seller-empty">Could not load sellers.</p>';
+
+        return;
+    }
+
+
+    if (ebooksResult.error) {
+        console.error(
+            "Admin sellers ebooks error:",
+            ebooksResult.error
+        );
+    }
+
+
+    if (ordersResult.error) {
+        console.error(
+            "Admin sellers orders error:",
+            ordersResult.error
+        );
+    }
+
+
+    const profiles =
+        profilesResult.data || [];
+
+    const ebooks =
+        ebooksResult.data || [];
+
+    const orders =
+        ordersResult.data || [];
+
+
+    /*
+        A seller is shown when:
+        1. profile role is seller, OR
+        2. the user owns at least one seller ebook.
+
+        This also exposes old profile-role mismatches instead
+        of hiding a real seller who already owns ebooks.
+    */
+    const sellerIdsFromEbooks =
+        new Set(
+            ebooks
+                .filter(function(ebook) {
+                    return ebook.ebook_type === "seller";
+                })
+                .map(function(ebook) {
+                    return ebook.seller_id;
+                })
+                .filter(Boolean)
+        );
+
+
+    const sellers =
+        profiles.filter(function(profile) {
+
+            return (
+                profile.role === "seller" ||
+                sellerIdsFromEbooks.has(profile.id)
+            );
+
+        });
+
+
+    container.innerHTML = "";
+
+
+    if (sellers.length === 0) {
+
+        container.innerHTML =
+            '<p class="admin-seller-empty">No sellers found in Supabase.</p>';
+
+        return;
+    }
+
+
+    const ebookCountBySeller = new Map();
+    ebooks.forEach(function(ebook) {
+        if (ebook.ebook_type !== "seller" || !ebook.seller_id) return;
+        ebookCountBySeller.set(
+            ebook.seller_id,
+            (ebookCountBySeller.get(ebook.seller_id) || 0) + 1
+        );
+    });
+
+    const salesBySeller = new Map();
+    orders.forEach(function(order) {
+        if (
+            !order.seller_id ||
+            order.payment_status !== "paid" ||
+            order.order_status !== "completed"
+        ) return;
+
+        const current = salesBySeller.get(order.seller_id) || {
+            count: 0,
+            earnings: 0
+        };
+        current.count += 1;
+        current.earnings += Number(order.seller_earning || 0);
+        salesBySeller.set(order.seller_id, current);
+    });
+
+    const fragment = document.createDocumentFragment();
+
+    sellers.forEach(function(seller) {
+        const ebookCount = ebookCountBySeller.get(seller.id) || 0;
+        const sales = salesBySeller.get(seller.id) || { count: 0, earnings: 0 };
+
+        const sellerName =
+            seller.name ||
+            (seller.email ? seller.email.split("@")[0] : "Seller");
+
+        const sellerEmail = seller.email || "—";
+        const sellerStatus = seller.seller_status || "inactive";
+
+        const card = document.createElement("div");
+        card.className = "admin-all-seller-card";
+
+        card.innerHTML = `
+            <div class="admin-all-seller-info">
+                <strong>${escapeSellerHtml(sellerName)}</strong>
+                <span>${escapeSellerHtml(sellerEmail)}</span>
+            </div>
+            <div>
+                <span>Ebooks</span>
+                <strong>${ebookCount}</strong>
+            </div>
+            <div>
+                <span>Sales</span>
+                <strong>${sales.count}</strong>
+            </div>
+            <div>
+                <span>Earnings</span>
+                <strong>₹${sales.earnings.toLocaleString("en-IN")}</strong>
+            </div>
+            <div class="admin-all-seller-status">
+                ${escapeSellerHtml(sellerStatus)}
+            </div>
+            <a
+                href="admin-seller-details.html?seller=${encodeURIComponent(seller.id)}"
+                class="admin-seller-view-button">
+                View Details →
+            </a>
+        `;
+
+        fragment.appendChild(card);
+    });
+
+    container.appendChild(fragment);
+
+
+}
+
+
+function escapeSellerHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+document.getElementById("adminSellerSearch")
+    .addEventListener("input", function () {
+
+        const searchValue =
+            this.value
+                .toLowerCase()
+                .trim();
+
+        const sellerCards =
+            document.querySelectorAll(
+                ".admin-all-seller-card"
+            );
+
+        sellerCards.forEach(function(card) {
+
+            const sellerText =
+                card.textContent.toLowerCase();
+
+            card.style.display =
+                sellerText.includes(searchValue)
+                    ? "grid"
+                    : "none";
+
+        });
+
+    });
+
+
+async function initializeAdminSellers() {
+    const allowed = await requireAdminSellersAccess();
+    if (!allowed) return;
+    await renderAllSellers();
+}
+
+initializeAdminSellers();
+
+</script>
+
+</body>
+</html>

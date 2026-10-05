@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>createMedia — Sign Up</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <link rel="stylesheet" href="style.css">
+<style>
+
+.success-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.60);
+    backdrop-filter: blur(6px);
+    z-index: 99999;
+}
+
+.success-popup {
+    width: 380px;
+    max-width: 85%;
+    padding: 40px 30px;
+    background: #fff;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.30);
+}
+
+.success-icon {
+    width: 55px;
+    height: 55px;
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #22c55e;
+    color: #fff;
+
+    border-radius: 50%;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    box-shadow: 0 10px 25px rgba(34,197,94,0.25);
+}
+.success-popup h3 {
+    margin: 0 0 12px;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 30px;
+    color: #111;
+}
+
+.success-popup p {
+    margin: 0 0 25px;
+
+    color: #777;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.success-popup button {
+    padding: 13px 26px;
+
+    background: #111;
+    color: #fff;
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.success-popup button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+}
+.success-overlay .success-popup .success-icon {
+    background: #22c55e !important;
+    color: #ffffff !important;
+}
+</style>
+</head>
+
+<body>
+
+    <header>
+        <h1>createMedia</h1>
+<a href="index.html" class="auth-back-home">
+    ← Home
+</a>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="all-ebooks.html">Ebooks</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#contact">Contact</a>
+        </nav>
+    </header>
+
+
+    <main>
+
+        <section class="login-section">
+
+            <div class="login-box">
+
+                <p class="login-label">
+                    CREATE ACCOUNT
+                </p>
+
+                <h2>
+                    Join<br>
+                    createMedia.
+                </h2>
+
+                <p class="login-text">
+                    Create your account and start exploring createMedia.
+                </p>
+
+
+                <form id="signupForm">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="Enter your name"
+                        required
+                    >
+
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+
+                    <label>
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        placeholder="Create a password"
+                        required
+                    >
+
+
+                    <button type="submit">
+                        Create Account →
+                    </button>
+
+                </form>
+
+
+                <p class="signup-text">
+                    Already have an account?
+                    <a href="login.html">
+                        Login
+                    </a>
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            © 2026 createMedia. All Rights Reserved.
+        </p>
+
+        <div class="footer-links">
+
+            <a href="privacy.html">
+                Privacy Policy
+            </a>
+
+            <a href="terms.html">
+                Terms & Conditions
+            </a>
+
+            <a href="refund.html">
+                Refund Policy
+            </a>
+
+        </div>
+
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY="sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const creatorRef=new URLSearchParams(window.location.search).get("creatorRef");
+if(creatorRef) sessionStorage.setItem("createMediaPendingCreatorRef",creatorRef.trim());
+
+document.getElementById("signupForm").addEventListener("submit",async function(event){
+ event.preventDefault();
+ const name=this.querySelector('input[type="text"]').value.trim();
+ const email=this.querySelector('input[type="email"]').value.trim().toLowerCase();
+ const password=this.querySelector('input[type="password"]').value;
+ const button=this.querySelector('button[type="submit"]');
+ button.disabled=true; button.textContent="Creating...";
+ try{
+  const {data,error}=await supabaseClient.auth.signUp({
+   email,password,options:{data:{full_name:name}}
+  });
+  if(error) throw error;
+  if(!data?.user) throw new Error("Account could not be created.");
+
+  const creatorRef=new URLSearchParams(window.location.search).get("creatorRef");
+  if(creatorRef) sessionStorage.setItem("createMediaPendingCreatorRef",creatorRef.trim());
+
+  const popup=document.createElement("div");
+  popup.className="success-overlay";
+  popup.innerHTML=`<div class="success-popup"><div class="success-icon">✓</div><h3>Account Created</h3><p>Your createMedia account has been created successfully.</p><button id="continueLogin">Continue →</button></div>`;
+  document.body.appendChild(popup);
+  document.getElementById("continueLogin").onclick=async function(){
+   await supabaseClient.auth.signOut();
+   window.location.href="login.html";
+  };
+ }catch(error){
+  console.error("Signup error:",error);
+  alert(error?.message||"Account could not be created.");
+  button.disabled=false; button.textContent="Create Account →";
+ }
+});
+</script>
+
+</body>
+
+</html>

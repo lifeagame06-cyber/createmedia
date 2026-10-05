@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Seller Details | createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body style="visibility:hidden;">
+
+<header class="admin-header">
+
+    <div>
+        <h1>createMedia</h1>
+        
+    </div>
+
+    <a href="admin-sellers.html"
+       class="admin-sellers-back">
+        ← Manage Sellers
+    </a>
+
+</header>
+
+<main class="admin-seller-details-page">
+
+    <section class="admin-seller-details-hero">
+
+        <div class="section-label">
+            SELLER DETAILS
+        </div>
+
+        <h2 id="sellerDetailsName">
+            Seller
+        </h2>
+
+        <p id="sellerDetailsEmail">
+            —
+        </p>
+
+    </section>
+
+    <section class="admin-seller-details-stats">
+
+        <div>
+            <span>Status</span>
+            <strong id="sellerDetailsStatus">Active</strong>
+<button id="sellerStatusButton"
+        class="seller-status-button">
+    Suspend Seller
+</button>
+        </div>
+
+        <div>
+            <span>Total Ebooks</span>
+            <strong id="sellerDetailsEbooks">0</strong>
+        </div>
+
+        <div>
+            <span>Total Sales</span>
+            <strong id="sellerDetailsSales">0</strong>
+        </div>
+
+        <div>
+            <span>Total Earnings</span>
+            <strong id="sellerDetailsEarnings">₹0</strong>
+        </div>
+
+    </section>
+
+    <section class="admin-seller-details-section">
+
+        <div class="section-label">EBOOKS</div>
+
+        <h2>Seller Ebooks</h2>
+
+        <div id="sellerDetailsEbookList">
+        </div>
+
+    </section>
+
+    <section class="admin-seller-details-section">
+
+        <div class="section-label">SALES</div>
+
+        <h2>Sales History</h2>
+
+        <div id="sellerDetailsSalesList">
+        </div>
+
+    </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const { createClient } = supabase;
+
+const supabaseUrl =
+    "https://aafuqhcolkmvswgnzjod.supabase.co";
+
+const supabaseAnonKey =
+    "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+
+const supabaseClient =
+    createClient(supabaseUrl, supabaseAnonKey);
+
+let adminSellerDetailsAuthorized = false;
+
+async function requireAdminSellerDetailsAccess() {
+    const { data: { session }, error: authError } =
+        await supabaseClient.auth.getSession();
+
+    const user = session?.user || null;
+
+    if (authError || !user) {
+        const returnPath = window.location.pathname.split("/").pop() + window.location.search;
+        sessionStorage.setItem("createMediaReturnAfterLogin", returnPath);
+        window.location.replace("login.html");
+        return false;
+    }
+
+    const { data: profile, error: profileError } =
+        await supabaseClient
+            .from("profiles")
+            .select("id, role")
+            .eq("id", user.id)
+            .single();
+
+    const role = String(profile?.role || "").trim().toLowerCase();
+
+    if (profileError || role !== "admin") {
+        console.error("Admin seller details access denied:", profileError || "Not admin");
+        window.location.replace("index.html");
+        return false;
+    }
+
+    adminSellerDetailsAuthorized = true;
+    document.body.style.visibility = "visible";
+    return true;
+}
+
+
+const params =
+    new URLSearchParams(window.location.search);
+
+const sellerId =
+    params.get("seller");
+
+let currentSeller = null;
+
+async function loadSellerDetails() {
+
+    if (!sellerId) {
+        document.getElementById("sellerDetailsName").textContent =
+            "Seller not found";
+        return;
+    }
+
+    const [
+        profileResult,
+        ebooksResult,
+        ordersResult
+    ] = await Promise.all([
+
+        supabaseClient
+            .from("profiles")
+            .select("id, name, email, role, seller_status")
+            .eq("id", sellerId)
+            .maybeSingle(),
+
+        supabaseClient
+            .from("ebooks")
+            .select("id, title, price, status, listing_status, ebook_type, created_at")
+            .eq("seller_id", sellerId)
+            .eq("ebook_type", "seller")
+            .order("created_at", { ascending: false }),
+
+        supabaseClient
+            .from("orders")
+            .select("id, ebook_title, seller_earning, amount, payment_status, order_status, created_at")
+            .eq("seller_id", sellerId)
+            .order("created_at", { ascending: false })
+    ]);
+
+    if (profileResult.error) {
+        console.error("Seller profile error:", profileResult.error);
+    }
+
+    if (ebooksResult.error) {
+        console.error("Seller ebooks error:", ebooksResult.error);
+    }
+
+    if (ordersResult.error) {
+        console.error("Seller orders error:", ordersResult.error);
+    }
+
+    currentSeller = profileResult.data || null;
+
+    const sellerEbooks =
+        ebooksResult.data || [];
+
+    const sellerSales = ordersResult.data || [];
+
+    const totalEarnings =
+        sellerSales.reduce(function(total, sale) {
+            return total + Number(sale.seller_earning || 0);
+        }, 0);
+
+    document.getElementById("sellerDetailsName").textContent =
+        currentSeller?.name ||
+        currentSeller?.email?.split("@")[0] ||
+        "Seller";
+
+    document.getElementById("sellerDetailsEmail").textContent =
+        currentSeller?.email || "—";
+
+    updateSellerStatusButton();
+
+    document.getElementById("sellerDetailsEbooks").textContent =
+        sellerEbooks.length;
+
+    document.getElementById("sellerDetailsSales").textContent =
+        sellerSales.length;
+
+    document.getElementById("sellerDetailsEarnings").textContent =
+        "₹" + totalEarnings.toLocaleString("en-IN");
+
+    renderSellerEbooks(sellerEbooks);
+    renderSellerSales(sellerSales);
+}
+
+function updateSellerStatusButton() {
+
+    const currentStatus =
+        currentSeller?.seller_status || "inactive";
+
+    document.getElementById("sellerDetailsStatus").textContent =
+        currentStatus;
+
+    document.getElementById("sellerStatusButton").textContent =
+        currentStatus === "suspended"
+            ? "Activate Seller"
+            : "Suspend Seller";
+}
+
+document.getElementById("sellerStatusButton")
+    .addEventListener("click", async function() {
+
+        if (!adminSellerDetailsAuthorized) {
+            return;
+        }
+
+        if (!currentSeller || !sellerId) {
+            return;
+        }
+
+        const currentStatus =
+            currentSeller.seller_status || "inactive";
+
+        const newStatus =
+            currentStatus === "suspended"
+                ? "active"
+                : "suspended";
+
+        const { error: profileError } =
+            await supabaseClient
+                .from("profiles")
+                .update({
+                    seller_status: newStatus
+                })
+                .eq("id", sellerId);
+
+        if (profileError) {
+            console.error("Seller status update error:", profileError);
+            alert("Seller status update nahi hua.");
+            return;
+        }
+
+        if (newStatus === "suspended") {
+
+            const { error: ebookError } =
+                await supabaseClient
+                    .from("ebooks")
+                    .update({
+                        listing_status: "unlisted"
+                    })
+                    .eq("seller_id", sellerId)
+                    .eq("ebook_type", "seller");
+
+            if (ebookError) {
+                console.error(
+                    "Seller ebooks unlist error:",
+                    ebookError
+                );
+            }
+        }
+
+        currentSeller.seller_status =
+            newStatus;
+
+        updateSellerStatusButton();
+
+        await loadSellerDetails();
+    });
+
+function renderSellerEbooks(sellerEbooks) {
+
+    const ebookList =
+        document.getElementById("sellerDetailsEbookList");
+
+    ebookList.innerHTML = "";
+
+    if (sellerEbooks.length === 0) {
+
+        ebookList.innerHTML =
+            '<p class="admin-seller-empty">No ebooks uploaded yet.</p>';
+
+        return;
+    }
+
+    const ebookFragment = document.createDocumentFragment();
+
+    sellerEbooks.forEach(function(ebook) {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "admin-seller-detail-item";
+
+        item.innerHTML = `
+            <div>
+                <strong>${escapeSellerDetailHtml(ebook.title || "Untitled Ebook")}</strong>
+                <span>₹${Number(ebook.price || 0).toLocaleString("en-IN")}</span>
+            </div>
+
+            <div>
+                <span>Review Status</span>
+                <strong>${escapeSellerDetailHtml(ebook.status || "—")}</strong>
+            </div>
+
+            <div>
+                <span>Listing Status</span>
+                <strong>${escapeSellerDetailHtml(ebook.listing_status || "—")}</strong>
+            </div>
+        `;
+
+        ebookFragment.appendChild(item);
+    });
+
+    ebookList.appendChild(ebookFragment);
+}
+
+function renderSellerSales(sellerSales) {
+
+    const salesList =
+        document.getElementById("sellerDetailsSalesList");
+
+    salesList.innerHTML = "";
+
+    if (sellerSales.length === 0) {
+
+        salesList.innerHTML =
+            '<p class="admin-seller-empty">No sales yet.</p>';
+
+        return;
+    }
+
+    const salesFragment = document.createDocumentFragment();
+
+    sellerSales.forEach(function(sale) {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "admin-seller-detail-item";
+
+        const date =
+            sale.created_at
+                ? new Date(sale.created_at)
+                    .toLocaleDateString("en-IN")
+                : "—";
+
+        item.innerHTML = `
+            <div>
+                <strong>${escapeSellerDetailHtml(sale.ebook_title || "Ebook Sale")}</strong>
+                <span>${date}</span>
+            </div>
+
+            <div>
+                <span>Seller Earning</span>
+                <strong>₹${Number(sale.seller_earning || 0).toLocaleString("en-IN")}</strong>
+            </div>
+
+            <div>
+                <span>Order ID</span>
+                <strong>${escapeSellerDetailHtml(sale.id || "—")}</strong>
+            </div>
+        `;
+
+        salesFragment.appendChild(item);
+    });
+
+    salesList.appendChild(salesFragment);
+}
+
+function escapeSellerDetailHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+async function initializeSecureSellerDetails() {
+    const allowed = await requireAdminSellerDetailsAccess();
+    if (!allowed) return;
+    await loadSellerDetails();
+}
+initializeSecureSellerDetails();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Creator Marketplace | createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+   <link rel="stylesheet" href="./style.css?v=1000">
+
+</head>
+
+<body class="seller-marketplace-page">
+
+<header class="marketplace-header">
+
+    <a href="index.html"
+       class="marketplace-back">
+        ← Home
+    </a>
+
+    <h1>createMedia</h1>
+
+</header>
+
+
+<main class="marketplace-main">
+
+    <!-- MARKETPLACE HERO -->
+
+    <section class="marketplace-hero">
+
+        <p class="marketplace-label">
+            CREATOR MARKETPLACE
+        </p>
+
+        <h2>
+            Explore creators & their ebooks.
+        </h2>
+
+        <p class="marketplace-intro">
+            Discover ebooks published by creators on
+            createMedia and find your next digital read.
+        </p>
+
+        <a href="sell-ebook.html"
+           class="marketplace-sell-button"
+           id="marketplaceSellButton">
+            Sell Your Ebook Now →
+        </a>
+
+    </section>
+<div class="marketplace-highlights">
+
+    <div>
+        <strong>Creator Ebooks</strong>
+        <span>Discover independent digital books</span>
+    </div>
+
+    <div>
+        <strong>Direct from Creators</strong>
+        <span>Explore every creator's collection</span>
+    </div>
+
+    <div>
+        <strong>Instant Access</strong>
+        <span>Purchase and access your ebooks easily</span>
+    </div>
+
+</div>
+
+
+    <!-- SEARCH -->
+
+    <section class="marketplace-search-section">
+
+        <div class="marketplace-search-box">
+
+            <input
+                type="search"
+                id="marketplaceSearch"
+                placeholder="Search ebooks or creators..."
+                autocomplete="off"
+            >
+
+        </div>
+
+    </section>
+
+
+    <!-- SELLER EBOOKS -->
+
+    <section class="marketplace-content">
+
+        <div class="marketplace-heading">
+
+            <div>
+
+                <p class="marketplace-label">
+                    PUBLISHED BY CREATORS
+                </p>
+
+                <h2>
+                    Explore Seller Ebooks
+
+<p class="marketplace-result-count" id="marketplaceResultCount">
+    0 creator ebooks available
+</p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="marketplace-ebook-grid"
+            id="marketplaceEbookGrid">
+        </div>
+
+
+        <div
+            class="marketplace-empty"
+            id="marketplaceEmpty">
+
+            <h3>No seller ebooks yet</h3>
+
+            <p>
+                Published creator ebooks will appear here.
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer class="marketplace-footer">
+
+    <p>
+        © 2026 createMedia. All Rights Reserved.
+    </p>
+
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+
+const { createClient } = supabase;
+const supabaseUrl = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const supabaseAnonKey = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+
+const marketplaceEbookGrid =
+    document.getElementById("marketplaceEbookGrid");
+
+const marketplaceEmpty =
+    document.getElementById("marketplaceEmpty");
+
+
+const MARKETPLACE_CACHE_KEY = "createMediaMarketplaceAssetCacheV2";
+const MARKETPLACE_CACHE_TTL = 50 * 60 * 1000;
+
+function getMarketplaceCache() {
+    try {
+        const parsed = JSON.parse(sessionStorage.getItem(MARKETPLACE_CACHE_KEY) || "{}");
+        if (!parsed.savedAt || Date.now() - parsed.savedAt > MARKETPLACE_CACHE_TTL) {
+            return { savedAt: Date.now(), covers: {}, sellers: {} };
+        }
+        return {
+            savedAt: parsed.savedAt,
+            covers: parsed.covers || {},
+            sellers: parsed.sellers || {}
+        };
+    } catch {
+        return { savedAt: Date.now(), covers: {}, sellers: {} };
+    }
+}
+
+function saveMarketplaceCache(cache) {
+    try {
+        cache.savedAt = Date.now();
+        sessionStorage.setItem(MARKETPLACE_CACHE_KEY, JSON.stringify(cache));
+    } catch {}
+}
+
+function preloadMarketplaceImage(url) {
+    if (!url) return Promise.resolve();
+    return new Promise(resolve => {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = resolve;
+        img.src = url;
+        if (img.complete) resolve();
+    });
+}
+
+async function renderMarketplaceEbooks() {
+    marketplaceEbookGrid.innerHTML = "";
+    marketplaceEmpty.style.display = "none";
+
+    const resultCount = document.getElementById("marketplaceResultCount");
+    resultCount.textContent = "Loading ebooks...";
+
+    try {
+        const { data: ebooks, error } = await supabaseClient
+            .from("ebooks")
+            .select("id, seller_id, title, price, cover_path, created_at")
+            .eq("ebook_type", "seller")
+            .eq("status", "approved")
+            .eq("listing_status", "listed")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        const listedEbooks = ebooks || [];
+
+        if (!listedEbooks.length) {
+            marketplaceEmpty.style.display = "block";
+            resultCount.textContent = "0 ebooks available";
+            return;
+        }
+
+        resultCount.textContent =
+            listedEbooks.length +
+            (listedEbooks.length === 1 ? " ebook available" : " ebooks available");
+
+        const cache = getMarketplaceCache();
+
+        const sellerIds = [...new Set(
+            listedEbooks.map(e => e.seller_id).filter(Boolean)
+        )];
+
+        const coverPaths = [...new Set(
+            listedEbooks.map(e => e.cover_path).filter(Boolean)
+        )];
+
+        const missingSellerIds = sellerIds.filter(id => !cache.sellers[id]);
+        const missingCoverPaths = coverPaths.filter(path => !cache.covers[path]);
+
+        const profilePromise = missingSellerIds.length
+            ? supabaseClient
+                .from("profiles")
+                .select("id, name")
+                .in("id", missingSellerIds)
+            : Promise.resolve({ data: [], error: null });
+
+        const coverPromise = missingCoverPaths.length
+            ? supabaseClient.storage
+                .from("ebook-covers")
+                .createSignedUrls(missingCoverPaths, 3600)
+            : Promise.resolve({ data: [], error: null });
+
+        const [profileResult, coverResult] =
+            await Promise.all([profilePromise, coverPromise]);
+
+        if (!profileResult.error && profileResult.data) {
+            profileResult.data.forEach(profile => {
+                cache.sellers[profile.id] =
+                    profile.name || "createMedia Creator";
+            });
+        }
+
+        if (!coverResult.error && coverResult.data) {
+            coverResult.data.forEach((item, index) => {
+                const path = item.path || missingCoverPaths[index];
+                if (path && item.signedUrl) {
+                    cache.covers[path] = item.signedUrl;
+                }
+            });
+        }
+
+        saveMarketplaceCache(cache);
+
+        // Load visible cover bytes before cards are revealed, preventing placeholder -> image pop-in.
+        await Promise.all(
+            listedEbooks.slice(0, 8).map(ebook =>
+                preloadMarketplaceImage(cache.covers[ebook.cover_path] || "")
+            )
+        );
+
+        const fragment = document.createDocumentFragment();
+
+        listedEbooks.forEach(function(ebook, index) {
+            const sellerName =
+                cache.sellers[ebook.seller_id] || "createMedia Creator";
+            const coverUrl =
+                ebook.cover_path ? (cache.covers[ebook.cover_path] || "") : "";
+
+            const card = document.createElement("div");
+            card.className = "marketplace-ebook-card";
+            card.dataset.ebookId = ebook.id;
+            card.dataset.sellerId = ebook.seller_id || "";
+
+            const safeTitle =
+                escapeMarketplaceHtml(ebook.title || "Untitled Ebook");
+
+            const coverHtml = coverUrl
+                ? `<img src="${escapeMarketplaceAttribute(coverUrl)}"
+                        alt="${safeTitle}"
+                        ${index < 4 ? 'fetchpriority="high"' : 'loading="lazy"'}
+                        decoding="async">`
+                : `<div class="marketplace-cover-placeholder">Ebook</div>`;
+
+            card.innerHTML = `
+                <div class="marketplace-card-cover">
+                    ${coverHtml}
+                </div>
+
+                <div class="marketplace-card-info">
+                    <a href="seller-profile.html?seller=${encodeURIComponent(ebook.seller_id || "")}"
+                       class="marketplace-creator">
+                        <span class="marketplace-creator-avatar">
+                            ${escapeMarketplaceHtml(sellerName.charAt(0).toUpperCase())}
+                        </span>
+                        <span class="marketplace-creator-name">
+                            ${escapeMarketplaceHtml(sellerName)}
+                            <small>View Creator →</small>
+                        </span>
+                    </a>
+
+                    <h3>${safeTitle}</h3>
+                    <strong>₹${Number(ebook.price || 0)}</strong>
+
+                    <div class="marketplace-card-actions">
+                        <a href="details.html?sellerEbook=${encodeURIComponent(ebook.id)}"
+                           class="marketplace-view-button">View</a>
+                        <a href="checkout.html?sellerEbook=${encodeURIComponent(ebook.id)}"
+                           class="marketplace-buy-button">Buy</a>
+                    </div>
+                </div>
+            `;
+
+            fragment.appendChild(card);
+        });
+
+        marketplaceEbookGrid.appendChild(fragment);
+
+    } catch (error) {
+        console.error("Marketplace load error:", error);
+        marketplaceEmpty.style.display = "block";
+        marketplaceEmpty.querySelector("h3").textContent =
+            "Marketplace could not be loaded";
+        marketplaceEmpty.querySelector("p").textContent =
+            "Please refresh the page and try again.";
+        resultCount.textContent = "0 ebooks available";
+    }
+}
+
+function escapeMarketplaceHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function escapeMarketplaceAttribute(value) {
+    return escapeMarketplaceHtml(value);
+}
+
+renderMarketplaceEbooks();
+const marketplaceSearch =
+    document.getElementById("marketplaceSearch");
+
+marketplaceSearch.addEventListener("input", function () {
+
+    const query =
+        this.value.trim().toLowerCase();
+
+    const cards =
+        document.querySelectorAll(".marketplace-ebook-card");
+
+    let visibleCount = 0;
+
+    cards.forEach(function(card) {
+
+        const text =
+            card.textContent.toLowerCase();
+
+        if (text.includes(query)) {
+            card.style.display = "";
+            visibleCount++;
+        } else {
+            card.style.display = "none";
+        }
+
+    });
+
+    document.getElementById("marketplaceResultCount").textContent =
+        visibleCount +
+        (visibleCount === 1
+            ? " ebook available"
+            : " ebooks available");
+
+});
+
+</script>
+<script src="./app-notifications.js" defer></script>
+</body>
+
+</html>

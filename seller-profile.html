@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Creator Profile | createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <link rel="stylesheet" href="./style.css?v=999">
+</head>
+
+<body>
+
+<header>
+    <h1>createMedia</h1>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="all-ebooks.html">Ebooks</a>
+        <a href="seller-marketplace.html">Creators</a>
+        <a href="account.html">Account</a>
+    </nav>
+</header>
+
+
+<main class="seller-public-page">
+<a href="seller-marketplace.html" class="seller-profile-back">
+    ← Back to Creators
+</a>
+
+    <section class="seller-public-profile">
+
+        <div class="seller-public-avatar" id="sellerPublicAvatar">
+            C
+        </div>
+
+        <div class="seller-public-info">
+
+            <span>CREATOR PROFILE</span>
+
+            <h2 id="sellerPublicName">
+                createMedia Creator
+            </h2>
+
+            <p id="sellerPublicCount">
+                0 Published Ebooks
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="seller-public-books">
+
+        <div class="seller-public-books-heading">
+            <span>CREATOR LIBRARY</span>
+            <h2>Published Ebooks</h2>
+        </div>
+
+        <div
+            class="seller-public-grid"
+            id="sellerPublicGrid">
+        </div>
+
+        <div
+            class="seller-public-empty"
+            id="sellerPublicEmpty"
+            style="display: none;">
+            No published ebooks available.
+        </div>
+
+    </section>
+
+</main>
+<footer class="seller-profile-footer">
+    <p>© 2026 createMedia. All Rights Reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const params = new URLSearchParams(window.location.search);
+const directSellerId = params.get("seller");
+const selectedEbookId = params.get("ebook");
+
+const nameNode = document.getElementById("sellerPublicName");
+const avatarNode = document.getElementById("sellerPublicAvatar");
+const countNode = document.getElementById("sellerPublicCount");
+const grid = document.getElementById("sellerPublicGrid");
+const empty = document.getElementById("sellerPublicEmpty");
+
+function escapeSellerPublicHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+async function initializeSellerPublicProfile() {
+    if (!directSellerId && !selectedEbookId) {
+        empty.style.display = "block";
+        return;
+    }
+
+    try {
+        let sellerId = directSellerId;
+
+        // Backward compatibility for any old ?ebook= links.
+        if (!sellerId && selectedEbookId) {
+            const { data: selectedEbook, error: selectedError } =
+                await supabaseClient
+                    .from("ebooks")
+                    .select("seller_id")
+                    .eq("id", selectedEbookId)
+                    .eq("ebook_type", "seller")
+                    .eq("status", "approved")
+                    .eq("listing_status", "listed")
+                    .maybeSingle();
+
+            if (selectedError) throw selectedError;
+            sellerId = selectedEbook?.seller_id || "";
+        }
+
+        if (!sellerId) {
+            empty.style.display = "block";
+            return;
+        }
+
+        // Load seller's public ebooks first. This is the authoritative public data.
+        const { data: sellerEbooksData, error: ebooksError } =
+            await supabaseClient
+                .from("ebooks")
+                .select("id, seller_id, title, description, price, cover_path, created_at")
+                .eq("seller_id", sellerId)
+                .eq("ebook_type", "seller")
+                .eq("status", "approved")
+                .eq("listing_status", "listed")
+                .order("created_at", { ascending: false });
+
+        if (ebooksError) throw ebooksError;
+
+        const sellerEbooks = sellerEbooksData || [];
+
+        countNode.textContent =
+            sellerEbooks.length +
+            (sellerEbooks.length === 1
+                ? " Published Ebook"
+                : " Published Ebooks");
+
+        // Profile name can be blocked by profile RLS for public visitors.
+        // Try it, but don't let that block the creator's public ebook library.
+        const { data: profile, error: profileError } =
+            await supabaseClient
+                .from("profiles")
+                .select("name")
+                .eq("id", sellerId)
+                .maybeSingle();
+
+        if (profileError) {
+            console.warn("Creator public name unavailable:", profileError);
+        }
+
+        const cachedMarketplace = (() => {
+            try {
+                return JSON.parse(
+                    sessionStorage.getItem("createMediaMarketplaceAssetCacheV2") || "{}"
+                );
+            } catch {
+                return {};
+            }
+        })();
+
+        const sellerName =
+            profile?.name ||
+            cachedMarketplace?.sellers?.[sellerId] ||
+            "createMedia Creator";
+
+        nameNode.textContent = sellerName;
+        avatarNode.textContent =
+            sellerName.charAt(0).toUpperCase() || "C";
+
+        if (!sellerEbooks.length) {
+            empty.style.display = "block";
+            grid.replaceChildren();
+            return;
+        }
+
+        const coverPaths = [...new Set(
+            sellerEbooks.map(e => e.cover_path).filter(Boolean)
+        )];
+
+        const cachedCovers = cachedMarketplace?.covers || {};
+        const missingCoverPaths =
+            coverPaths.filter(path => !cachedCovers[path]);
+
+        let signedByPath = { ...cachedCovers };
+
+        if (missingCoverPaths.length) {
+            const { data: signedRows, error: coverError } =
+                await supabaseClient.storage
+                    .from("ebook-covers")
+                    .createSignedUrls(missingCoverPaths, 3600);
+
+            if (!coverError && signedRows) {
+                signedRows.forEach((item, index) => {
+                    const path = item.path || missingCoverPaths[index];
+                    if (path && item.signedUrl) {
+                        signedByPath[path] = item.signedUrl;
+                    }
+                });
+            }
+        }
+
+        const fragment = document.createDocumentFragment();
+
+        sellerEbooks.forEach(function(ebook, index) {
+            const card = document.createElement("div");
+            card.className = "seller-public-ebook-card";
+
+            const coverUrl = signedByPath[ebook.cover_path] || "";
+
+            card.innerHTML = `
+                <div class="seller-public-cover">
+                    ${coverUrl ? `
+                        <img
+                            src="${escapeSellerPublicHtml(coverUrl)}"
+                            alt="${escapeSellerPublicHtml(ebook.title || "Ebook")}"
+                            ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}
+                            decoding="async">
+                    ` : ""}
+                </div>
+
+                <div class="seller-public-card-info">
+                    <h3>${escapeSellerPublicHtml(ebook.title || "Untitled Ebook")}</h3>
+                    <p>${escapeSellerPublicHtml(ebook.description || "")}</p>
+                    <strong>₹${Number(ebook.price || 0)}</strong>
+
+                    <div class="seller-public-actions">
+                        <a href="details.html?sellerEbook=${encodeURIComponent(ebook.id)}">View</a>
+                        <a href="checkout.html?sellerEbook=${encodeURIComponent(ebook.id)}">Buy</a>
+                    </div>
+                </div>
+            `;
+
+            fragment.appendChild(card);
+        });
+
+        grid.replaceChildren(fragment);
+        empty.style.display = "none";
+
+    } catch (error) {
+        console.error("Creator profile load error:", error);
+        empty.style.display = "block";
+    }
+}
+
+initializeSellerPublicProfile();
+</script>
+
+</body>
+</html>

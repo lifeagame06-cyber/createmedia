@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Payment Failed - createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .failed-container {
+            width: 100%;
+            max-width: 520px;
+            background: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.10);
+        }
+
+        .failed-icon {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .label {
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #ef4444;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 34px;
+            margin-bottom: 18px;
+            color: #111827;
+        }
+
+        .message {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .order-box {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .order-box p {
+            margin: 8px 0;
+            color: #4b5563;
+        }
+
+        .order-box strong {
+            color: #111827;
+        }
+
+        .retry-button,
+        .home-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .retry-button {
+            background: #111827;
+            color: white;
+        }
+
+        .home-button {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        .retry-button:hover {
+            background: #000;
+        }
+
+        .home-button:hover {
+            background: #d1d5db;
+        }
+/* =====================================
+   FAILED - MOBILE APP DESIGN
+===================================== */
+
+@media (max-width: 600px) {
+
+    body.failed-page-app {
+        background: #f5f6f7 !important;
+        padding: 20px 14px !important;
+    }
+
+    .failed-page-app .failed-container {
+        width: 100% !important;
+        max-width: 390px !important;
+
+        padding: 30px 18px 25px !important;
+
+        border: 1px solid #e8e8e8 !important;
+        border-radius: 22px !important;
+
+        box-shadow: 0 14px 40px rgba(0,0,0,0.08) !important;
+    }
+
+    .failed-page-app .failed-icon {
+        width: 64px !important;
+        height: 64px !important;
+
+        margin-bottom: 20px !important;
+
+        font-size: 30px !important;
+    }
+
+    .failed-page-app .label {
+        margin-bottom: 9px !important;
+
+        font-size: 9px !important;
+        letter-spacing: 2.5px !important;
+    }
+
+    .failed-page-app h1 {
+        margin-bottom: 13px !important;
+
+        font-size: 30px !important;
+        line-height: 1.05 !important;
+        letter-spacing: -0.8px !important;
+    }
+
+    .failed-page-app .message {
+        margin-bottom: 20px !important;
+
+        font-size: 13px !important;
+        line-height: 1.55 !important;
+    }
+
+    .failed-page-app .order-box {
+        margin-bottom: 20px !important;
+        padding: 14px !important;
+
+        border-radius: 12px !important;
+    }
+
+    .failed-page-app .order-box p {
+        margin: 7px 0 !important;
+        font-size: 13px !important;
+    }
+
+    .failed-page-app .retry-button,
+    .failed-page-app .home-button {
+        min-height: 50px !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        padding: 0 15px !important;
+
+        border-radius: 12px !important;
+
+        font-size: 14px !important;
+    }
+
+}
+
+    </style>
+
+</head>
+
+
+<body class="failed-page-app">
+
+
+    <div class="failed-container">
+
+        <div class="failed-icon">
+            ×
+        </div>
+
+
+        <p class="label">
+            PAYMENT FAILED
+        </p>
+
+
+        <h1>
+            Payment Failed
+        </h1>
+
+
+        <p class="message">
+            Unfortunately, your payment could not be completed.
+            Please try again.
+        </p>
+
+
+        <div class="order-box">
+
+            <p>
+                Ebook:
+                <strong id="failedEbookName">Ebook 1</strong>
+            </p>
+
+            <p>
+                Amount:
+                <strong id="failedPrice">₹199</strong>
+            </p>
+
+        </div>
+
+
+        <a href="#" class="retry-button" id="retryButton">
+            Try Payment Again
+        </a>
+
+
+        <a href="index.html" class="home-button">
+            Back to createMedia
+        </a>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const params = new URLSearchParams(window.location.search);
+const sellerEbookId = params.get("sellerEbook");
+const ebookParam = params.get("ebook");
+const affiliateRef = params.get("ref");
+
+const legacyPlatformEbooks = [
+    { name: "Ebook 1", price: 199 },
+    { name: "Ebook 2", price: 249 },
+    { name: "Ebook 3", price: 299 },
+    { name: "Ebook 4", price: 349 },
+    { name: "Ebook 5", price: 399 }
+];
+
+let selectedDatabaseEbook = null;
+let legacyIndex = null;
+
+function isUuid(value) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        .test(value || "");
+}
+
+async function loadDatabaseEbook(id) {
+    const { data, error } = await supabaseClient
+        .from("ebooks")
+        .select("id, title, price, ebook_type, status, listing_status")
+        .eq("id", id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Failed-page ebook load error:", error);
+        return null;
+    }
+
+    return data || null;
+}
+
+function buildRetryUrl() {
+    let url;
+
+    if (selectedDatabaseEbook) {
+        if (
+            sellerEbookId ||
+            selectedDatabaseEbook.ebook_type === "seller"
+        ) {
+            url =
+                "payment.html?sellerEbook=" +
+                encodeURIComponent(selectedDatabaseEbook.id);
+        } else {
+            url =
+                "payment.html?ebook=" +
+                encodeURIComponent(selectedDatabaseEbook.id);
+        }
+    } else {
+        url =
+            "payment.html?ebook=" +
+            encodeURIComponent(legacyIndex ?? 0);
+    }
+
+    if (affiliateRef) {
+        url += "&ref=" + encodeURIComponent(affiliateRef);
+    }
+
+    return url;
+}
+
+async function initializeFailedPage() {
+    const {
+        data: { session },
+        error: authError
+    } = await supabaseClient.auth.getSession();
+
+    if (authError) {
+        console.error("Failed-page auth error:", authError);
+    }
+
+    const user = session?.user || null;
+
+    if (!user) {
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            window.location.pathname + window.location.search
+        );
+
+        window.location.href = "login.html";
+        return;
+    }
+
+    const databaseId =
+        sellerEbookId ||
+        (isUuid(ebookParam) ? ebookParam : null);
+
+    let selectedEbook = null;
+
+    if (databaseId) {
+        selectedDatabaseEbook =
+            await loadDatabaseEbook(databaseId);
+
+        if (selectedDatabaseEbook) {
+            selectedEbook = {
+                name: selectedDatabaseEbook.title,
+                price: Number(selectedDatabaseEbook.price || 0)
+            };
+        }
+    } else {
+        legacyIndex = Number.parseInt(ebookParam, 10);
+
+        if (
+            !Number.isInteger(legacyIndex) ||
+            legacyIndex < 0 ||
+            legacyIndex >= legacyPlatformEbooks.length
+        ) {
+            legacyIndex = 0;
+        }
+
+        selectedEbook = legacyPlatformEbooks[legacyIndex];
+    }
+
+    if (!selectedEbook) {
+        document.getElementById("failedEbookName").textContent =
+            "Ebook unavailable";
+        document.getElementById("failedPrice").textContent = "";
+
+        const retryButton =
+            document.getElementById("retryButton");
+
+        retryButton.removeAttribute("href");
+        retryButton.textContent = "Ebook Unavailable";
+        retryButton.style.pointerEvents = "none";
+        retryButton.style.opacity = "0.55";
+        return;
+    }
+
+    document.getElementById("failedEbookName").textContent =
+        selectedEbook.name;
+
+    document.getElementById("failedPrice").textContent =
+        "₹" + Number(selectedEbook.price).toLocaleString("en-IN");
+
+    document.getElementById("retryButton").href =
+        buildRetryUrl();
+}
+
+initializeFailedPage();
+</script>
+
+<script src="./app-notifications.js" defer></script>
+</body>
+
+</html>

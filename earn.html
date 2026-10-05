@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Earn | createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #f6f8f7;
+        color: #111;
+        font-family: Arial, sans-serif;
+    }
+
+    /* HEADER */
+    .earn-header {
+        height: 72px;
+        padding: 0 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #111;
+        color: #fff;
+    }
+
+    .earn-header h1 {
+        margin: 0;
+        font-size: 22px;
+    }
+
+    .earn-back {
+        color: #fff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* PAGE */
+    .earn-page {
+        width: 1100px;
+        max-width: calc(100% - 40px);
+        margin: 45px auto 80px;
+    }
+
+    /* HERO */
+    .earn-hero {
+        padding: 38px 42px;
+        background: linear-gradient(135deg, #eefaf5, #ffffff);
+        border: 1px solid #b7dfd0;
+        border-radius: 22px;
+        box-shadow: 0 15px 40px rgba(8, 127, 91, 0.06);
+    }
+
+    .earn-tag {
+        margin: 0 0 10px;
+        color: #087f5b;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 2.5px;
+    }
+
+    .earn-hero h2 {
+        margin: 0 0 10px;
+        font-size: 38px;
+        letter-spacing: -1px;
+    }
+
+    .earn-subtitle {
+        max-width: 580px;
+        margin: 0;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    /* STATS */
+    .earn-overview {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 22px;
+    }
+
+    .earn-stat {
+        padding: 22px;
+        background: #fff;
+        border: 1px solid #e0e8e4;
+        border-radius: 16px;
+    }
+
+    .earn-stat span {
+        display: block;
+        color: #666;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .earn-stat strong {
+        display: block;
+        margin: 8px 0 5px;
+        color: #087f5b;
+        font-size: 27px;
+    }
+
+    .earn-stat small {
+        color: #999;
+        font-size: 10px;
+    }
+
+    /* WAYS TO EARN */
+    .ways-to-earn {
+        margin-top: 35px;
+    }
+
+    .section-heading {
+        margin-bottom: 18px;
+    }
+
+    .section-heading p {
+        margin: 0 0 6px;
+        color: #087f5b;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+    .section-heading h2 {
+        margin: 0;
+        font-size: 25px;
+    }
+
+    .earning-method {
+        margin-bottom: 15px;
+        padding: 25px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+        background: #fff;
+        border: 1px solid #e0e8e4;
+        border-radius: 17px;
+    }
+
+    .method-label {
+        color: #087f5b;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+    }
+
+    .earning-method h3 {
+        margin: 7px 0 7px;
+        font-size: 18px;
+    }
+
+    .earning-method p {
+        max-width: 650px;
+        margin: 0;
+        color: #666;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .earning-method button {
+        flex-shrink: 0;
+        min-width: 150px;
+        padding: 11px 16px;
+        border: 0;
+        border-radius: 10px;
+        background: #087f5b;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .earning-method button:hover {
+        background: #066c4d;
+    }
+/* HEADER BACK BUTTON FIX */
+.earn-header {
+    position: relative;
+}
+
+.earn-back {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffffff !important;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 10;
+}
+/* EARN PAGE - MOBILE */
+@media (max-width: 600px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    /* HEADER */
+    .earn-header {
+        height: 64px;
+        padding: 0 16px;
+    }
+
+    .earn-header h1 {
+        font-size: 19px;
+    }
+
+    .earn-back {
+        right: 16px !important;
+        font-size: 11px !important;
+    }
+
+    /* PAGE */
+    .earn-page {
+        width: 100%;
+        max-width: 100%;
+        margin: 20px auto 60px;
+        padding: 0 14px;
+    }
+
+    /* HERO */
+    .earn-hero {
+        padding: 24px 20px;
+        border-radius: 20px;
+    }
+
+    .earn-tag {
+        font-size: 8px;
+        letter-spacing: 2px;
+    }
+
+    .earn-hero h2 {
+        font-size: 29px;
+        line-height: 1.1;
+        margin-bottom: 10px;
+    }
+
+    .earn-subtitle {
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    /* EARNING STATS */
+    .earn-overview {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+        margin-top: 12px;
+    }
+
+    .earn-stat {
+        padding: 16px;
+        border-radius: 14px;
+        min-width: 0;
+    }
+
+    .earn-stat:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .earn-stat span {
+        font-size: 9px;
+    }
+
+    .earn-stat strong {
+        font-size: 22px;
+        margin: 6px 0 4px;
+    }
+
+    .earn-stat small {
+        font-size: 8px;
+    }
+
+    /* EARNING METHODS */
+    .ways-to-earn {
+        margin-top: 28px;
+    }
+
+    .section-heading p {
+        font-size: 8px;
+        letter-spacing: 1.7px;
+    }
+
+    .section-heading h2 {
+        font-size: 22px;
+    }
+
+    .earning-method {
+        display: block;
+        padding: 19px;
+        margin-bottom: 12px;
+        border-radius: 17px;
+    }
+
+    .method-label {
+        font-size: 8px;
+    }
+
+    .earning-method h3 {
+        font-size: 18px;
+        margin: 7px 0;
+    }
+
+    .earning-method p {
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+    .earning-method button {
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 10px;
+    }
+}
+.earning-method-button {
+    flex-shrink: 0;
+    min-width: 150px;
+    padding: 11px 16px;
+    border-radius: 10px;
+    background: #087f5b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+}
+
+.earning-method-button:hover {
+    background: #066c4d;
+}
+
+@media (max-width: 600px) {
+    .earning-method-button {
+        display: block;
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px 14px;
+        font-size: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+    <header class="earn-header">
+        <h1>createMedia</h1>
+
+        <a href="sell-ebook.html" class="earn-back">
+            ← Seller Dashboard
+        </a>
+    </header>
+
+
+    <main class="earn-page">
+
+        <!-- HERO -->
+        <section class="earn-hero">
+
+            <p class="earn-tag">CREATOR EARNING</p>
+
+            <h2>More Ways to Earn.</h2>
+
+            <p class="earn-subtitle">
+                Grow your earnings beyond selling your own ebooks.
+                Share, refer and earn with createMedia.
+            </p>
+
+        </section>
+
+
+        <!-- EARNING OVERVIEW -->
+       <section class="earn-overview">
+
+    <div class="earn-stat">
+        <span>Affiliate Earnings</span>
+        <strong id="earnAffiliateEarnings">₹0</strong>
+        <small>Total earned</small>
+    </div>
+
+    <div class="earn-stat">
+        <span>Successful Referrals</span>
+        <strong id="earnSuccessfulReferrals">0</strong>
+        <small>Completed referrals</small>
+    </div>
+
+    <div class="earn-stat">
+        <span>Available Rewards</span>
+        <strong id="earnAvailableRewards">₹0</strong>
+        <small>Available to withdraw</small>
+    </div>
+
+</section>
+        <!-- WAYS TO EARN -->
+        <section class="ways-to-earn">
+
+            <div class="section-heading">
+                <p>EARNING OPPORTUNITIES</p>
+                <h2>Choose How You Earn</h2>
+            </div>
+
+
+            <div class="earning-method">
+
+                <div>
+                    <span class="method-label">AFFILIATE</span>
+                    <h3>Share Ebooks & Earn</h3>
+
+                    <p>
+                        Share eligible ebooks using your unique affiliate link.
+                        Earn a reward when an eligible purchase is completed
+                        through your link.
+                    </p>
+                </div>
+
+               <a href="affiliate.html" class="earning-method-button">
+    Explore Affiliate
+</a>
+
+            </div>
+
+
+            <div class="earning-method">
+
+                <div>
+                    <span class="method-label">REFER CREATORS</span>
+                    <h3>Invite Creators</h3>
+
+                    <p>
+                        Invite new creators to createMedia and earn eligible
+                        referral rewards when program requirements are completed.
+                    </p>
+                </div>
+
+               <button type="button" id="referCreatorButton">
+    Refer a Creator
+</button>
+
+            </div>
+
+        </section>
+
+    </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let creatorReferralAccount = null;
+
+function makeCreatorReferralCode() {
+    return (
+        "CR" +
+        crypto.randomUUID()
+            .replace(/-/g, "")
+            .slice(0, 12)
+            .toUpperCase()
+    );
+}
+
+async function getOrCreateCreatorReferralAccount(userId) {
+    const { data: existing, error: readError } = await supabaseClient
+        .from("creator_referral_accounts")
+        .select("id, user_id, referral_code, status")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+    if (readError) {
+        console.error("Creator referral account read error:", readError);
+        return null;
+    }
+
+    if (existing) return existing;
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+        const { data, error } = await supabaseClient
+            .from("creator_referral_accounts")
+            .insert({
+                user_id: userId,
+                referral_code: makeCreatorReferralCode(),
+                status: "active"
+            })
+            .select("id, user_id, referral_code, status")
+            .single();
+
+        if (!error) return data;
+
+        if (error.code !== "23505") {
+            console.error("Creator referral account create error:", error);
+            return null;
+        }
+    }
+
+    return null;
+}
+
+async function loadEarnStats() {
+    let affiliateEarnings = 0;
+    let affiliateCompletedSales = 0;
+    let creatorReferralEarnings = 0;
+    let completedCreatorReferrals = 0;
+
+    const affiliateAccountPromise = supabaseClient
+        .from("affiliate_accounts")
+        .select("id")
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
+
+    const creatorAccountPromise =
+        getOrCreateCreatorReferralAccount(currentUser.id);
+
+    const [affiliateAccountResult, creatorAccount] = await Promise.all([
+        affiliateAccountPromise,
+        creatorAccountPromise
+    ]);
+
+    const affiliateAccount = affiliateAccountResult.data;
+    if (affiliateAccountResult.error) {
+        console.error("Affiliate account error:", affiliateAccountResult.error);
+    }
+
+    creatorReferralAccount = creatorAccount;
+
+    const affiliateSalesPromise = affiliateAccount
+        ? supabaseClient
+            .from("affiliate_sales")
+            .select("id, commission_amount")
+            .eq("affiliate_id", affiliateAccount.id)
+            .eq("status", "completed")
+        : Promise.resolve({ data: [], error: null });
+
+    const referralsPromise = creatorReferralAccount
+        ? supabaseClient
+            .from("creator_referrals")
+            .select("id, reward_amount")
+            .eq("referrer_id", creatorReferralAccount.id)
+            .eq("status", "completed")
+        : Promise.resolve({ data: [], error: null });
+
+    const [affiliateSalesResult, referralsResult] = await Promise.all([
+        affiliateSalesPromise,
+        referralsPromise
+    ]);
+
+    if (affiliateSalesResult.error) {
+        console.error("Affiliate sales error:", affiliateSalesResult.error);
+    } else {
+        const sales = affiliateSalesResult.data || [];
+        affiliateCompletedSales = sales.length;
+        affiliateEarnings = sales.reduce(function(total, sale) {
+            return total + Number(sale.commission_amount || 0);
+        }, 0);
+    }
+
+    if (referralsResult.error) {
+        console.error("Creator referrals error:", referralsResult.error);
+    } else {
+        const completed = referralsResult.data || [];
+        completedCreatorReferrals = completed.length;
+        creatorReferralEarnings = completed.reduce(function(total, referral) {
+            return total + Number(referral.reward_amount || 0);
+        }, 0);
+    }
+
+    document.getElementById("earnAffiliateEarnings").textContent =
+        "₹" + affiliateEarnings.toLocaleString("en-IN");
+
+    document.getElementById("earnSuccessfulReferrals").textContent =
+        affiliateCompletedSales + completedCreatorReferrals;
+
+    document.getElementById("earnAvailableRewards").textContent =
+        "₹" + (affiliateEarnings + creatorReferralEarnings)
+            .toLocaleString("en-IN");
+}
+
+async function initializeEarnPage() {
+    const {
+        data: { session },
+        error: authError
+    } = await supabaseClient.auth.getSession();
+
+    if (authError) {
+        console.error("Earn auth error:", authError);
+    }
+
+    const user = session?.user || null;
+
+    if (!user) {
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            window.location.pathname + window.location.search
+        );
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = user;
+    await loadEarnStats();
+}
+
+document
+    .getElementById("referCreatorButton")
+    .addEventListener("click", async function() {
+        if (!currentUser) return;
+
+        if (!creatorReferralAccount) {
+            creatorReferralAccount =
+                await getOrCreateCreatorReferralAccount(currentUser.id);
+        }
+
+        if (
+            !creatorReferralAccount ||
+            creatorReferralAccount.status !== "active"
+        ) {
+            alert("Creator referral is currently unavailable.");
+            return;
+        }
+
+        const referralUrl =
+            new URL("signup.html", window.location.href);
+
+        referralUrl.searchParams.set(
+            "creatorRef",
+            creatorReferralAccount.referral_code
+        );
+
+        try {
+            await navigator.clipboard.writeText(referralUrl.href);
+            const oldText = this.textContent;
+            this.textContent = "Referral Link Copied ✓";
+
+            setTimeout(() => {
+                this.textContent = oldText;
+            }, 1800);
+        } catch (error) {
+            window.prompt(
+                "Copy your creator referral link:",
+                referralUrl.href
+            );
+        }
+    });
+
+initializeEarnPage();
+</script>
+<script src="./app-notifications.js" defer></script>
+</body>
+</html>

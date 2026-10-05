@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>createMedia — My Account</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body class="account-page-app">
+
+<header>
+
+    <div class="mobile-brand-row">
+    <h1>createMedia</h1>
+
+    <a href="index.html" class="mobile-orders-back">
+        ← Back Home
+    </a>
+</div>
+    <nav>
+
+        <a href="index.html">Home</a>
+        <a href="all-ebooks.html">Ebooks</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+
+    </nav>
+
+</header>
+
+
+<main>
+        <section class="account-page">
+        <div class="account-heading">
+
+            <p class="section-label">
+                MY ACCOUNT
+            </p>
+
+            <h2>
+                Welcome,<br>
+                <span id="accountName">User</span>.
+            </h2>
+
+            <p>
+                Manage your account and view your ebook purchases.
+            </p>
+
+        </div>
+
+
+        <div class="account-details">
+
+            <div class="account-detail-card">
+
+                <span>NAME</span>
+
+                <strong id="userName">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="account-detail-card">
+
+                <span>EMAIL</span>
+
+                <strong id="userEmail">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="orders-section" id="orders">
+
+            <div class="orders-heading">
+
+                <p class="section-label">
+                    PURCHASE HISTORY
+                </p>
+
+                <h3>
+    Your Orders
+    <span id="orderCount">· 0</span>
+</h3>
+            </div>
+
+
+            <div id="ordersList">
+
+                <div class="empty-orders">
+
+                    <strong>No purchases yet.</strong>
+
+                    <p>
+                        Your purchased ebooks will appear here.
+                    </p>
+
+                    <a href="all-ebooks.html">
+                        Explore Ebooks →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="account-actions">
+
+            <a href="all-ebooks.html">
+                Browse Ebooks
+            </a>
+
+            <button id="logoutAccount">
+                Logout
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        © 2026 createMedia. All Rights Reserved.
+    </p>
+
+    <div class="footer-links">
+
+        <a href="privacy.html">
+            Privacy Policy
+        </a>
+
+        <a href="terms.html">
+            Terms & Conditions
+        </a>
+
+        <a href="refund.html">
+            Refund Policy
+        </a>
+
+    </div>
+
+</footer>
+
+
+<script src="./app-notifications.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL =
+    "https://aafuqhcolkmvswgnzjod.supabase.co";
+
+/*
+    The anon key is read from app-notifications.js when available.
+    This avoids keeping two different Supabase configurations on this page.
+*/
+let accountSupabase = null;
+let accountUser = null;
+let accountEmail = "";
+let selectedEmailOrderId = null;
+let accountOrders = [];
+
+function escapeAccountHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+async function getAccountSupabase() {
+    if (accountSupabase) return accountSupabase;
+
+    if (!window.supabase) {
+        throw new Error("Supabase library was not loaded.");
+    }
+
+    accountSupabase = window.supabase.createClient(
+        SUPABASE_URL,
+        "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw"
+    );
+
+    return accountSupabase;
+}
+async function getPrivateCoverUrl(client, coverPath) {
+    if (!coverPath) return "images/ebook.jpg";
+
+    const { data, error } =
+        await client.storage
+            .from("ebook-covers")
+            .createSignedUrl(coverPath, 60 * 60);
+
+    if (error || !data?.signedUrl) {
+        console.error("Cover signed URL error:", error);
+        return "images/ebook.jpg";
+    }
+
+    return data.signedUrl;
+}
+
+function formatOrderDate(value) {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "—";
+    }
+
+    return date.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function formatOrderPrice(value) {
+    const amount = Number(value || 0);
+
+    return "₹" + amount.toLocaleString("en-IN", {
+        maximumFractionDigits: 2
+    });
+}
+
+async function renderAccountOrders(client, orders) {
+    const ordersList = document.getElementById("ordersList");
+
+    document.getElementById("orderCount").textContent =
+        "· " + orders.length;
+
+    if (!orders.length) {
+        ordersList.innerHTML = `
+            <div class="empty-orders">
+                <strong>No purchases yet.</strong>
+                <p>Your purchased ebooks will appear here.</p>
+                <a href="all-ebooks.html">Explore Ebooks →</a>
+            </div>
+        `;
+        return;
+    }
+
+    // Render every order immediately with a local placeholder.
+    const fragment = document.createDocumentFragment();
+
+    orders.forEach(function(order) {
+        const ebookTitle =
+            order.ebook_title ||
+            order.ebooks?.title ||
+            "Ebook";
+
+        const orderCard = document.createElement("div");
+        orderCard.className = "order-card";
+        orderCard.dataset.orderId = order.id;
+
+        orderCard.innerHTML = `
+            <div class="order-product">
+                <div class="order-ebook-cover">
+                    <img
+                        src="images/ebook.jpg"
+                        alt="${escapeAccountHtml(ebookTitle)}"
+                        loading="lazy"
+                        decoding="async"
+                    >
+                </div>
+
+                <div class="order-product-info">
+                    <div class="order-status">
+                        <span>PURCHASED</span>
+                    </div>
+                    <strong class="order-ebook-name">
+                        ${escapeAccountHtml(ebookTitle)}
+                    </strong>
+                </div>
+            </div>
+
+            <div class="order-info">
+                <span>ORDER ID</span>
+                <strong>${escapeAccountHtml(order.id || "—")}</strong>
+            </div>
+
+            <div class="order-info">
+                <span>PRICE</span>
+                <strong>${escapeAccountHtml(formatOrderPrice(order.amount))}</strong>
+            </div>
+
+            <div class="order-info">
+                <span>DATE</span>
+                <strong>${escapeAccountHtml(formatOrderDate(order.created_at))}</strong>
+            </div>
+
+            <div class="order-download">
+                <a href="ebook.html?order=${encodeURIComponent(order.id)}">
+                    View Ebook →
+                </a>
+
+                <button
+                    type="button"
+                    class="order-email-button"
+                    data-order-id="${escapeAccountHtml(order.id)}">
+                    Send to Email Again
+                </button>
+            </div>
+        `;
+
+        fragment.appendChild(orderCard);
+    });
+
+    ordersList.replaceChildren(fragment);
+
+    document.querySelectorAll(".order-email-button")
+        .forEach(function(button) {
+            button.onclick = function() {
+                selectedEmailOrderId = button.dataset.orderId;
+
+                document.getElementById("emailEbookAddress").textContent =
+                    accountEmail || "Email not available";
+
+                document.getElementById("emailEbookModal").style.display =
+                    "flex";
+            };
+        });
+
+    // Fetch all private covers in ONE storage request after cards are visible.
+    const coverPaths = [
+        ...new Set(
+            orders
+                .map(order => order.ebooks?.cover_path)
+                .filter(Boolean)
+        )
+    ];
+
+    if (!coverPaths.length) return;
+
+    const { data: signedCovers, error } =
+        await client.storage
+            .from("ebook-covers")
+            .createSignedUrls(coverPaths, 3600);
+
+    if (error || !signedCovers) {
+        console.error("Cover batch signed URL error:", error);
+        return;
+    }
+
+    const signedByPath = {};
+
+    signedCovers.forEach(function(item, index) {
+        const path = item.path || coverPaths[index];
+        if (path && item.signedUrl) {
+            signedByPath[path] = item.signedUrl;
+        }
+    });
+
+    orders.forEach(function(order) {
+        const coverPath = order.ebooks?.cover_path;
+        const signedUrl = signedByPath[coverPath];
+
+        if (!signedUrl) return;
+
+        const card = ordersList.querySelector(
+            `[data-order-id="${CSS.escape(String(order.id))}"]`
+        );
+
+        const img = card?.querySelector(".order-ebook-cover img");
+        if (img) img.src = signedUrl;
+    });
+}
+
+async function initializeAccountPage() {
+    try {
+        const client = await getAccountSupabase();
+
+        // Fast local session read instead of an extra auth.getUser network call.
+        const { data: sessionData } = await client.auth.getSession();
+        const user = sessionData?.session?.user || null;
+
+        if (!user) {
+            window.location.replace("index.html");
+            return;
+        }
+
+        accountUser = user;
+        accountEmail = user.email || "";
+
+        // Show identity instantly from auth metadata while DB requests run.
+        const instantName =
+            user.user_metadata?.name ||
+            user.user_metadata?.full_name ||
+            accountEmail.split("@")[0] ||
+            "User";
+
+        document.getElementById("accountName").textContent = instantName;
+        document.getElementById("userName").textContent = instantName;
+        document.getElementById("userEmail").textContent =
+            accountEmail || "—";
+
+        // Profile and orders are independent: load them together.
+        const [profileResult, ordersResult] = await Promise.all([
+            client
+                .from("profiles")
+                .select("id, name, email")
+                .eq("id", user.id)
+                .maybeSingle(),
+
+            client
+                .from("orders")
+                .select(`
+                    id,
+                    ebook_id,
+                    buyer_id,
+                    buyer_email,
+                    ebook_title,
+                    amount,
+                    payment_status,
+                    order_status,
+                    created_at,
+                    ebooks (
+                        id,
+                        title,
+                        cover_path
+                    )
+                `)
+                .eq("buyer_id", user.id)
+                .eq("payment_status", "paid")
+                .eq("order_status", "completed")
+                .order("created_at", { ascending: false })
+        ]);
+
+        const profile = profileResult.data;
+
+        if (profileResult.error) {
+            console.error("Profile load error:", profileResult.error);
+        }
+
+        const displayName =
+            profile?.name ||
+            instantName;
+
+        const displayEmail =
+            profile?.email ||
+            accountEmail ||
+            "—";
+
+        document.getElementById("accountName").textContent = displayName;
+        document.getElementById("userName").textContent = displayName;
+        document.getElementById("userEmail").textContent = displayEmail;
+
+        if (ordersResult.error) {
+            console.error("Orders load error:", ordersResult.error);
+            accountOrders = [];
+        } else {
+            accountOrders = ordersResult.data || [];
+        }
+
+        // Cards render immediately; private covers hydrate afterwards.
+        renderAccountOrders(client, accountOrders);
+
+    } catch (error) {
+        console.error("Account page error:", error);
+    }
+}
+
+function bindEmailEbookModalActions() {
+
+    const cancelButton =
+        document.getElementById("emailEbookCancel");
+
+    const sendButton =
+        document.getElementById("emailEbookSend");
+
+    const modal =
+        document.getElementById("emailEbookModal");
+
+    if (!cancelButton || !sendButton || !modal) {
+        console.error("Email ebook modal elements not found.");
+        return;
+    }
+
+    cancelButton.onclick = function() {
+
+        modal.style.display = "none";
+        selectedEmailOrderId = null;
+    };
+
+    sendButton.onclick = async function() {
+
+        if (!selectedEmailOrderId) return;
+
+        const selectedOrder =
+            accountOrders.find(function(order) {
+                return String(order.id) ===
+                       String(selectedEmailOrderId);
+            });
+
+        if (!selectedOrder || !accountEmail) {
+            return;
+        }
+
+        sendButton.disabled = true;
+        sendButton.textContent = "Sending...";
+
+        /*
+            Demo UI only.
+            Real transactional email will be connected through
+            a trusted backend/Edge Function at production launch.
+        */
+
+        setTimeout(function() {
+
+            const icon =
+                document.querySelector(".email-ebook-icon");
+
+            const heading =
+                document.querySelector(".email-ebook-box h3");
+
+            const description =
+                document.querySelector(".email-ebook-box > p");
+
+            if (icon) icon.textContent = "✓";
+
+            document.getElementById(
+                "emailEbookAddress"
+            ).textContent = accountEmail;
+
+            if (heading) {
+                heading.textContent = "Email Ready";
+            }
+
+            if (description) {
+                description.textContent =
+                    "Your ebook email delivery is ready. Real email sending will be connected at launch.";
+            }
+
+            sendButton.textContent = "Done";
+            sendButton.disabled = false;
+
+            sendButton.onclick = function() {
+
+                modal.style.display = "none";
+                selectedEmailOrderId = null;
+
+                location.reload();
+            };
+
+        }, 1200);
+    };
+}
+
+document.getElementById(
+    "logoutAccount"
+).onclick = async function() {
+
+    try {
+        const client = await getAccountSupabase();
+
+        const { error } =
+            await client.auth.signOut();
+
+        if (error) {
+            console.error("Logout error:", error);
+            return;
+        }
+
+        window.location.href = "index.html";
+} catch (error) {
+    console.error("Logout error:", error);
+}
+};
+</script>
+
+    <nav class="mobile-bottom-nav">
+
+    <a href="index.html">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 11L12 3L21 11"></path>
+            <path d="M5 10V21H19V10"></path>
+            <path d="M9 21V14H15V21"></path>
+        </svg>
+        <span>Home</span>
+    </a>
+
+    <a href="all-ebooks.html">
+        <svg viewBox="0 0 24 24">
+            <path d="M4 4H10C11.1 4 12 4.9 12 6V21C12 19.9 11.1 19 10 19H4Z"></path>
+            <path d="M20 4H14C12.9 4 12 4.9 12 6V21C12 19.9 12.9 19 14 19H20Z"></path>
+        </svg>
+        <span>Ebooks</span>
+    </a>
+
+    <a href="account.html" class="active">
+        <svg viewBox="0 0 24 24">
+            <path d="M6 7H18L20 21H4Z"></path>
+            <path d="M9 9V6A3 3 0 0 1 15 6V9"></path>
+        </svg>
+        <span>Orders</span>
+    </a>
+
+    <a href="profile.html">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 21C4.7 16.8 7.5 14 12 14C16.5 14 19.3 16.8 20 21"></path>
+        </svg>
+        <span>Account</span>
+    </a>
+
+</nav>
+
+<div class="email-ebook-overlay" id="emailEbookModal">
+
+    <div class="email-ebook-box">
+
+        <div class="email-ebook-icon">✉</div>
+
+        <h3>Send Ebook to Email</h3>
+
+        <p>
+            We'll send your purchased ebook to your account email.
+        </p>
+
+        <div class="email-ebook-address" id="emailEbookAddress">
+            your@email.com
+        </div>
+
+        <div class="email-ebook-actions">
+
+            <button type="button" id="emailEbookCancel">
+                Cancel
+            </button>
+
+            <button type="button" id="emailEbookSend">
+                Send Ebook
+            </button>
+
+      </div>
+
+    </div>
+
+</div>
+
+<script>
+bindEmailEbookModalActions();
+initializeAccountPage();
+</script>
+
+</body>
+</html>

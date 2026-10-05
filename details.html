@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Details - createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #111;
+        }
+
+        .details-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .details-box {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 45px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .brand {
+            text-align: center;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .label {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #888;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            text-align: center;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .product-summary {
+            background: #f7f7f7;
+            padding: 16px 18px;
+            border-radius: 10px;
+            margin-bottom: 28px;
+        }
+
+        .product-summary p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .product-summary strong {
+            color: #111;
+        }
+
+        .form-group {
+            margin-bottom: 19px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1.5px solid #cfcfcf;
+            border-radius: 9px;
+            background: #fff;
+            color: #111;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .form-group input:focus {
+            border-color: #111;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .payment-button {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 16px;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: 0.25s ease;
+        }
+
+        .payment-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+            opacity: 0.92;
+        }
+
+        .secure-note {
+            text-align: center;
+            margin-top: 18px;
+            color: #888;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back:hover {
+            color: #111;
+        }
+        /* PREMIUM ALERT POPUP */
+
+        .custom-alert {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+        }
+
+        .custom-alert-box {
+            width: 100%;
+            max-width: 380px;
+            background: white;
+            padding: 30px 25px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+            animation: alertPop 0.25s ease;
+        }
+
+        .alert-icon {
+            width: 55px;
+            height: 55px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: #fee2e2;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .custom-alert-box h3 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .custom-alert-box p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .alert-button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 9px;
+            background: #111;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .alert-button:hover {
+            opacity: 0.88;
+        }
+
+        @keyframes alertPop {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+        @media (max-width: 600px) {
+
+            .details-page {
+                padding: 25px 15px;
+            }
+
+            .details-box {
+                padding: 35px 22px;
+                border-radius: 16px;
+            }
+
+            h1 {
+                font-size: 31px;
+            }
+
+        }
+/* PREMIUM DETAILS PAGE */
+
+body {
+    background:
+        radial-gradient(circle at top left, rgba(0, 0, 0, 0.045), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(0, 0, 0, 0.045), transparent 35%),
+        #f6f6f6;
+}
+
+.details-page {
+    padding: 60px 20px;
+}
+
+.details-box {
+    max-width: 540px;
+    padding: 52px 48px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 26px;
+    box-shadow: 0 25px 75px rgba(0, 0, 0, 0.11);
+}
+
+.brand {
+    font-size: 30px;
+    letter-spacing: -0.6px;
+}
+
+.label {
+    color: #999;
+    letter-spacing: 4px;
+}
+
+h1 {
+    font-size: 40px;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    color: #707070;
+}
+
+.product-summary {
+    padding: 18px 20px;
+    border: 1px solid #ededed;
+    background: linear-gradient(135deg, #fafafa, #f4f4f4);
+    border-radius: 13px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.form-group {
+    margin-bottom: 21px;
+}
+
+.form-group input {
+    padding: 15px 16px;
+    border-radius: 11px;
+    border: 1px solid #d6d6d6;
+}
+
+.form-group input:hover {
+    border-color: #aaa;
+}
+
+.form-group input:focus {
+    border-color: #111;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.055);
+}
+
+.payment-button {
+    margin-top: 14px;
+    padding: 17px;
+    border: none;
+    border-radius: 11px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.payment-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.17);
+    opacity: 1;
+}
+
+.secure-note {
+    color: #888;
+}
+
+.back {
+    margin-top: 24px;
+    transition: 0.2s ease;
+}
+
+.back:hover {
+    transform: translateX(-3px);
+}
+/* =====================================
+   DETAILS - MOBILE APP DESIGN
+===================================== */
+
+@media (max-width: 600px) {
+
+    body.details-page-app {
+        background: #f5f6f7 !important;
+    }
+
+    .details-page-app .details-page {
+        min-height: 100vh !important;
+        padding: 20px 14px 30px !important;
+
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+    }
+
+    .details-page-app .details-box {
+        width: 100% !important;
+        max-width: 390px !important;
+
+        margin-top: 10px !important;
+        padding: 27px 18px 24px !important;
+
+        background: #fff !important;
+        border: 1px solid #e8e8e8 !important;
+        border-radius: 22px !important;
+
+        box-shadow: 0 14px 40px rgba(0,0,0,0.08) !important;
+    }
+
+    .details-page-app .brand {
+        margin-bottom: 23px !important;
+        font-size: 23px !important;
+        letter-spacing: -0.7px !important;
+    }
+
+    .details-page-app .label {
+        margin-bottom: 9px !important;
+        font-size: 9px !important;
+        letter-spacing: 2.5px !important;
+    }
+
+    .details-page-app h1 {
+        margin-bottom: 10px !important;
+        font-size: 31px !important;
+        line-height: 1.05 !important;
+        letter-spacing: -1.2px !important;
+    }
+
+    .details-page-app .subtitle {
+        margin-bottom: 22px !important;
+        font-size: 13px !important;
+        line-height: 1.55 !important;
+    }
+
+    .details-page-app .product-summary {
+        margin-bottom: 22px !important;
+        padding: 14px 15px !important;
+        border-radius: 12px !important;
+    }
+
+    .details-page-app .product-summary p {
+        font-size: 13px !important;
+    }
+
+    .details-page-app .form-group {
+        margin-bottom: 16px !important;
+    }
+
+    .details-page-app .form-group label {
+        margin-bottom: 7px !important;
+        font-size: 13px !important;
+    }
+
+    .details-page-app .form-group input {
+        width: 100% !important;
+        min-height: 49px !important;
+
+        padding: 13px 14px !important;
+
+        border-radius: 11px !important;
+        font-size: 14px !important;
+    }
+
+    .details-page-app .payment-button {
+        width: 100% !important;
+        min-height: 52px !important;
+
+        margin-top: 7px !important;
+        padding: 0 16px !important;
+
+        border-radius: 13px !important;
+
+        font-size: 14px !important;
+        font-weight: 700 !important;
+
+        box-shadow: 0 9px 22px rgba(0,0,0,0.13) !important;
+    }
+
+    .details-page-app .secure-note {
+        margin-top: 15px !important;
+        font-size: 11px !important;
+        line-height: 1.5 !important;
+    }
+
+    .details-page-app .back {
+        margin-top: 18px !important;
+        font-size: 13px !important;
+    }
+
+    /* ALERT */
+
+    .details-page-app .custom-alert {
+        padding: 16px !important;
+    }
+
+    .details-page-app .custom-alert-box {
+        max-width: 350px !important;
+        padding: 26px 20px !important;
+        border-radius: 20px !important;
+    }
+
+    .details-page-app .custom-alert-box h3 {
+        font-size: 22px !important;
+    }
+
+    .details-page-app .custom-alert-box p {
+        font-size: 13px !important;
+    }
+
+    .details-page-app .alert-button {
+        min-height: 48px !important;
+        border-radius: 11px !important;
+    }
+
+}
+    </style>
+
+</head>
+
+
+<body class="details-page-app">
+
+    <div class="details-page">
+
+        <div class="details-box">
+
+            <div class="brand">
+                createMedia
+            </div>
+
+
+            <p class="label">
+                CUSTOMER DETAILS
+            </p>
+
+
+            <h1>
+                Almost There
+            </h1>
+
+
+            <p class="subtitle">
+                Enter your details below to continue to payment.
+            </p>
+
+
+            <div class="product-summary">
+
+                <p>
+                    Product:
+                    <strong id="productName"></strong>
+                </p>
+
+                <p>
+                    Amount:
+                    <strong id="productPrice"></strong>
+                </p>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="name">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email address"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="whatsapp">
+                    WhatsApp Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="whatsapp"
+                    placeholder="Enter your WhatsApp number"
+                    required
+                >
+
+            </div>
+
+
+            <button type="button" class="payment-button" id="paymentButton">
+    Continue to Payment
+</button>
+
+
+            <p class="secure-note">
+                Your details will be used for order processing
+                and digital product delivery.
+            </p>
+
+
+            <a href="#" class="back" id="backButton">
+                ← Back to Checkout
+            </a>
+
+        </div>
+
+    </div>
+<!-- PREMIUM ALERT -->
+
+<div class="custom-alert" id="customAlert">
+
+    <div class="custom-alert-box">
+
+        <div class="alert-icon">
+            !
+        </div>
+
+        <h3>
+            Check Your Details
+        </h3>
+
+        <p id="alertMessage">
+            Please check the information you entered.
+        </p>
+
+        <button
+            type="button"
+            class="alert-button"
+            onclick="closeAlert()"
+        >
+            Okay
+        </button>
+
+    </div>
+
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const params = new URLSearchParams(window.location.search);
+const sellerEbookId = params.get("sellerEbook");
+const ebookParam = params.get("ebook");
+const affiliateRef = params.get("ref");
+
+// Seller product summary: restore the last verified checkout/details value
+// synchronously so refresh never flashes ₹199 or blanks the title/price.
+if (sellerEbookId) {
+    try {
+        const cachedSeller = JSON.parse(
+            sessionStorage.getItem("createMediaCheckout_" + sellerEbookId) || "null"
+        );
+        if (cachedSeller && cachedSeller.name && cachedSeller.price != null) {
+            document.getElementById("productName").textContent = cachedSeller.name;
+            document.getElementById("productPrice").textContent =
+                "₹" + Number(cachedSeller.price).toLocaleString("en-IN");
+        }
+    } catch (_) {}
+}
+
+const legacyPlatformEbooks = [
+    { name: "Ebook 1", price: 199 },
+    { name: "Ebook 2", price: 249 },
+    { name: "Ebook 3", price: 299 },
+    { name: "Ebook 4", price: 349 },
+    { name: "Ebook 5", price: 399 }
+];
+
+let currentUser = null;
+let selectedEbook = null;
+let selectedDatabaseEbook = null;
+let legacyIndex = null;
+
+function isUuid(value) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+        .test(value || "");
+}
+
+function showAlert(message) {
+    document.getElementById("alertMessage").textContent = message;
+    document.getElementById("customAlert").style.display = "flex";
+}
+
+function closeAlert() {
+    document.getElementById("customAlert").style.display = "none";
+}
+
+async function loadDatabaseEbook(id) {
+    const { data, error } = await supabaseClient
+        .from("ebooks")
+        .select("id, title, price, ebook_type, seller_id, status, listing_status")
+        .eq("id", id)
+        .eq("status", "approved")
+        .eq("listing_status", "listed")
+        .maybeSingle();
+
+    if (error) {
+        console.error("Ebook load error:", error);
+        return null;
+    }
+
+    return data || null;
+}
+
+async function loadCustomerProfile() {
+    const {
+        data: { session },
+        error: authError
+    } = await supabaseClient.auth.getSession();
+
+    if (authError) {
+        console.error("Auth error:", authError);
+    }
+
+    const user = session?.user || null;
+
+    if (!user) {
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            window.location.pathname + window.location.search
+        );
+
+        window.location.href = "login.html";
+        return false;
+    }
+
+    currentUser = user;
+
+    // Fill what Auth already knows immediately.
+    document.getElementById("name").value =
+        user.user_metadata?.name ||
+        user.user_metadata?.full_name ||
+        "";
+
+    document.getElementById("email").value =
+        user.email || "";
+
+    // Profile data can hydrate without blocking product loading.
+    const profilePromise = supabaseClient
+        .from("profiles")
+        .select("name, email, whatsapp")
+        .eq("id", user.id)
+        .maybeSingle();
+
+    return { user, profilePromise };
+}
+
+async function loadSelectedEbook() {
+    const databaseId =
+        sellerEbookId ||
+        (isUuid(ebookParam) ? ebookParam : null);
+
+    if (databaseId) {
+        selectedDatabaseEbook =
+            await loadDatabaseEbook(databaseId);
+
+        if (!selectedDatabaseEbook) {
+            selectedEbook = null;
+            document.getElementById("productName").textContent =
+                "Ebook unavailable";
+            document.getElementById("productPrice").textContent = "";
+            return;
+        }
+
+        selectedEbook = {
+            name: selectedDatabaseEbook.title,
+            price: Number(selectedDatabaseEbook.price || 0)
+        };
+    } else {
+        legacyIndex = Number.parseInt(ebookParam, 10);
+
+        if (
+            !Number.isInteger(legacyIndex) ||
+            legacyIndex < 0 ||
+            legacyIndex >= legacyPlatformEbooks.length
+        ) {
+            legacyIndex = 0;
+        }
+
+        selectedEbook = legacyPlatformEbooks[legacyIndex];
+    }
+
+    const verifiedName = selectedEbook.name;
+    const verifiedPrice =
+        "₹" + Number(selectedEbook.price).toLocaleString("en-IN");
+
+    const productNameEl = document.getElementById("productName");
+    const productPriceEl = document.getElementById("productPrice");
+
+    if (productNameEl.textContent !== verifiedName) {
+        productNameEl.textContent = verifiedName;
+    }
+    if (productPriceEl.textContent !== verifiedPrice) {
+        productPriceEl.textContent = verifiedPrice;
+    }
+
+    if (databaseId) {
+        try {
+            const previous = JSON.parse(
+                sessionStorage.getItem("createMediaCheckout_" + databaseId) || "null"
+            ) || {};
+            sessionStorage.setItem(
+                "createMediaCheckout_" + databaseId,
+                JSON.stringify({
+                    ...previous,
+                    name: selectedEbook.name,
+                    price: Number(selectedEbook.price)
+                })
+            );
+        } catch (_) {}
+    }
+}
+
+function buildRoute(pageName) {
+    let url;
+
+    if (selectedDatabaseEbook) {
+        if (
+            sellerEbookId ||
+            selectedDatabaseEbook.ebook_type === "seller"
+        ) {
+            url =
+                pageName + "?sellerEbook=" +
+                encodeURIComponent(selectedDatabaseEbook.id);
+        } else {
+            url =
+                pageName + "?ebook=" +
+                encodeURIComponent(selectedDatabaseEbook.id);
+        }
+    } else {
+        url =
+            pageName + "?ebook=" +
+            encodeURIComponent(legacyIndex ?? 0);
+    }
+
+    if (affiliateRef) {
+        url += "&ref=" + encodeURIComponent(affiliateRef);
+    }
+
+    return url;
+}
+
+document.getElementById("paymentButton").onclick =
+async function() {
+    if (!currentUser) {
+        showAlert("Please login again to continue.");
+        return;
+    }
+
+    if (!selectedEbook) {
+        showAlert("This ebook is no longer available.");
+        return;
+    }
+
+    const name =
+        document.getElementById("name").value.trim();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const whatsapp =
+        document.getElementById("whatsapp").value.trim();
+
+    const emailPattern =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const whatsappPattern =
+        /^[6-9]\d{9}$/;
+
+    if (!name || !email || !whatsapp) {
+        showAlert("Please fill all details.");
+        return;
+    }
+
+    if (!emailPattern.test(email)) {
+        showAlert("Please enter a valid email address.");
+        return;
+    }
+
+    if (!whatsappPattern.test(whatsapp)) {
+        showAlert("Please enter a valid 10-digit WhatsApp number.");
+        return;
+    }
+
+    /*
+        Authenticated account email is the order identity.
+        Do not allow a typed email to silently change the buyer identity.
+    */
+    const authEmail =
+        String(currentUser.email || "").trim().toLowerCase();
+
+    if (authEmail && email.toLowerCase() !== authEmail) {
+        showAlert(
+            "Please use the email address linked to your createMedia account."
+        );
+        return;
+    }
+
+    const button =
+        document.getElementById("paymentButton");
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    const { error: profileError } = await supabaseClient
+        .from("profiles")
+        .update({
+            name: name,
+            whatsapp: whatsapp,
+            updated_at: new Date().toISOString()
+        })
+        .eq("id", currentUser.id);
+
+    if (profileError) {
+        console.error("Profile update error:", profileError);
+        showAlert("Could not save your details. Please try again.");
+        button.disabled = false;
+        button.textContent = "Continue to Payment";
+        return;
+    }
+
+    /*
+        Temporary cross-page form state only.
+        Payment/order creation itself is NOT done from the browser.
+        The secure payment backend will create the order after verification.
+    */
+    sessionStorage.setItem("customerName", name);
+    sessionStorage.setItem("customerEmail", email);
+    sessionStorage.setItem("customerWhatsapp", whatsapp);
+
+    window.location.href = buildRoute("payment.html");
+};
+
+async function initializeDetailsPage() {
+    const authState = await loadCustomerProfile();
+    if (!authState) return;
+
+    const productPromise = loadSelectedEbook();
+
+    const [profileResult] = await Promise.all([
+        authState.profilePromise,
+        productPromise
+    ]);
+
+    if (profileResult.error) {
+        console.error("Profile load error:", profileResult.error);
+    } else {
+        const profile = profileResult.data;
+
+        document.getElementById("name").value =
+            profile?.name ||
+            document.getElementById("name").value;
+
+        document.getElementById("email").value =
+            profile?.email ||
+            document.getElementById("email").value;
+
+        document.getElementById("whatsapp").value =
+            profile?.whatsapp || "";
+    }
+
+    document.getElementById("backButton").href =
+        buildRoute("checkout.html");
+}
+
+initializeDetailsPage();
+</script>
+<script src="./app-notifications.js" defer></script>
+</body>
+
+</html>

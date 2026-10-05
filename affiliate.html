@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Affiliate | createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #f6f8f7;
+        color: #111;
+        font-family: Arial, sans-serif;
+    }
+
+    /* HEADER */
+    .affiliate-header {
+        height: 72px;
+        padding: 0 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #111;
+        color: #fff;
+    }
+
+    .affiliate-header h1 {
+        margin: 0;
+        font-size: 22px;
+    }
+
+    .affiliate-back {
+        color: #fff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* PAGE */
+    .affiliate-page {
+        width: 1100px;
+        max-width: calc(100% - 40px);
+        margin: 45px auto 80px;
+    }
+
+    /* HERO */
+    .affiliate-hero {
+        padding: 38px 42px;
+        background: linear-gradient(135deg, #eefaf5, #ffffff);
+        border: 1px solid #b7dfd0;
+        border-radius: 22px;
+        box-shadow: 0 15px 40px rgba(8, 127, 91, 0.06);
+    }
+
+    .affiliate-tag {
+        margin: 0 0 10px;
+        color: #087f5b;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 2.5px;
+    }
+
+    .affiliate-hero h2 {
+        margin: 0 0 10px;
+        font-size: 38px;
+        letter-spacing: -1px;
+    }
+
+    .affiliate-hero > p:last-child {
+        max-width: 620px;
+        margin: 0;
+        color: #666;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    /* STATS */
+    .affiliate-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 22px;
+    }
+
+    .affiliate-stat {
+        padding: 22px;
+        background: #fff;
+        border: 1px solid #e0e8e4;
+        border-radius: 16px;
+    }
+
+    .affiliate-stat span {
+        display: block;
+        color: #666;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .affiliate-stat strong {
+        display: block;
+        margin: 8px 0 5px;
+        color: #087f5b;
+        font-size: 27px;
+    }
+
+    .affiliate-stat small {
+        color: #999;
+        font-size: 10px;
+    }
+
+    /* EBOOK AREA */
+    .affiliate-books {
+        margin-top: 35px;
+    }
+
+    .affiliate-section-heading {
+        margin-bottom: 18px;
+    }
+
+    .affiliate-section-heading > p {
+        margin: 0 0 6px;
+        color: #087f5b;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 2px;
+    }
+
+    .affiliate-section-heading h2 {
+        margin: 0 0 6px;
+        font-size: 25px;
+    }
+
+    .affiliate-section-heading span {
+        color: #777;
+        font-size: 12px;
+    }
+
+    /* AFFILIATE EBOOK CARDS */
+.affiliate-ebook-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.affiliate-ebook-card {
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e0e8e4;
+    border-radius: 17px;
+    transition: 0.2s ease;
+}
+
+.affiliate-ebook-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
+}
+
+.affiliate-ebook-card > img {
+    display: block;
+    width: 100%;
+    height: 220px;
+    padding: 14px;
+    object-fit: contain;
+    background: #f7f9f8;
+}
+
+.affiliate-ebook-info {
+    padding: 18px;
+}
+
+.affiliate-ebook-info > span {
+    display: block;
+    margin-bottom: 6px;
+    color: #087f5b;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.affiliate-ebook-info h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+}
+
+.affiliate-ebook-info strong {
+    display: block;
+    margin-bottom: 15px;
+    color: #111;
+    font-size: 20px;
+}
+
+.generate-affiliate-link {
+    width: 100%;
+    padding: 11px 12px;
+    border: 0;
+    border-radius: 10px;
+    background: #087f5b;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.generate-affiliate-link:hover {
+    background: #066c4d;
+}
+    .affiliate-empty h3 {
+        margin: 0 0 8px;
+        font-size: 18px;
+    }
+
+    .affiliate-empty p {
+        max-width: 520px;
+        margin: 0 auto;
+        color: #777;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+/* AFFILIATE PAGE - MOBILE */
+@media (max-width: 600px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .affiliate-header {
+        height: 64px;
+        padding: 0 16px;
+    }
+
+    .affiliate-header h1 {
+        font-size: 19px;
+    }
+
+    .affiliate-back {
+        font-size: 11px;
+    }
+
+    .affiliate-page {
+        width: 100%;
+        max-width: 100%;
+        margin: 20px auto 60px;
+        padding: 0 14px;
+    }
+
+    .affiliate-hero {
+        padding: 24px 20px;
+        border-radius: 20px;
+    }
+
+    .affiliate-tag {
+        font-size: 8px;
+        letter-spacing: 2px;
+    }
+
+    .affiliate-hero h2 {
+        font-size: 29px;
+        line-height: 1.1;
+    }
+
+    .affiliate-hero > p:last-child {
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .affiliate-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+        margin-top: 12px;
+    }
+
+    .affiliate-stat {
+        min-width: 0;
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .affiliate-stat:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .affiliate-stat span {
+        font-size: 9px;
+    }
+
+    .affiliate-stat strong {
+        margin: 6px 0 4px;
+        font-size: 22px;
+    }
+
+    .affiliate-stat small {
+        font-size: 8px;
+    }
+
+    .affiliate-books {
+        margin-top: 28px;
+    }
+
+    .affiliate-section-heading > p {
+        font-size: 8px;
+        letter-spacing: 1.7px;
+    }
+
+    .affiliate-section-heading h2 {
+        font-size: 22px;
+    }
+
+    .affiliate-section-heading span {
+        font-size: 10px;
+    }
+
+   /* AFFILIATE EBOOK CARDS - MOBILE */
+.affiliate-ebook-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.affiliate-ebook-card {
+    min-width: 0;
+    border-radius: 14px;
+}
+
+.affiliate-ebook-card > img {
+    height: 150px;
+    padding: 10px;
+}
+
+.affiliate-ebook-info {
+    padding: 12px;
+}
+
+.affiliate-ebook-info > span {
+    margin-bottom: 5px;
+    font-size: 7px;
+    letter-spacing: 1px;
+}
+
+.affiliate-ebook-info h3 {
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.affiliate-ebook-info strong {
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
+.generate-affiliate-link {
+    min-height: 38px;
+    padding: 9px 7px;
+    border-radius: 9px;
+    font-size: 8px;
+    line-height: 1.3;
+}
+</style>
+
+<body>
+
+    <header class="affiliate-header">
+        <h1>createMedia</h1>
+
+        <a href="earn.html" class="affiliate-back">
+            ← Earn
+        </a>
+    </header>
+
+
+    <main class="affiliate-page">
+
+        <!-- HERO -->
+        <section class="affiliate-hero">
+            <p class="affiliate-tag">AFFILIATE PROGRAM</p>
+
+            <h2>Share. Sell. Earn.</h2>
+
+            <p>
+                Share eligible ebooks with your audience and earn rewards
+                when qualifying purchases are completed through your affiliate link.
+            </p>
+        </section>
+
+
+        <!-- STATS -->
+        <section class="affiliate-stats">
+
+            <div class="affiliate-stat">
+                <span>Link Clicks</span>
+               <strong id="affiliateClicksCount">0</strong>
+                <small>Total clicks</small>
+            </div>
+
+            <div class="affiliate-stat">
+                <span>Affiliate Sales</span>
+               <strong id="affiliateSalesCount">0</strong>
+                <small>Completed sales</small>
+            </div>
+
+            <div class="affiliate-stat">
+                <span>Affiliate Earnings</span>
+                <strong id="affiliateEarnings">₹0</strong>
+                <small>Total earned</small>
+            </div>
+
+        </section>
+
+
+        <!-- EBOOKS -->
+        <section class="affiliate-books">
+
+            <div class="affiliate-section-heading">
+                <p>START EARNING</p>
+                <h2>Choose an Ebook to Share</h2>
+                <span>
+                    Select an eligible ebook and generate your affiliate link.
+                </span>
+            </div>
+<div class="affiliate-ebook-grid">
+
+    <!-- EBOOK 1 -->
+    <div class="affiliate-ebook-card">
+        <img src="images/ebook.jpg" alt="Ebook 1" decoding="async" fetchpriority="high">
+
+        <div class="affiliate-ebook-info">
+            <span>AFFILIATE EBOOK</span>
+            <h3>Ebook 1</h3>
+            <strong>₹199</strong>
+
+            <button type="button"
+                    class="generate-affiliate-link"
+                    data-ebook="0">
+                Generate Affiliate Link
+            </button>
+        </div>
+    </div>
+
+
+    <!-- EBOOK 2 -->
+    <div class="affiliate-ebook-card">
+        <img src="images/image1.jpg" alt="Ebook 2" decoding="async" loading="lazy">
+
+        <div class="affiliate-ebook-info">
+            <span>AFFILIATE EBOOK</span>
+            <h3>Ebook 2</h3>
+            <strong>₹249</strong>
+
+            <button type="button"
+                    class="generate-affiliate-link"
+                    data-ebook="1">
+                Generate Affiliate Link
+            </button>
+        </div>
+    </div>
+
+
+    <!-- EBOOK 3 -->
+    <div class="affiliate-ebook-card">
+        <img src="images/image2.jpg" alt="Ebook 3" decoding="async" loading="lazy">
+
+        <div class="affiliate-ebook-info">
+            <span>AFFILIATE EBOOK</span>
+            <h3>Ebook 3</h3>
+            <strong>₹299</strong>
+
+            <button type="button"
+                    class="generate-affiliate-link"
+                    data-ebook="2">
+                Generate Affiliate Link
+            </button>
+        </div>
+    </div>
+
+
+    <!-- EBOOK 4 -->
+    <div class="affiliate-ebook-card">
+        <img src="images/image3.jpg" alt="Ebook 4" decoding="async" loading="lazy">
+
+        <div class="affiliate-ebook-info">
+            <span>AFFILIATE EBOOK</span>
+            <h3>Ebook 4</h3>
+            <strong>₹349</strong>
+
+            <button type="button"
+                    class="generate-affiliate-link"
+                    data-ebook="3">
+                Generate Affiliate Link
+            </button>
+        </div>
+    </div>
+
+
+    <!-- EBOOK 5 -->
+    <div class="affiliate-ebook-card">
+        <img src="images/image4.jpg" alt="Ebook 5" decoding="async" loading="lazy">
+
+        <div class="affiliate-ebook-info">
+            <span>AFFILIATE EBOOK</span>
+            <h3>Ebook 5</h3>
+            <strong>₹399</strong>
+
+            <button type="button"
+                    class="generate-affiliate-link"
+                    data-ebook="4">
+                Generate Affiliate Link
+            </button>
+        </div>
+    </div>
+
+</div>
+        </section>
+
+    </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://aafuqhcolkmvswgnzjod.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let affiliateAccount = null;
+
+function makeAffiliateCode() {
+    return (
+        "AFF" +
+        crypto.randomUUID()
+            .replace(/-/g, "")
+            .slice(0, 12)
+            .toUpperCase()
+    );
+}
+
+async function getOrCreateAffiliateAccount(userId) {
+    const { data: existing, error: readError } = await supabaseClient
+        .from("affiliate_accounts")
+        .select("id, user_id, affiliate_code, status")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+    if (readError) {
+        console.error("Affiliate account read error:", readError);
+        return null;
+    }
+
+    if (existing) return existing;
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+        const affiliateCode = makeAffiliateCode();
+
+        const { data, error } = await supabaseClient
+            .from("affiliate_accounts")
+            .insert({
+                user_id: userId,
+                affiliate_code: affiliateCode,
+                status: "active"
+            })
+            .select("id, user_id, affiliate_code, status")
+            .single();
+
+        if (!error) return data;
+
+        if (error.code !== "23505") {
+            console.error("Affiliate account create error:", error);
+            return null;
+        }
+    }
+
+    return null;
+}
+
+async function loadAffiliateStats() {
+    if (!affiliateAccount) return;
+
+    const { data: sales, error } = await supabaseClient
+        .from("affiliate_sales")
+        .select("id, commission_amount, status")
+        .eq("affiliate_id", affiliateAccount.id)
+        .eq("status", "completed");
+
+    if (error) {
+        console.error("Affiliate sales error:", error);
+        return;
+    }
+
+    const completedSales = sales || [];
+    const earnings = completedSales.reduce(function(total, sale) {
+        return total + Number(sale.commission_amount || 0);
+    }, 0);
+
+    document.getElementById("affiliateSalesCount").textContent =
+        completedSales.length;
+
+    document.getElementById("affiliateEarnings").textContent =
+        "₹" + earnings.toLocaleString("en-IN");
+
+    /*
+        Click tracking is intentionally not faked in browser storage anymore.
+        A trusted server-side click/event table can be connected later.
+    */
+    document.getElementById("affiliateClicksCount").textContent = "0";
+}
+
+async function initializeAffiliatePage() {
+    const {
+        data: { session },
+        error: authError
+    } = await supabaseClient.auth.getSession();
+
+    if (authError) {
+        console.error("Affiliate auth error:", authError);
+    }
+
+    const user = session?.user || null;
+
+    if (!user) {
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            window.location.pathname + window.location.search
+        );
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = user;
+    affiliateAccount =
+        await getOrCreateAffiliateAccount(user.id);
+
+    if (!affiliateAccount) {
+        document
+            .querySelectorAll(".generate-affiliate-link")
+            .forEach(function(button) {
+                button.disabled = true;
+                button.textContent = "Affiliate Unavailable";
+            });
+        return;
+    }
+
+    if (affiliateAccount.status !== "active") {
+        document
+            .querySelectorAll(".generate-affiliate-link")
+            .forEach(function(button) {
+                button.disabled = true;
+                button.textContent = "Affiliate Disabled";
+            });
+        return;
+    }
+
+    await loadAffiliateStats();
+}
+
+document
+    .querySelectorAll(".generate-affiliate-link")
+    .forEach(function(button) {
+        button.addEventListener("click", async function() {
+            if (!currentUser || !affiliateAccount) {
+                return;
+            }
+
+            const ebookIndex = this.dataset.ebook;
+
+            const affiliateUrl =
+                new URL("checkout.html", window.location.href);
+
+            affiliateUrl.searchParams.set("ebook", ebookIndex);
+            affiliateUrl.searchParams.set(
+                "ref",
+                affiliateAccount.affiliate_code
+            );
+
+            const affiliateLink = affiliateUrl.href;
+
+            try {
+                await navigator.clipboard.writeText(affiliateLink);
+
+                const oldText = this.textContent;
+                this.textContent = "Link Copied ✓";
+
+                setTimeout(() => {
+                    this.textContent = oldText;
+                }, 1800);
+            } catch (error) {
+                window.prompt(
+                    "Copy your affiliate link:",
+                    affiliateLink
+                );
+            }
+        });
+    });
+
+initializeAffiliatePage();
+</script>
+<script src="./app-notifications.js" defer></script>
+</body>
+</html>

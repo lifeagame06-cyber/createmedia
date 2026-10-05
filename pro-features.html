@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>createMedia — Explore</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h1>createMedia</h1>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="all-ebooks.html">Ebooks</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#contact">Contact</a>
+        </nav>
+    </header>
+
+
+    <main>
+<!-- INTERACTIVE EBOOK FINDER -->
+<section class="ebook-finder">
+
+    <div class="finder-heading">
+
+        <p class="pro-label">
+            FIND YOUR EBOOK
+        </p>
+
+        <h2>
+            What are you<br>
+            looking for?
+        </h2>
+
+        <p>
+            Choose what you want to explore and discover
+            an ebook that matches your interest.
+        </p>
+
+    </div>
+
+    <div class="finder-options">
+
+        <button onclick="findEbook('learn', this)">
+            <span>01</span>
+            Learn Something
+        </button>
+
+        <button onclick="findEbook('create', this)">
+            <span>02</span>
+            Get Creative
+        </button>
+
+        <button onclick="findEbook('grow', this)">
+            <span>03</span>
+            Personal Growth
+        </button>
+
+        <button onclick="findEbook('explore', this)">
+            <span>04</span>
+            Just Explore
+        </button>
+
+    </div>
+
+    <div class="finder-result" id="finderResult">
+
+        <div class="finder-result-content">
+
+            <div class="finder-cover">
+                <img id="finderImage" src="images/ebook.jpg" alt="Ebook">
+            </div>
+
+            <div class="finder-info">
+
+                <span class="result-label">
+                    YOUR SUGGESTION
+                </span>
+
+                <h3 id="finderTitle">
+                    Choose an option above
+                </h3>
+
+                <p id="finderText">
+                    We'll show you a suggested ebook based on your choice.
+                </p>
+
+                <a id="finderButton" href="all-ebooks.html">
+                    Explore Ebook →
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+          </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <p>
+            © 2026 createMedia. All Rights Reserved.
+        </p>
+
+        <div class="footer-links">
+
+            <a href="privacy.html">
+                Privacy Policy
+            </a>
+
+            <a href="terms.html">
+                Terms & Conditions
+            </a>
+
+            <a href="refund.html">
+                Refund Policy
+            </a>
+
+        </div>
+
+</footer>
+</footer>
+
+<script>
+
+function findEbook(type) {
+
+    const title = document.getElementById("finderTitle");
+    const text = document.getElementById("finderText");
+    const button = document.getElementById("finderButton");
+    const image = document.getElementById("finderImage");
+
+    if (type === "learn") {
+
+        title.textContent = "Ebook 1";
+        text.textContent =
+            "A useful digital read to help you learn something new.";
+        image.src = "images/ebook.jpg";
+        button.href = "checkout.html?ebook=0";
+
+    }
+
+    else if (type === "create") {
+
+        title.textContent = "Ebook 2";
+        text.textContent =
+            "Explore ideas that can inspire your creative side.";
+        image.src = "images/image1.jpg";
+        button.href = "checkout.html?ebook=1";
+
+    }
+
+    else if (type === "grow") {
+
+        title.textContent = "Ebook 3";
+        text.textContent =
+            "A digital resource for ideas, knowledge and personal growth.";
+        image.src = "images/image2.jpg";
+        button.href = "checkout.html?ebook=2";
+
+    }
+
+    else if (type === "explore") {
+
+        title.textContent = "Ebook 4";
+        text.textContent =
+            "Explore the createMedia collection and discover something useful.";
+        image.src = "images/image3.jpg";
+        button.href = "checkout.html?ebook=3";
+
+    }
+
+    document.getElementById("finderResult").classList.add("show");
+
+}
+
+</script>
+
+</body>
+</html>

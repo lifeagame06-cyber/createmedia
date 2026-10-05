@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Panel | createMedia</title>
+    <link rel="preconnect" href="https://aafuqhcolkmvswgnzjod.supabase.co" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    <link rel="stylesheet" href="./style.css?v=999">
+
+</head>
+
+<body class="admin-page" style="visibility:hidden;">
+
+<header class="admin-header">
+
+    <h1>createMedia</h1>
+
+    <div style="display:flex;align-items:center;gap:14px;">
+        <span>Admin Panel</span>
+        <button type="button" id="adminLogoutButton"
+            style="border:1px solid #444;background:#1b1b1b;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;">
+            Logout
+        </button>
+    </div>
+
+</header>
+
+
+<main class="admin-main">
+
+    <section class="admin-hero">
+
+        <p>PLATFORM MANAGEMENT</p>
+
+        <h2>Admin Dashboard</h2>
+
+        <span>
+            Review and manage creator submissions.
+        </span>
+
+    </section>
+
+<section class="admin-overview-section">
+
+    <div class="admin-section-heading">
+        <div>
+            <p>PLATFORM OVERVIEW</p>
+            <h2>Dashboard Overview</h2>
+        </div>
+    </div>
+
+    <div class="admin-overview-grid">
+
+        <div class="admin-overview-card">
+            <span>Total Users</span>
+            <strong id="adminTotalUsers">0</strong>
+        </div>
+
+        <div class="admin-overview-card">
+            <span>Total Sellers</span>
+            <strong id="adminTotalSellers">0</strong>
+        </div>
+<div class="admin-overview-card">
+    <span>Platform Ebooks</span>
+    <strong id="adminPlatformEbooks">0</strong>
+</div>
+
+<div class="admin-overview-card">
+    <span>Seller Ebooks</span>
+    <strong id="adminSellerEbooks">0</strong>
+</div>
+
+        <div class="admin-overview-card">
+            <span>Total Ebooks</span>
+            <strong id="adminTotalEbooks">0</strong>
+        </div>
+
+        <div class="admin-overview-card">
+            <span>Total Orders</span>
+            <strong id="adminTotalOrders">0</strong>
+        </div>
+
+        <div class="admin-overview-card">
+            <span>Total Sales</span>
+            <strong id="adminTotalSales">₹0</strong>
+        </div>
+
+        <div class="admin-overview-card">
+            <span>Platform Earnings</span>
+            <strong id="adminPlatformEarnings">₹0</strong>
+        </div>
+
+        <div class="admin-overview-card">
+            <span>Pending Reviews</span>
+            <strong id="adminOverviewPending">0</strong>
+        </div>
+
+        <div class="admin-overview-card">
+            <span>Pending Withdrawals</span>
+            <strong id="adminOverviewWithdrawals">0</strong>
+        </div>
+
+    </div>
+
+</section>
+    <section class="admin-review-section">
+
+        <div class="admin-section-heading">
+
+            <div>
+                <p>EBOOK REVIEWS</p>
+                <h2>
+    Pending Ebooks
+    <span id="adminPendingCount">· 0</span>
+</h2>
+            </div>
+
+        </div>
+
+
+        <div
+            class="admin-ebook-list"
+            id="adminEbookList">
+        </div>
+
+
+        <div
+            class="admin-empty"
+            id="adminEmpty">
+
+            <h3>No pending ebooks</h3>
+
+            <p>
+                New seller submissions will appear here.
+            </p>
+
+        </div>
+
+    </section>
+<section class="admin-withdrawal-section">
+
+    <div class="admin-section-heading">
+
+        <div>
+            <p>SELLER PAYOUTS</p>
+
+            <h2>
+                Withdrawal Requests
+                <span id="adminWithdrawalCount">· 0</span>
+            </h2>
+        </div>
+
+    </div>
+
+    <div
+        class="admin-withdrawal-list"
+        id="adminWithdrawalList">
+    </div>
+
+    <div
+        class="admin-empty"
+        id="adminWithdrawalEmpty">
+
+        <h3>No pending withdrawals</h3>
+
+        <p>
+            New seller withdrawal requests will appear here.
+        </p>
+
+    </div>
+
+</section>
+<!-- ADMIN REVIEW HISTORY -->
+
+<section class="admin-history-section">
+
+    <div class="admin-section-heading">
+
+        <div>
+            <p>REVIEW HISTORY</p>
+            <h2>Reviewed Ebooks</h2>
+        </div>
+
+    </div>
+
+    <div class="admin-history-tabs">
+
+        <button
+            type="button"
+            class="admin-history-tab active"
+            data-status="approved">
+            Approved
+            <span id="adminApprovedCount">0</span>
+        </button>
+
+        <button
+            type="button"
+            class="admin-history-tab"
+            data-status="rejected">
+            Rejected
+            <span id="adminRejectedCount">0</span>
+        </button>
+
+    </div>
+<div class="admin-history-search">
+
+    <input
+        type="search"
+        id="adminHistorySearch"
+        placeholder="Search ebook or seller email..."
+        autocomplete="off"
+    >
+
+</div>
+    <div
+        class="admin-history-list"
+        id="adminHistoryList">
+    </div>
+
+    <div
+        class="admin-history-empty"
+        id="adminHistoryEmpty">
+
+        No reviewed ebooks yet.
+
+    </div>
+
+</section>
+<section class="admin-section" id="platformEbookManagement" style="margin-top:40px;">
+    <div class="section-label">PLATFORM EBOOKS</div>
+    <h2>Platform Ebook Management</h2>
+    <p class="section-subtitle">Publish and manage createMedia platform ebooks directly from Admin.</p>
+
+    <form id="platformEbookForm" style="display:grid;gap:14px;max-width:760px;margin-top:24px;">
+        <input id="platformEbookTitle" type="text" placeholder="Ebook title" maxlength="150" required>
+        <textarea id="platformEbookDescription" rows="4" placeholder="Description" maxlength="1000" required></textarea>
+        <input id="platformEbookPrice" type="number" min="0" step="1" placeholder="Price ₹" required>
+        <label><strong>Cover Image</strong><br><input id="platformEbookCover" type="file" accept="image/*" required></label>
+        <label><strong>Ebook File</strong><br><input id="platformEbookFile" type="file" accept="application/pdf,.pdf" required></label>
+        <button id="platformEbookPublish" type="submit" class="admin-approve-button" style="width:max-content;min-width:170px;">Publish Ebook</button>
+        <p id="platformEbookMessage" style="margin:0;font-weight:600;"></p>
+    </form>
+
+    <div id="platformEbookList" style="display:grid;gap:14px;margin-top:30px;"></div>
+</section>
+<section class="admin-section seller-management-section">
+
+    <div class="section-label">SELLERS</div>
+
+    <h2>Seller Management</h2>
+
+    <p class="section-subtitle">
+        View and manage all sellers on createMedia.
+    </p>
+
+    <div class="seller-management-quick">
+
+        <div>
+            <span>Total Sellers</span>
+            <strong id="adminManageSellerCount">0</strong>
+        </div>
+
+        <a href="admin-sellers.html"
+           class="manage-sellers-button">
+            Manage Sellers →
+        </a>
+
+    </div>
+
+</section>
+<section class="admin-section seller-reactivation-section">
+
+    <div class="section-label">
+        SELLER REQUESTS
+    </div>
+
+    <h2>Reactivation Requests</h2>
+
+    <p class="section-subtitle">
+        Review requests from suspended sellers who want to reactivate their seller account.
+    </p>
+
+    <div id="adminReactivationRequestList">
+        <!-- Requests will appear here -->
+    </div>
+
+</section>
+<section class="admin-section monthly-growth-section">
+
+    <div class="section-label">PERFORMANCE</div>
+
+    <h2>Monthly Growth</h2>
+
+    <p class="section-subtitle">
+        Track sales and orders month by month.
+    </p>
+
+    <div id="monthlyGrowthList" class="monthly-growth-list">
+        <!-- Monthly growth will appear here -->
+    </div>
+
+</section>
+
+<!-- ADMIN WITHDRAWAL REQUESTS -->
+</main>
+
+
+<footer class="admin-footer">
+
+    <p>
+        © 2026 createMedia Admin
+    </p>
+
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const { createClient } = supabase;
+
+const supabaseUrl =
+    "https://aafuqhcolkmvswgnzjod.supabase.co";
+
+const supabaseAnonKey =
+    "sb_publishable_Amw041xz_YYjJ9v_2wk4vg_Hf4M1jFw";
+
+const supabaseClient =
+    createClient(supabaseUrl, supabaseAnonKey);
+
+let adminAuthorized = false;
+
+async function requireAdminAccess() {
+    const {
+        data: { session },
+        error: authError
+    } = await supabaseClient.auth.getSession();
+
+    const user = session?.user || null;
+
+    if (authError || !user) {
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            window.location.pathname + window.location.search
+        );
+        window.location.replace("login.html");
+        return false;
+    }
+
+    const { data: profile, error: profileError } =
+        await supabaseClient
+            .from("profiles")
+            .select("id, role")
+            .eq("id", user.id)
+            .single();
+
+    if (profileError) {
+        console.error("Admin profile lookup failed:", profileError);
+        await supabaseClient.auth.signOut();
+        sessionStorage.setItem(
+            "createMediaReturnAfterLogin",
+            "admin.html"
+        );
+        window.location.replace("login.html");
+        return false;
+    }
+
+    const normalizedRole =
+        String(profile?.role || "").trim().toLowerCase();
+
+    if (normalizedRole !== "admin") {
+        console.error(
+            "Admin access denied. Auth UID:",
+            user.id,
+            "Profile UID:",
+            profile?.id,
+            "Role:",
+            profile?.role
+        );
+        window.location.replace("index.html");
+        return false;
+    }
+
+    adminAuthorized = true;
+    document.body.style.visibility = "visible";
+    return true;
+}
+
+function assertAdminAuthorized() {
+    if (!adminAuthorized) {
+        throw new Error("Admin authorization required.");
+    }
+}
+
+const adminEbookList =
+    document.getElementById("adminEbookList");
+
+const adminEmpty =
+    document.getElementById("adminEmpty");
+const adminHistoryList =
+    document.getElementById("adminHistoryList");
+
+const adminHistoryEmpty =
+    document.getElementById("adminHistoryEmpty");
+
+const adminApprovedCount =
+    document.getElementById("adminApprovedCount");
+
+const adminRejectedCount =
+    document.getElementById("adminRejectedCount");
+const adminHistorySearch =
+    document.getElementById("adminHistorySearch");
+const adminWithdrawalList =
+    document.getElementById("adminWithdrawalList");
+
+const adminWithdrawalEmpty =
+    document.getElementById("adminWithdrawalEmpty");
+
+const adminWithdrawalCount =
+    document.getElementById("adminWithdrawalCount");
+function escapeAdminHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+async function renderAdminOverview() {
+
+    const [
+        profilesResult,
+        ebooksResult,
+        ordersResult,
+        withdrawalsResult
+    ] = await Promise.all([
+        supabaseClient
+            .from("profiles")
+            .select("id, role, seller_status"),
+        supabaseClient
+            .from("ebooks")
+            .select("id, seller_id, status, listing_status, ebook_type"),
+        supabaseClient
+            .from("orders")
+            .select("id, amount, platform_earning, payment_status, order_status"),
+        supabaseClient
+            .from("withdrawals")
+            .select("id, status")
+    ]);
+
+    if (profilesResult.error) {
+        console.error("Admin overview profiles error:", profilesResult.error);
+    }
+
+    if (ebooksResult.error) {
+        console.error("Admin overview ebook error:", ebooksResult.error);
+    }
+
+    if (ordersResult.error) {
+        console.error("Admin overview orders error:", ordersResult.error);
+    }
+
+    if (withdrawalsResult.error) {
+        console.error("Admin overview withdrawals error:", withdrawalsResult.error);
+    }
+
+    const profiles = profilesResult.data || [];
+    const ebooks = ebooksResult.data || [];
+    const orders = ordersResult.data || [];
+    const withdrawals = withdrawalsResult.data || [];
+
+    document.getElementById("adminTotalUsers").textContent =
+        profiles.length;
+
+    const sellers =
+        profiles.filter(function(profile) {
+            return profile.role === "seller";
+        });
+
+    document.getElementById("adminTotalSellers").textContent =
+        sellers.length;
+
+    document.getElementById("adminManageSellerCount").textContent =
+        sellers.length;
+
+    const platformEbookCount =
+        ebooks.filter(function(ebook) {
+            return ebook.ebook_type === "platform";
+        }).length;
+
+    const sellerEbookCount =
+        ebooks.filter(function(ebook) {
+            return ebook.ebook_type === "seller";
+        }).length;
+
+    const pendingEbookCount =
+        ebooks.filter(function(ebook) {
+            return ebook.status === "pending";
+        }).length;
+
+    document.getElementById("adminPlatformEbooks").textContent =
+        platformEbookCount;
+
+    document.getElementById("adminSellerEbooks").textContent =
+        sellerEbookCount;
+
+    document.getElementById("adminTotalEbooks").textContent =
+        ebooks.length;
+
+    const completedOrders =
+        orders.filter(function(order) {
+            return (
+                order.payment_status === "paid" &&
+                order.order_status === "completed"
+            );
+        });
+
+    document.getElementById("adminTotalOrders").textContent =
+        orders.length;
+
+    const totalSales =
+        completedOrders.reduce(function(total, order) {
+            return total + Number(order.amount || 0);
+        }, 0);
+
+    document.getElementById("adminTotalSales").textContent =
+        "₹" + totalSales.toLocaleString("en-IN");
+
+    const platformEarnings =
+        completedOrders.reduce(function(total, order) {
+            return total + Number(order.platform_earning || 0);
+        }, 0);
+
+    document.getElementById("adminPlatformEarnings").textContent =
+        "₹" + platformEarnings.toLocaleString("en-IN");
+
+    document.getElementById("adminOverviewPending").textContent =
+        pendingEbookCount;
+
+    const pendingWithdrawals =
+        withdrawals.filter(function(withdrawal) {
+            return withdrawal.status === "pending";
+        });
+
+    document.getElementById("adminOverviewWithdrawals").textContent =
+        pendingWithdrawals.length;
+}
+
+async function renderSellerManagement() {
+
+    const container =
+        document.getElementById("adminSellerList");
+
+    if (!container) {
+        return;
+    }
+
+    const [
+        profilesResult,
+        ebooksResult,
+        ordersResult
+    ] = await Promise.all([
+        supabaseClient
+            .from("profiles")
+            .select("id, email, name, role, seller_status")
+            .eq("role", "seller"),
+        supabaseClient
+            .from("ebooks")
+            .select("id, seller_id"),
+        supabaseClient
+            .from("orders")
+            .select("id, seller_id, seller_earning, payment_status, order_status")
+    ]);
+
+    if (profilesResult.error) {
+        console.error("Seller management profiles error:", profilesResult.error);
+        return;
+    }
+
+    if (ebooksResult.error) {
+        console.error("Seller management ebooks error:", ebooksResult.error);
+        return;
+    }
+
+    if (ordersResult.error) {
+        console.error("Seller management orders error:", ordersResult.error);
+        return;
+    }
+
+    const sellers = profilesResult.data || [];
+    const ebooks = ebooksResult.data || [];
+    const orders = ordersResult.data || [];
+
+    container.innerHTML = "";
+
+    sellers.forEach(function(seller) {
+
+        const sellerEbooks =
+            ebooks.filter(function(ebook) {
+                return ebook.seller_id === seller.id;
+            });
+
+        const sellerOrders =
+            orders.filter(function(order) {
+                return (
+                    order.seller_id === seller.id &&
+                    order.payment_status === "paid" &&
+                    order.order_status === "completed"
+                );
+            });
+
+        const totalEarnings =
+            sellerOrders.reduce(function(total, order) {
+                return total + Number(order.seller_earning || 0);
+            }, 0);
+
+        const sellerName =
+            seller.name || "Seller";
+
+        const sellerEmail =
+            seller.email || "—";
+
+        const sellerStatus =
+            seller.seller_status || "inactive";
+
+        const card =
+            document.createElement("div");
+
+        card.className = "admin-seller-card";
+
+        card.innerHTML = `
+            <div class="admin-seller-info">
+                <strong>${escapeAdminHtml(sellerName)}</strong>
+                <span>${escapeAdminHtml(sellerEmail)}</span>
+            </div>
+
+            <div class="admin-seller-stat">
+                <span>Ebooks</span>
+                <strong>${sellerEbooks.length}</strong>
+            </div>
+
+            <div class="admin-seller-stat">
+                <span>Sales</span>
+                <strong>${sellerOrders.length}</strong>
+            </div>
+
+            <div class="admin-seller-stat">
+                <span>Earnings</span>
+                <strong>₹${totalEarnings.toLocaleString("en-IN")}</strong>
+            </div>
+
+            <div class="admin-seller-status">
+                ${escapeAdminHtml(sellerStatus)}
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+async function renderMonthlyGrowth() {
+
+    const { data: orders, error } =
+        await supabaseClient
+            .from("orders")
+            .select("amount, payment_status, order_status, created_at")
+            .eq("payment_status", "paid")
+            .eq("order_status", "completed")
+            .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Monthly growth orders error:", error);
+        return;
+    }
+
+    const monthlyData = {};
+
+    (orders || []).forEach(function(order) {
+
+        const date = new Date(order.created_at);
+
+        if (isNaN(date.getTime())) {
+            return;
+        }
+
+        const key =
+            date.getFullYear() + "-" +
+            String(date.getMonth() + 1).padStart(2, "0");
+
+        if (!monthlyData[key]) {
+            monthlyData[key] = {
+                sales: 0,
+                orders: 0
+            };
+        }
+
+        monthlyData[key].orders++;
+        monthlyData[key].sales +=
+            Number(order.amount || 0);
+    });
+
+    const container =
+        document.getElementById("monthlyGrowthList");
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    const months =
+        Object.keys(monthlyData).sort().reverse();
+
+    if (months.length === 0) {
+        container.innerHTML =
+            '<p class="admin-seller-empty">No completed orders yet.</p>';
+        return;
+    }
+
+    months.forEach(function(key, index) {
+
+        const current = monthlyData[key];
+        const previousKey = months[index + 1];
+        const previous =
+            previousKey ? monthlyData[previousKey] : null;
+
+        let growthText = "—";
+
+        if (previous && previous.sales > 0) {
+            const growth =
+                ((current.sales - previous.sales) / previous.sales) * 100;
+
+            growthText =
+                (growth >= 0 ? "+" : "") +
+                growth.toFixed(1) + "%";
+        }
+
+        const parts = key.split("-");
+
+        const monthName =
+            new Date(
+                Number(parts[0]),
+                Number(parts[1]) - 1
+            ).toLocaleString(
+                "en-IN",
+                { month: "long" }
+            );
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "monthly-growth-card";
+
+        card.innerHTML = `
+            <div>
+                <strong>
+                    ${monthName} ${parts[0]}
+                </strong>
+                <span>
+                    ${current.orders} Orders
+                </span>
+            </div>
+
+            <div>
+                <strong>
+                    ₹${current.sales.toLocaleString("en-IN")}
+                </strong>
+                <span>
+                    ${growthText} Growth
+                </span>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+
+async function getAdminSellerEmail(sellerId) {
+
+    if (!sellerId) {
+        return "Unknown Seller";
+    }
+
+    const uuidPattern =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+    if (!uuidPattern.test(String(sellerId))) {
+        return "Unknown Seller";
+    }
+
+    const { data: sellerProfile, error } =
+        await supabaseClient
+            .from("profiles")
+            .select("email")
+            .eq("id", sellerId)
+            .maybeSingle();
+
+    if (error) {
+        console.warn(
+            "Seller profile lookup skipped/failed:",
+            error
+        );
+        return "Unknown Seller";
+    }
+
+    return sellerProfile?.email || "Unknown Seller";
+}
+
+
+async function renderAdminPendingEbooks() {
+    const { data: allEbooks, error } = await supabaseClient
+        .from("ebooks")
+        .select("id,seller_id,title,description,price,cover_path,status,ebook_type,created_at")
+        .eq("ebook_type", "seller")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Admin ebooks error:", error);
+        return;
+    }
+
+    const pendingEbooks = allEbooks || [];
+    document.getElementById("adminPendingCount").textContent =
+        "· " + pendingEbooks.length;
+
+    adminEbookList.innerHTML = "";
+
+    if (!pendingEbooks.length) {
+        adminEmpty.style.display = "block";
+        return;
+    }
+
+    adminEmpty.style.display = "none";
+
+    const sellerIds = [...new Set(
+        pendingEbooks.map(e => e.seller_id).filter(Boolean)
+    )];
+    const coverPaths = [...new Set(
+        pendingEbooks.map(e => e.cover_path).filter(Boolean)
+    )];
+
+    const profilePromise = sellerIds.length
+        ? supabaseClient.from("profiles").select("id, email").in("id", sellerIds)
+        : Promise.resolve({ data: [], error: null });
+
+    const coverPromise = coverPaths.length
+        ? supabaseClient.storage.from("ebook-covers").createSignedUrls(coverPaths, 3600)
+        : Promise.resolve({ data: [], error: null });
+
+    const [profileResult, coverResult] = await Promise.all([
+        profilePromise,
+        coverPromise
+    ]);
+
+    if (profileResult.error) {
+        console.warn("Pending ebook seller profiles error:", profileResult.error);
+    }
+    if (coverResult.error) {
+        console.warn("Pending ebook covers error:", coverResult.error);
+    }
+
+    const sellerMap = new Map(
+        (profileResult.data || []).map(p => [p.id, p.email || "Unknown Seller"])
+    );
+    const coverMap = new Map();
+    (coverResult.data || []).forEach((item, index) => {
+        const path = item.path || coverPaths[index];
+        if (path) coverMap.set(path, item.signedUrl || "");
+    });
+
+    const fragment = document.createDocumentFragment();
+
+    pendingEbooks.forEach(function(ebook) {
+        const coverUrl = ebook.cover_path ? (coverMap.get(ebook.cover_path) || "") : "";
+        const sellerEmail = sellerMap.get(ebook.seller_id) || "Unknown Seller";
+
+        const item = document.createElement("div");
+        item.className = "admin-ebook-card";
+        item.innerHTML = `
+            <div class="admin-ebook-cover">
+                <img
+                    src="${escapeAdminHtml(coverUrl)}"
+                    alt="${escapeAdminHtml(ebook.title)}"
+                    loading="lazy"
+                    decoding="async">
+            </div>
+            <div class="admin-ebook-info">
+                <span class="admin-pending-badge">PENDING REVIEW</span>
+                <h3>${escapeAdminHtml(ebook.title)}</h3>
+                <p>Seller: ${escapeAdminHtml(sellerEmail)}</p>
+                <p>Price: ₹${ebook.price}</p>
+                <p>${escapeAdminHtml(ebook.description || "")}</p>
+                <div class="admin-review-actions">
+                    <button type="button" class="admin-approve-button"
+                        onclick="approveSellerEbook('${ebook.id}')">Approve</button>
+                    <button type="button" class="admin-reject-button"
+                        onclick="rejectSellerEbook('${ebook.id}')">Reject</button>
+                </div>
+            </div>`;
+        fragment.appendChild(item);
+    });
+
+    adminEbookList.appendChild(fragment);
+}
+
+/* =========================================
+   ADMIN WITHDRAWAL REQUESTS — SUPABASE
+========================================= */
+
+let adminWithdrawalCache = [];
+let selectedPayoutWithdrawalId = null;
+let payoutReadyToApprove = false;
+let selectedWithdrawalToReject = null;
+
+function adminFormatDate(value) {
+    if (!value) return "—";
+    return new Date(value).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+async function renderAdminWithdrawals() {
+    const withdrawalList = document.getElementById("adminWithdrawalList");
+    const withdrawalEmpty = document.getElementById("adminWithdrawalEmpty");
+    const withdrawalCount = document.getElementById("adminWithdrawalCount");
+
+    if (!withdrawalList || !withdrawalEmpty || !withdrawalCount) return;
+
+    const { data: withdrawals, error } = await supabaseClient
+        .from("withdrawals")
+        .select("id, seller_id, amount, status, rejection_reason, requested_at, approved_at, rejected_at")
+        .eq("status", "pending")
+        .order("requested_at", { ascending: false });
+
+    if (error) {
+        console.error("Withdrawal load error:", error);
+        withdrawalCount.textContent = "· 0";
+        withdrawalList.innerHTML = "";
+        withdrawalEmpty.style.display = "block";
+        withdrawalEmpty.textContent = "Could not load withdrawal requests.";
+        return;
+    }
+
+    const rows = withdrawals || [];
+    const sellerIds = [...new Set(rows.map(w => w.seller_id).filter(Boolean))];
+
+    let profiles = [];
+    let payouts = [];
+
+    if (sellerIds.length) {
+        const [profileResult, payoutResult] = await Promise.all([
+            supabaseClient
+                .from("profiles")
+                .select("id, name, email")
+                .in("id", sellerIds),
+            supabaseClient
+                .from("seller_payout_accounts")
+                .select("user_id, account_holder_name, account_number, ifsc, upi_id")
+                .in("user_id", sellerIds)
+        ]);
+
+        if (profileResult.error) console.error("Withdrawal profile error:", profileResult.error);
+        if (payoutResult.error) console.error("Withdrawal payout error:", payoutResult.error);
+        profiles = profileResult.data || [];
+        payouts = payoutResult.data || [];
+    }
+
+    adminWithdrawalCache = rows.map(function(withdrawal) {
+        const profile = profiles.find(p => p.id === withdrawal.seller_id) || {};
+        const payout = payouts.find(p => p.user_id === withdrawal.seller_id) || {};
+        return { ...withdrawal, profile, payout };
+    });
+
+    withdrawalCount.textContent = "· " + adminWithdrawalCache.length;
+    withdrawalList.innerHTML = "";
+
+    if (!adminWithdrawalCache.length) {
+        withdrawalEmpty.style.display = "block";
+        withdrawalEmpty.textContent = "No pending withdrawals.";
+        return;
+    }
+
+    withdrawalEmpty.style.display = "none";
+
+    adminWithdrawalCache.forEach(function(withdrawal) {
+        const account = String(withdrawal.payout.account_number || "");
+        const last4 = account ? account.slice(-4) : "----";
+        const sellerLabel = withdrawal.profile.email || withdrawal.profile.name || "Unknown seller";
+
+        const item = document.createElement("div");
+        item.className = "admin-withdrawal-card";
+        item.innerHTML = `
+            <div class="admin-withdrawal-info">
+                <strong>₹${Number(withdrawal.amount || 0).toLocaleString("en-IN")}</strong>
+                <p>${escapeAdminHtml(sellerLabel)}</p>
+                <p>Bank ••••${last4} · IFSC ${escapeAdminHtml(withdrawal.payout.ifsc || "N/A")}</p>
+                <small>${adminFormatDate(withdrawal.requested_at)}</small>
+            </div>
+            <div class="admin-withdrawal-actions">
+                <span class="admin-withdrawal-status">PENDING</span>
+                <button type="button" class="admin-approve-button"
+                    onclick="showWithdrawalDetails('${withdrawal.id}')">Show Details</button>
+                <button type="button" class="admin-reject-button"
+                    onclick="rejectAdminWithdrawal('${withdrawal.id}')">Reject</button>
+            </div>`;
+        withdrawalList.appendChild(item);
+    });
+}
+
+function showWithdrawalDetails(withdrawalId) {
+    const withdrawal = adminWithdrawalCache.find(item => item.id === withdrawalId);
+    if (!withdrawal) return;
+
+    selectedPayoutWithdrawalId = withdrawalId;
+    document.getElementById("adminPayoutAmount").textContent =
+        "₹" + Number(withdrawal.amount || 0).toLocaleString("en-IN");
+    document.getElementById("adminPayoutSeller").textContent =
+        withdrawal.profile.email || withdrawal.profile.name || "—";
+    document.getElementById("adminPayoutHolder").textContent =
+        withdrawal.payout.account_holder_name || "—";
+    document.getElementById("adminPayoutAccount").textContent =
+        withdrawal.payout.account_number || "—";
+    document.getElementById("adminPayoutIFSC").textContent =
+        withdrawal.payout.ifsc || "—";
+    document.getElementById("adminPayoutUPI").textContent =
+        withdrawal.payout.upi_id || "—";
+
+    payoutReadyToApprove = false;
+    const processButton = document.getElementById("adminProcessPayment");
+    processButton.textContent = "Process Payment";
+    document.querySelector(".admin-payout-note").textContent =
+        "Verify the payout details before processing the payment.";
+    document.getElementById("adminPayoutModal").style.display = "flex";
+}
+
+async function approveAdminWithdrawal(withdrawalId) {
+    assertAdminAuthorized();
+    const withdrawal = adminWithdrawalCache.find(item => item.id === withdrawalId);
+    if (!withdrawal || withdrawal.status !== "pending") return;
+
+    const { error } = await supabaseClient
+        .from("withdrawals")
+        .update({
+            status: "success",
+            approved_at: new Date().toISOString(),
+            rejected_at: null,
+            rejection_reason: null,
+            updated_at: new Date().toISOString()
+        })
+        .eq("id", withdrawalId)
+        .eq("status", "pending");
+
+    if (error) {
+        console.error("Withdrawal approve error:", error);
+        alert("Withdrawal approve nahi hui.");
+        return;
+    }
+
+    await Promise.all([renderAdminWithdrawals(), renderAdminOverview()]);
+    showAdminActionToast("approved", withdrawal.amount);
+}
+
+function rejectAdminWithdrawal(withdrawalId) {
+    selectedWithdrawalToReject = withdrawalId;
+    const modal = document.getElementById("adminRejectModal");
+    const reasonInput = document.getElementById("adminRejectReason");
+    reasonInput.value = "";
+    reasonInput.style.borderColor = "";
+    modal.style.display = "flex";
+    setTimeout(() => reasonInput.focus(), 100);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const payoutModal = document.getElementById("adminPayoutModal");
+    const payoutClose = document.getElementById("adminPayoutClose");
+    const payoutCancel = document.getElementById("adminPayoutCancel");
+    const processPaymentButton = document.getElementById("adminProcessPayment");
+
+    function closePayoutModal() {
+        payoutModal.style.display = "none";
+        selectedPayoutWithdrawalId = null;
+        payoutReadyToApprove = false;
+    }
+
+    if (payoutClose) payoutClose.onclick = closePayoutModal;
+    if (payoutCancel) payoutCancel.onclick = closePayoutModal;
+
+    if (processPaymentButton) {
+        processPaymentButton.onclick = async function() {
+            if (!selectedPayoutWithdrawalId) return;
+            if (!payoutReadyToApprove) {
+                payoutReadyToApprove = true;
+                processPaymentButton.textContent = "Approve Withdrawal";
+                document.querySelector(".admin-payout-note").textContent =
+                    "Complete the payment using the payout details above. After payment is confirmed, click Approve Withdrawal.";
+                return;
+            }
+
+            const withdrawalId = selectedPayoutWithdrawalId;
+            processPaymentButton.disabled = true;
+            await approveAdminWithdrawal(withdrawalId);
+            processPaymentButton.disabled = false;
+            closePayoutModal();
+        };
+    }
+
+    const rejectModal = document.getElementById("adminRejectModal");
+    const reasonInput = document.getElementById("adminRejectReason");
+    const cancelButton = document.getElementById("adminRejectCancel");
+    const confirmButton = document.getElementById("adminRejectConfirm");
+
+    if (cancelButton) {
+        cancelButton.onclick = function() {
+            rejectModal.style.display = "none";
+            reasonInput.value = "";
+            selectedWithdrawalToReject = null;
+        };
+    }
+
+    if (confirmButton) {
+        confirmButton.onclick = async function() {
+            assertAdminAuthorized();
+            const reason = reasonInput.value.trim();
+            if (!reason) {
+                reasonInput.focus();
+                reasonInput.style.borderColor = "#c43b3b";
+                return;
+            }
+
+            const withdrawal = adminWithdrawalCache.find(
+                item => item.id === selectedWithdrawalToReject
+            );
+            if (!withdrawal || withdrawal.status !== "pending") return;
+
+            confirmButton.disabled = true;
+            const { error } = await supabaseClient
+                .from("withdrawals")
+                .update({
+                    status: "rejected",
+                    rejection_reason: reason,
+                    rejected_at: new Date().toISOString(),
+                    approved_at: null,
+                    updated_at: new Date().toISOString()
+                })
+                .eq("id", selectedWithdrawalToReject)
+                .eq("status", "pending");
+            confirmButton.disabled = false;
+
+            if (error) {
+                console.error("Withdrawal reject error:", error);
+                alert("Withdrawal reject nahi hui.");
+                return;
+            }
+
+            rejectModal.style.display = "none";
+            reasonInput.value = "";
+            selectedWithdrawalToReject = null;
+            await Promise.all([renderAdminWithdrawals(), renderAdminOverview()]);
+            showAdminActionToast("rejected", withdrawal.amount);
+        };
+    }
+});
+
+let adminHistoryStatus = "approved";
+
+async function renderAdminHistory() {
+    const { data: allEbooks, error } = await supabaseClient
+        .from("ebooks")
+        .select("id,seller_id,title,price,status,rejection_reason,cover_path")
+        .eq("ebook_type", "seller")
+        .in("status", ["approved", "rejected"])
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Admin history error:", error);
+        return;
+    }
+
+    const rows = allEbooks || [];
+    const approvedEbooks = rows.filter(e => e.status === "approved");
+    const rejectedEbooks = rows.filter(e => e.status === "rejected");
+    adminApprovedCount.textContent = approvedEbooks.length;
+    adminRejectedCount.textContent = rejectedEbooks.length;
+
+    let historyEbooks = adminHistoryStatus === "approved" ? approvedEbooks : rejectedEbooks;
+    const sellerIds = [...new Set(historyEbooks.map(e => e.seller_id).filter(Boolean))];
+    const coverPaths = [...new Set(historyEbooks.map(e => e.cover_path).filter(Boolean))];
+
+    const [profileResult, coverResult] = await Promise.all([
+        sellerIds.length
+            ? supabaseClient.from("profiles").select("id,email").in("id", sellerIds)
+            : Promise.resolve({ data: [], error: null }),
+        coverPaths.length
+            ? supabaseClient.storage.from("ebook-covers").createSignedUrls(coverPaths, 3600)
+            : Promise.resolve({ data: [], error: null })
+    ]);
+
+    const sellerMap = new Map((profileResult.data || []).map(p => [p.id, p.email || "Unknown Seller"]));
+    const coverMap = new Map();
+    (coverResult.data || []).forEach((item, index) => {
+        const path = item.path || coverPaths[index];
+        if (path) coverMap.set(path, item.signedUrl || "");
+    });
+
+    const searchValue = adminHistorySearch.value.trim().toLowerCase();
+    if (searchValue) {
+        historyEbooks = historyEbooks.filter(ebook => {
+            const sellerEmail = sellerMap.get(ebook.seller_id) || "Unknown Seller";
+            return String(ebook.title || "").toLowerCase().includes(searchValue) ||
+                   sellerEmail.toLowerCase().includes(searchValue);
+        });
+    }
+
+    adminHistoryList.innerHTML = "";
+    if (!historyEbooks.length) {
+        adminHistoryEmpty.style.display = "block";
+        adminHistoryEmpty.textContent = adminHistoryStatus === "approved"
+            ? "No approved seller ebooks yet."
+            : "No rejected seller ebooks yet.";
+        return;
+    }
+
+    adminHistoryEmpty.style.display = "none";
+    const fragment = document.createDocumentFragment();
+    historyEbooks.forEach(ebook => {
+        const coverUrl = ebook.cover_path ? (coverMap.get(ebook.cover_path) || "") : "";
+        const sellerEmail = sellerMap.get(ebook.seller_id) || "Unknown Seller";
+        const item = document.createElement("div");
+        item.className = "admin-ebook-card";
+        item.innerHTML = `
+            <div class="admin-ebook-cover">
+                ${coverUrl ? `<img src="${escapeAdminHtml(coverUrl)}" alt="${escapeAdminHtml(ebook.title)}" loading="lazy" decoding="async">` : ""}
+            </div>
+            <div class="admin-ebook-info">
+                <span class="admin-history-status ${ebook.status}">${String(ebook.status || "").toUpperCase()}</span>
+                <h3>${escapeAdminHtml(ebook.title || "Untitled Ebook")}</h3>
+                <p>Seller: ${escapeAdminHtml(sellerEmail)}</p>
+                <p>Price: ₹${ebook.price || 0}</p>
+                ${ebook.status === "rejected" ? `<p class="admin-history-reason"><strong>Reason:</strong> ${escapeAdminHtml(ebook.rejection_reason || "No reason provided")}</p>` : ""}
+            </div>`;
+        fragment.appendChild(item);
+    });
+    adminHistoryList.appendChild(fragment);
+}
+
+document
+    .querySelectorAll(".admin-history-tab")
+    .forEach(function(tab) {
+
+        tab.addEventListener("click", function() {
+
+            adminHistoryStatus =
+                this.dataset.status;
+
+            document
+                .querySelectorAll(".admin-history-tab")
+                .forEach(function(button) {
+                    button.classList.remove("active");
+                });
+
+            this.classList.add("active");
+            renderAdminHistory();
+
+        });
+
+    });
+
+let adminHistorySearchTimer = null;
+adminHistorySearch.addEventListener("input", function() {
+    clearTimeout(adminHistorySearchTimer);
+    adminHistorySearchTimer = setTimeout(renderAdminHistory, 180);
+});
+function approveSellerEbook(id) {
+
+    const modal =
+        document.getElementById("ebookApproveModal");
+
+    const cancelButton =
+        document.getElementById("ebookApproveCancel");
+
+    const confirmButton =
+        document.getElementById("ebookApproveConfirm");
+
+    modal.style.display = "flex";
+
+    cancelButton.onclick = function() {
+        modal.style.display = "none";
+    };
+
+    confirmButton.onclick = async function() {
+
+        assertAdminAuthorized();
+        confirmButton.disabled = true;
+
+        const { data: ebook, error } =
+            await supabaseClient
+                .from("ebooks")
+                .update({
+                    status: "approved",
+                    listing_status: "unlisted"
+                })
+                .eq("id", id)
+                .select("id, seller_id, title")
+                .single();
+
+        if (error || !ebook) {
+
+            console.error(
+                "Ebook approval error:",
+                error
+            );
+
+            confirmButton.disabled = false;
+
+            alert("Ebook approve nahi hui.");
+            return;
+        }
+
+        const { error: notificationError } =
+            await supabaseClient
+                .from("notifications")
+                .insert({
+                    user_id: ebook.seller_id,
+                    type: "ebook_approved",
+                    title: ebook.title,
+                    message:
+                        'Your ebook "' +
+                        ebook.title +
+                        '" is ready to publish.',
+                    is_read: false
+                });
+
+        if (notificationError) {
+
+            console.error(
+                "Notification error:",
+                notificationError
+            );
+        }
+
+        confirmButton.disabled = false;
+
+        modal.style.display = "none";
+
+        await Promise.all([
+            renderAdminPendingEbooks(),
+            renderAdminHistory(),
+            renderAdminOverview()
+        ]);
+    };
+}
+function rejectSellerEbook(id) {
+
+    const modal =
+        document.getElementById("ebookRejectModal");
+
+    const reasonInput =
+        document.getElementById("ebookRejectReason");
+
+    const cancelButton =
+        document.getElementById("ebookRejectCancel");
+
+    const confirmButton =
+        document.getElementById("ebookRejectConfirm");
+
+    reasonInput.value = "";
+
+    modal.style.display = "flex";
+
+    reasonInput.focus();
+
+    cancelButton.onclick = function() {
+
+        modal.style.display = "none";
+        reasonInput.value = "";
+
+    };
+
+    confirmButton.onclick = async function() {
+
+        assertAdminAuthorized();
+
+        const reason =
+            reasonInput.value.trim();
+
+        if (!reason) {
+            reasonInput.focus();
+            return;
+        }
+
+        const { error } =
+            await supabaseClient
+                .from("ebooks")
+                .update({
+    status: "rejected",
+    listing_status: "unlisted",
+    rejection_reason: reason
+})
+                .eq("id", id);
+
+        if (error) {
+            console.error("Reject ebook error:", error);
+
+            alert("Ebook reject nahi hui.");
+            return;
+        }
+
+        modal.style.display = "none";
+        reasonInput.value = "";
+
+        await Promise.all([
+            renderAdminPendingEbooks(),
+            renderAdminHistory(),
+            renderAdminOverview()
+        ]);
+    };
+}
+async function approveReactivation(requestId, sellerId) {
+    assertAdminAuthorized();
+    const { error: profileError } =
+        await supabaseClient
+            .from("profiles")
+            .update({ seller_status: "active" })
+            .eq("id", sellerId);
+
+    if (profileError) {
+        console.error("Seller reactivation profile error:", profileError);
+        alert("Seller activate nahi hua.");
+        return;
+    }
+
+    const { error: requestError } =
+        await supabaseClient
+            .from("seller_reactivation_requests")
+            .update({
+                status: "approved",
+                reviewed_at: new Date().toISOString(),
+                rejection_reason: null
+            })
+            .eq("id", requestId)
+            .eq("status", "pending");
+
+    if (requestError) {
+        console.error("Reactivation approve error:", requestError);
+        alert("Request update nahi hui.");
+        return;
+    }
+
+    await Promise.all([
+        renderReactivationRequests(),
+        renderAdminOverview()
+    ]);
+}
+
+async function rejectReactivation(requestId) {
+    assertAdminAuthorized();
+    const reason = prompt("Enter rejection reason:");
+
+    if (!reason || !reason.trim()) return;
+
+    const { error } =
+        await supabaseClient
+            .from("seller_reactivation_requests")
+            .update({
+                status: "rejected",
+                rejection_reason: reason.trim(),
+                reviewed_at: new Date().toISOString()
+            })
+            .eq("id", requestId)
+            .eq("status", "pending");
+
+    if (error) {
+        console.error("Reactivation reject error:", error);
+        alert("Request reject nahi hui.");
+        return;
+    }
+
+    await renderReactivationRequests();
+}
+
+async function renderReactivationRequests() {
+    const container =
+        document.getElementById("adminReactivationRequestList");
+
+    if (!container) return;
+
+    const [requestsResult, profilesResult] = await Promise.all([
+        supabaseClient
+            .from("seller_reactivation_requests")
+            .select("id, seller_id, reason, status, requested_at")
+            .eq("status", "pending")
+            .order("requested_at", { ascending: false }),
+        supabaseClient
+            .from("profiles")
+            .select("id, email, name")
+    ]);
+
+    if (requestsResult.error) {
+        console.error("Reactivation requests error:", requestsResult.error);
+        container.innerHTML =
+            '<p class="admin-seller-empty">Could not load reactivation requests.</p>';
+        return;
+    }
+
+    if (profilesResult.error) {
+        console.error("Reactivation seller profiles error:", profilesResult.error);
+    }
+
+    const requests = requestsResult.data || [];
+    const profiles = profilesResult.data || [];
+    const profileMap = new Map(
+        profiles.map(function(profile) {
+            return [profile.id, profile];
+        })
+    );
+
+    container.innerHTML = "";
+
+    if (requests.length === 0) {
+        container.innerHTML =
+            '<p class="admin-seller-empty">No pending reactivation requests.</p>';
+        return;
+    }
+
+    requests.forEach(function(request) {
+        const profile = profileMap.get(request.seller_id) || {};
+        const sellerLabel = profile.email || profile.name || "Unknown Seller";
+        const requestedDate = request.requested_at
+            ? new Date(request.requested_at).toLocaleDateString("en-IN")
+            : "—";
+
+        const card = document.createElement("div");
+        card.className = "admin-reactivation-card";
+
+        const info = document.createElement("div");
+        info.innerHTML = "<span>Seller</span>";
+        const sellerStrong = document.createElement("strong");
+        sellerStrong.textContent = sellerLabel;
+        info.appendChild(sellerStrong);
+
+        const reasonBox = document.createElement("div");
+        reasonBox.innerHTML = "<span>Reason</span>";
+        const reasonStrong = document.createElement("strong");
+        reasonStrong.textContent = request.reason || "—";
+        reasonBox.appendChild(reasonStrong);
+
+        const dateBox = document.createElement("div");
+        dateBox.innerHTML = "<span>Requested</span>";
+        const dateStrong = document.createElement("strong");
+        dateStrong.textContent = requestedDate;
+        dateBox.appendChild(dateStrong);
+
+        const actions = document.createElement("div");
+        actions.className = "admin-reactivation-actions";
+
+        const approveButton = document.createElement("button");
+        approveButton.type = "button";
+        approveButton.textContent = "Approve";
+        approveButton.onclick = function() {
+            approveReactivation(request.id, request.seller_id);
+        };
+
+        const rejectButton = document.createElement("button");
+        rejectButton.type = "button";
+        rejectButton.textContent = "Reject";
+        rejectButton.onclick = function() {
+            rejectReactivation(request.id);
+        };
+
+        actions.appendChild(approveButton);
+        actions.appendChild(rejectButton);
+        card.appendChild(info);
+        card.appendChild(reasonBox);
+        card.appendChild(dateBox);
+        card.appendChild(actions);
+        container.appendChild(card);
+    });
+}
+
+
+/* =========================================
+   PLATFORM EBOOK MANAGEMENT — ADMIN ONLY
+========================================= */
+function safeStorageName(name) {
+    const extension = String(name || "").split(".").pop().toLowerCase().replace(/[^a-z0-9]/g, "") || "bin";
+    return Date.now() + "-" + crypto.randomUUID() + "." + extension;
+}
+
+const PLATFORM_COVER_CACHE_KEY = "createMediaAdminPlatformCoversV1";
+function getPlatformCoverCache() {
+    try { return JSON.parse(sessionStorage.getItem(PLATFORM_COVER_CACHE_KEY) || "{}"); }
+    catch { return {}; }
+}
+function savePlatformCoverCache(cache) {
+    try { sessionStorage.setItem(PLATFORM_COVER_CACHE_KEY, JSON.stringify(cache)); } catch {}
+}
+
+async function renderPlatformEbooks() {
+    const container = document.getElementById("platformEbookList");
+    if (!container) return;
+
+    const { data: ebooks, error } = await supabaseClient
+        .from("ebooks")
+        .select("id,title,description,price,cover_path,file_path,listing_status,created_at")
+        .eq("ebook_type", "platform")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Platform ebooks load error:", error);
+        container.textContent = "Platform ebooks load nahi hui.";
+        return;
+    }
+
+    const rows = ebooks || [];
+    if (!rows.length) {
+        container.innerHTML = '<p class="admin-seller-empty">No platform ebooks yet.</p>';
+        return;
+    }
+
+    const coverPaths = [...new Set(rows.map(e => e.cover_path).filter(Boolean))];
+    const cache = getPlatformCoverCache();
+    const now = Date.now();
+    const coverMap = new Map();
+    const missingPaths = [];
+    coverPaths.forEach(path => {
+        const hit = cache[path];
+        if (hit?.url && hit.expiresAt > now + 60000) coverMap.set(path, hit.url);
+        else missingPaths.push(path);
+    });
+    if (missingPaths.length) {
+        const signed = await supabaseClient.storage.from("ebook-covers").createSignedUrls(missingPaths, 3600);
+        (signed.data || []).forEach((item, index) => {
+            const path = item.path || missingPaths[index];
+            const url = item.signedUrl || "";
+            if (path && url) {
+                coverMap.set(path, url);
+                cache[path] = { url, expiresAt: now + 50 * 60 * 1000 };
+            }
+        });
+        savePlatformCoverCache(cache);
+    }
+
+    const fragment = document.createDocumentFragment();
+    rows.forEach(ebook => {
+        const card = document.createElement("div");
+        card.className = "admin-ebook-card";
+        const coverUrl = ebook.cover_path ? (coverMap.get(ebook.cover_path) || "") : "";
+        card.innerHTML = `
+            <div class="admin-ebook-cover">
+                ${coverUrl ? `<img src="${escapeAdminHtml(coverUrl)}" alt="${escapeAdminHtml(ebook.title)}" loading="lazy" decoding="async">` : ""}
+            </div>
+            <div class="admin-ebook-info">
+                <span class="admin-history-status approved">PLATFORM · ${escapeAdminHtml((ebook.listing_status || "unlisted").toUpperCase())}</span>
+                <h3>${escapeAdminHtml(ebook.title || "Untitled Ebook")}</h3>
+                <p>Price: ₹${Number(ebook.price || 0).toLocaleString("en-IN")}</p>
+                <p>${escapeAdminHtml(ebook.description || "")}</p>
+                <div class="admin-review-actions">
+                    <button type="button" class="admin-approve-button" data-platform-toggle="${ebook.id}" data-next="${ebook.listing_status === "listed" ? "unlisted" : "listed"}">${ebook.listing_status === "listed" ? "Unlist" : "List"}</button>
+                    <button type="button" class="admin-reject-button" data-platform-delete="${ebook.id}">Delete</button>
+                </div>
+            </div>`;
+        fragment.appendChild(card);
+    });
+    container.replaceChildren(fragment);
+}
+
+async function publishPlatformEbook(event) {
+    event.preventDefault();
+    assertAdminAuthorized();
+
+    const title = document.getElementById("platformEbookTitle").value.trim();
+    const description = document.getElementById("platformEbookDescription").value.trim();
+    const price = Number(document.getElementById("platformEbookPrice").value);
+    const cover = document.getElementById("platformEbookCover").files[0];
+    const ebookFile = document.getElementById("platformEbookFile").files[0];
+    const button = document.getElementById("platformEbookPublish");
+    const message = document.getElementById("platformEbookMessage");
+
+    if (!title || !description || !Number.isFinite(price) || price < 0 || !cover || !ebookFile) {
+        message.textContent = "Saari details, cover aur PDF select karo.";
+        return;
+    }
+
+    const coverPath = "platform/" + safeStorageName(cover.name);
+    const filePath = "platform/" + safeStorageName(ebookFile.name);
+    button.disabled = true;
+    button.textContent = "Publishing...";
+    message.textContent = "";
+
+    try {
+        const [coverUpload, fileUpload] = await Promise.all([
+            supabaseClient.storage.from("ebook-covers").upload(coverPath, cover, { upsert: false, contentType: cover.type || undefined }),
+            supabaseClient.storage.from("ebook-files").upload(filePath, ebookFile, { upsert: false, contentType: ebookFile.type || "application/pdf" })
+        ]);
+
+        if (coverUpload.error || fileUpload.error) {
+            if (!coverUpload.error) await supabaseClient.storage.from("ebook-covers").remove([coverPath]);
+            if (!fileUpload.error) await supabaseClient.storage.from("ebook-files").remove([filePath]);
+            throw coverUpload.error || fileUpload.error;
+        }
+
+        const { error: insertError } = await supabaseClient.from("ebooks").insert({
+            seller_id: null,
+            title,
+            description,
+            price,
+            cover_path: coverPath,
+            file_path: filePath,
+            status: "approved",
+            listing_status: "listed",
+            rejection_reason: null,
+            ebook_type: "platform"
+        });
+
+        if (insertError) {
+            await Promise.all([
+                supabaseClient.storage.from("ebook-covers").remove([coverPath]),
+                supabaseClient.storage.from("ebook-files").remove([filePath])
+            ]);
+            throw insertError;
+        }
+
+        document.getElementById("platformEbookForm").reset();
+        message.textContent = "Platform ebook published successfully.";
+        await Promise.all([renderPlatformEbooks(), renderAdminOverview()]);
+    } catch (error) {
+        console.error("Platform ebook publish error:", error);
+        message.textContent = "Publish nahi hui: " + (error?.message || "Unknown error");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Publish Ebook";
+    }
+}
+
+async function togglePlatformEbook(id, nextStatus) {
+    assertAdminAuthorized();
+    const { error } = await supabaseClient.from("ebooks")
+        .update({ listing_status: nextStatus, updated_at: new Date().toISOString() })
+        .eq("id", id).eq("ebook_type", "platform");
+    if (error) return alert("Listing status update nahi hua.");
+    await renderPlatformEbooks();
+}
+
+async function deletePlatformEbook(id) {
+    assertAdminAuthorized();
+    if (!confirm("Is platform ebook ko permanently delete karna hai?")) return;
+
+    const { data: ebook, error: loadError } = await supabaseClient.from("ebooks")
+        .select("id,cover_path,file_path")
+        .eq("id", id).eq("ebook_type", "platform").single();
+    if (loadError || !ebook) return alert("Ebook nahi mili.");
+
+    const { error: deleteError } = await supabaseClient.from("ebooks")
+        .delete().eq("id", id).eq("ebook_type", "platform");
+    if (deleteError) return alert("Ebook delete nahi hui.");
+
+    const removals = [];
+    if (ebook.cover_path) {
+        removals.push(supabaseClient.storage.from("ebook-covers").remove([ebook.cover_path]));
+        const cache = getPlatformCoverCache();
+        delete cache[ebook.cover_path];
+        savePlatformCoverCache(cache);
+    }
+    if (ebook.file_path) removals.push(supabaseClient.storage.from("ebook-files").remove([ebook.file_path]));
+    if (removals.length) await Promise.all(removals);
+    await Promise.all([renderPlatformEbooks(), renderAdminOverview()]);
+}
+
+const platformForm = document.getElementById("platformEbookForm");
+if (platformForm) platformForm.addEventListener("submit", publishPlatformEbook);
+
+document.getElementById("platformEbookList")?.addEventListener("click", function(event) {
+    const toggle = event.target.closest("[data-platform-toggle]");
+    if (toggle) return togglePlatformEbook(toggle.dataset.platformToggle, toggle.dataset.next);
+    const remove = event.target.closest("[data-platform-delete]");
+    if (remove) deletePlatformEbook(remove.dataset.platformDelete);
+});
+
+async function initializeSecureAdmin() {
+    const allowed = await requireAdminAccess();
+    if (!allowed) return;
+
+    const logoutButton = document.getElementById("adminLogoutButton");
+    if (logoutButton) {
+        logoutButton.onclick = async function() {
+            logoutButton.disabled = true;
+            await supabaseClient.auth.signOut();
+            window.location.replace("login.html");
+        };
+    }
+
+    await Promise.all([
+        renderAdminOverview(),
+        renderAdminPendingEbooks(),
+        renderAdminWithdrawals(),
+        renderAdminHistory(),
+        renderReactivationRequests(),
+        renderMonthlyGrowth(),
+        renderPlatformEbooks()
+    ]);
+}
+
+initializeSecureAdmin();
+</script>
+<!-- =========================================
+     EBOOK APPROVAL MODAL
+========================================= -->
+
+<div class="admin-reject-modal" id="ebookApproveModal">
+
+    <div class="admin-reject-modal-box">
+
+        <div class="admin-reject-modal-icon">
+            ✓
+        </div>
+
+        <div class="admin-reject-modal-heading">
+            <p>EBOOK REVIEW</p>
+            <h3>Approve Ebook</h3>
+        </div>
+
+        <p class="admin-reject-modal-text">
+            Approve this ebook for the seller?
+            The seller will be able to publish it after approval.
+        </p>
+
+        <div class="admin-reject-modal-buttons">
+
+            <button
+                type="button"
+                class="admin-reject-cancel"
+                id="ebookApproveCancel">
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="admin-approve-confirm"
+                id="ebookApproveConfirm">
+                Approve Ebook
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     EBOOK REJECTION MODAL
+========================================= -->
+
+<div class="admin-reject-modal" id="ebookRejectModal">
+
+    <div class="admin-reject-modal-box">
+
+        <div class="admin-reject-modal-icon">
+            !
+        </div>
+
+        <div class="admin-reject-modal-heading">
+            <p>EBOOK REVIEW</p>
+            <h3>Reject Ebook</h3>
+        </div>
+
+        <p class="admin-reject-modal-text">
+            Please enter a reason for rejecting this ebook.
+            The reason will be saved for the seller.
+        </p>
+
+        <label for="ebookRejectReason">
+            Rejection Reason
+        </label>
+
+        <textarea
+            id="ebookRejectReason"
+            rows="4"
+            maxlength="250"
+            placeholder="Enter rejection reason..."
+        ></textarea>
+
+        <div class="admin-reject-modal-buttons">
+
+            <button
+                type="button"
+                class="admin-reject-cancel"
+                id="ebookRejectCancel">
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="admin-reject-confirm"
+                id="ebookRejectConfirm">
+                Reject Ebook
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- =========================================
+     WITHDRAWAL REJECTION MODAL
+========================================= -->
+
+<div class="admin-reject-modal" id="adminRejectModal">
+
+    <div class="admin-reject-modal-box">
+
+        <div class="admin-reject-modal-icon">
+            !
+        </div>
+
+        <div class="admin-reject-modal-heading">
+            <p>WITHDRAWAL REQUEST</p>
+            <h3>Reject Withdrawal</h3>
+        </div>
+
+        <p class="admin-reject-modal-text">
+            Please enter a reason for rejecting this withdrawal request.
+            The reason will be saved with the request.
+        </p>
+
+        <label for="adminRejectReason">
+            Rejection Reason
+        </label>
+
+        <textarea
+            id="adminRejectReason"
+            rows="4"
+            maxlength="250"
+            placeholder="Enter rejection reason..."
+        ></textarea>
+
+        <div class="admin-reject-modal-buttons">
+
+            <button
+                type="button"
+                class="admin-reject-cancel"
+                id="adminRejectCancel">
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="admin-reject-confirm"
+                id="adminRejectConfirm">
+                Reject Withdrawal
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- =========================================
+     ADMIN ACTION TOAST
+========================================= -->
+
+<div class="admin-action-toast" id="adminActionToast">
+
+    <div class="admin-action-toast-icon" id="adminActionToastIcon">
+        ✓
+    </div>
+
+    <div>
+        <h4 id="adminActionToastTitle">
+            Completed
+        </h4>
+
+        <p id="adminActionToastMessage">
+            Action completed successfully.
+        </p>
+    </div>
+
+</div>
+<!-- =========================================
+     WITHDRAWAL PAYOUT DETAILS MODAL
+========================================= -->
+
+<div class="admin-payout-modal" id="adminPayoutModal">
+
+    <div class="admin-payout-modal-box">
+
+        <div class="admin-payout-modal-top">
+            <div>
+                <p>SELLER PAYOUT</p>
+                <h3>Withdrawal Details</h3>
+            </div>
+
+            <button
+                type="button"
+                class="admin-payout-close"
+                id="adminPayoutClose">
+                ×
+            </button>
+        </div>
+
+        <div class="admin-payout-amount">
+            <span>Withdrawal Amount</span>
+            <strong id="adminPayoutAmount">₹0</strong>
+        </div>
+
+        <div class="admin-payout-details">
+
+            <div class="admin-payout-row">
+                <span>Seller</span>
+                <strong id="adminPayoutSeller">—</strong>
+            </div>
+
+            <div class="admin-payout-row">
+                <span>Account Holder</span>
+                <strong id="adminPayoutHolder">—</strong>
+            </div>
+
+            <div class="admin-payout-row">
+                <span>Account Number</span>
+                <strong id="adminPayoutAccount">—</strong>
+            </div>
+
+            <div class="admin-payout-row">
+                <span>IFSC Code</span>
+                <strong id="adminPayoutIFSC">—</strong>
+            </div>
+
+            <div class="admin-payout-row">
+                <span>UPI ID</span>
+                <strong id="adminPayoutUPI">—</strong>
+            </div>
+
+        </div>
+
+        <div class="admin-payout-note">
+            Verify the payout details before processing the payment.
+        </div>
+
+        <div class="admin-payout-buttons">
+
+            <button
+                type="button"
+                class="admin-payout-cancel"
+                id="adminPayoutCancel">
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="admin-process-payment"
+                id="adminProcessPayment">
+                Process Payment
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+
+</html>
